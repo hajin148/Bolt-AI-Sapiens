@@ -73,46 +73,25 @@ function App() {
             </p>
           </div>
           
-          <div className="mt-10 flex flex-col items-center justify-center space-y-6">
-            <div className="flex-1 max-w-md w-full">
+          <div className="mt-10 flex flex-col items-center justify-center space-y-4">
+            <div className="flex-1 max-w-md">
               <SearchBar 
                 onSearch={handleSearch} 
                 placeholder="Search AI tools.."
               />
             </div>
-
-            <div className="w-full overflow-x-auto pb-4">
-              <div className="flex whitespace-nowrap space-x-2 min-w-full justify-center">
-                <button
-                  onClick={() => handleCategoryChange('all')}
-                  className={`
-                    px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
-                    ${activeCategory === 'all'
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                    }
-                  `}
-                >
-                  All Categories
-                </button>
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => handleCategoryChange(category.id)}
-                    className={`
-                      px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
-                      ${activeCategory === category.id
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                      }
-                    `}
-                  >
-                    <span className="mr-1">{category.icon}</span>
-                    {category.title}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <select
+              value={activeCategory}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.title}
+                </option>
+              ))}
+            </select>
           </div>
           
           {searchQuery && (
