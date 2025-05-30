@@ -72,7 +72,7 @@ function App() {
             </p>
           </div>
           
-          <div className="mt-10 flex items-center justify-center space-x-4">
+          <div className="mt-10 flex flex-col items-center justify-center space-y-4">
             <div className="flex-1 max-w-md">
               <SearchBar 
                 onSearch={handleSearch} 
