@@ -3,147 +3,147 @@ import { Tool, CategoryInfo } from '../types/Tool';
 export const categories: CategoryInfo[] = [
   {
     id: 'writing',
-    title: ' 글쓰기 및 프롬프트 작업',
+    title: 'Writing & Prompting',
     icon: '📝',
-    description: '텍스트 생성, 글쓰기 보조, 프롬프트 엔지니어링 도구'
+    description: 'Text generation, writing assistance, and prompt engineering tools'
   },
   {
     id: 'research',
-    title: ' 리서치 작업',
+    title: 'Research',
     icon: '🔍',
-    description: '리서치, 정보 수집, 지식 탐색 도구'
+    description: 'Research, information gathering, and knowledge exploration tools'
   },
   {
     id: 'video-generation',
-    title: ' 동영상 생성',
+    title: 'Video Generation',
     icon: '🎬',
-    description: 'AI 기반 동영상 생성 및 제작 도구'
+    description: 'AI-based video generation and production tools'
   },
   {
     id: 'coding',
-    title: ' 베이스 코딩',
+    title: 'Base Coding',
     icon: '💻',
-    description: '코드 생성 및 개발 지원 도구'
+    description: 'Code generation and development support tools'
   },
   {
     id: 'visualization',
-    title: ' 시각화 / PPT',
+    title: 'Visualization & PPT',
     icon: '📊',
-    description: '데이터 시각화 및 프레젠테이션 제작 도구'
+    description: 'Data visualization and presentation creation tools'
   },
   {
     id: 'image-editing',
-    title: ' 이미지 편집',
+    title: 'Image Editing',
     icon: '🖌️',
-    description: 'AI 기반 이미지 편집 및 향상 도구'
+    description: 'AI-powered image editing and enhancement tools'
   },
   {
     id: 'meeting-notes',
-    title: ' 회의록 / 기록 작성',
+    title: 'Meeting Notes & Records',
     icon: '📝',
-    description: '회의록 작성 및 음성 텍스트 변환 도구'
+    description: 'Meeting minutes and voice-to-text conversion tools'
   },
   {
     id: 'ui-design',
-    title: ' 웹/UI/UX 디자인',
+    title: 'Web/UI/UX Design',
     icon: '🎨',
-    description: '웹, UI, UX 디자인 및 프로토타이핑 도구'
+    description: 'Web, UI, UX design and prototyping tools'
   },
   {
     id: 'image-generation',
-    title: ' 이미지 생성',
+    title: 'Image Generation',
     icon: '🎭',
-    description: 'AI 기반 이미지 생성 도구'
+    description: 'AI-based image generation tools'
   },
   {
     id: 'video-editing',
-    title: ' 동영상 편집',
+    title: 'Video Editing',
     icon: '🎞️',
-    description: 'AI 동영상 편집 및 후반 작업 도구'
+    description: 'AI video editing and post-production tools'
   },
   {
     id: 'avatars',
-    title: ' AI 아바타',
+    title: 'AI Avatars',
     icon: '👤',
-    description: 'AI 아바타 및 디지털 휴먼 생성 도구'
+    description: 'AI avatar and digital human generation tools'
   },
   {
     id: 'academic',
-    title: ' 연구 및 리서치',
+    title: 'Academic Research',
     icon: '📚',
-    description: '학술 연구 및 과학적 정보 탐색 도구'
+    description: 'Academic research and scientific information tools'
   },
   {
     id: 'models',
-    title: ' AI 모델',
+    title: 'AI Models',
     icon: '🧬',
-    description: 'AI 모델 저장소 및 실행 플랫폼'
+    description: 'AI model repositories and execution platforms'
   },
   {
-  id: 'storyboard',
-  title: 'AI 만화 / 스토리보드',
-  icon: '📖',
-  description: 'AI를 활용한 만화 제작 및 스토리보드 생성 도구'
+    id: 'storyboard',
+    title: 'AI Comics & Storyboards',
+    icon: '📖',
+    description: 'AI tools for comic creation and storyboard generation'
   },
   {
     id: 'automation',
-    title: '자동화',
+    title: 'Automation',
     icon: '⚙️',
-    description: '반복 작업을 자동화해주는 AI 워크플로우 도구'
+    description: 'AI workflow tools for automating repetitive tasks'
   },
   {
     id: 'voice-generation',
-    title: '음성 합성',
+    title: 'Voice Synthesis',
     icon: '🗣️',
-    description: '음성을 생성하고 변환하는 AI 도구'
+    description: 'AI tools for generating and transforming voice'
   },
   {
     id: 'translation',
-    title: '번역',
+    title: 'Translation',
     icon: '🌐',
-    description: 'AI 기반 실시간 번역 및 언어 변환 도구'
+    description: 'AI-based real-time translation and language conversion tools'
   },
   {
     id: 'music-generation',
-    title: '음악 생성',
+    title: 'Music Generation',
     icon: '🎵',
-    description: 'AI를 통한 음악 작곡 및 편곡 도구'
+    description: 'AI music composition and arrangement tools'
   },
   {
     id: 'local-ai',
-    title: '로컬 AI',
+    title: 'Local AI',
     icon: '💾',
-    description: '로컬 환경에서 실행되는 오픈소스 AI 도구'
+    description: 'Open-source AI tools running in local environment'
   },
   {
     id: 'character-chatbot',
-    title: '캐릭터 챗봇',
+    title: 'Character Chatbots',
     icon: '🧑‍🚀',
-    description: '성격과 세계관이 있는 AI 챗봇'
+    description: 'AI chatbots with personality and world-building'
   },
   {
     id: 'inference-ai',
-    title: '추론 AI',
+    title: 'Inference AI',
     icon: '📈',
-    description: '고속 추론을 위한 AI 모델 플랫폼'
+    description: 'AI model platforms for high-speed inference'
   },
   {
     id: 'ai-agent',
-    title: 'AI 에이전트',
+    title: 'AI Agents',
     icon: '🤖',
-    description: '다양한 작업을 수행하는 AI 비서형 에이전트'
+    description: 'AI assistant agents performing various tasks'
   },
   {
     id: 'utility',
-    title: '유틸리티',
+    title: 'Utilities',
     icon: '🛠️',
-    description: '특정 목적의 실용적인 AI 도구'
+    description: 'Practical AI tools for specific purposes'
   },
   {
     id: 'college-life',
-    title: '슬기로운 대학생활',
+    title: 'Smart College Life',
     icon: '🎓',
-    description: '대학생에게 유용한 AI 도구 모음'
+    description: 'Collection of AI tools useful for college students'
   }
 ];
 
@@ -257,7 +257,7 @@ export const tools: Tool[] = [
     category: 'research'
   },
   {
-    name: '라이너',
+    name: 'Liner',
     url: 'https://getliner.com/',
     iconUrl: 'https://getliner.com/favicon.ico',
     description: 'Web highlighter and research organization tool',
@@ -330,14 +330,14 @@ export const tools: Tool[] = [
   },
   {
     name: 'Hailuo',
-    url: 'https://hailuoai.video/?utm_source=googleads&utm_medium=pmax&utm_campaign=Adsmarch_Hailuo_pmax_US_purchase_250120_bid45&gad_source=1&gad_campaignid=22237278371&gclid=CjwKCAjwi-DBBhA5EiwAXOHsGfxiupNDkKckty3khiFp1HnmCo7kemCRJbL4HEnxozumZMLVeTdh5hoCbDoQAvD_BwE',
+    url: 'https://hailuoai.video/',
     iconUrl: 'https://hailuoai.video/favicon.ico',
     description: 'AI video generation with advanced editing capabilities',
     category: 'video-generation'
   },
   {
     name: 'Vidu',
-    url: 'https://www.vidu.com/?utm_source=google&utm_medium=pmax&utm_campaign=YM-usmixfeatures&utm_content=YMApplication-Avery-0415&gad_source=1&gad_campaignid=22287560292&gclid=CjwKCAjwi-DBBhA5EiwAXOHsGXc30IMDneiCOU350pJ_B8MeZAQwMPeX1gneSoWPko3XIYbeEZii8RoCGckQAvD_BwE',
+    url: 'https://www.vidu.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=vidu.ai',
     description: 'AI video creation and editing platform',
     category: 'video-generation'
@@ -368,20 +368,20 @@ export const tools: Tool[] = [
   {
     name: 'V0',
     url: 'https://v0.dev/',
-    iconUrl: '	https://www.google.com/s2/favicons?sz=64&domain=v0.dev',
+    iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=v0.dev',
     description: 'AI-powered UI component generation from text descriptions',
     category: 'coding'
   },
   {
     name: 'Bolt',
     url: 'https://bolt.new/',
-    iconUrl: '	https://www.google.com/s2/favicons?sz=64&domain=bolt.new',
+    iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=bolt.new',
     description: 'AI-powered web development platform',
     category: 'coding'
   },
   {
     name: 'Lovable',
-    url: 'https://lovable.dev/?via=68ghkl68&gad_source=1&gad_campaignid=22087262552&gclid=CjwKCAjwi-DBBhA5EiwAXOHsGX8D-WZM1XAyFuTYjTC4h5Ba7RMGa5jb3O-bdE0XP5qFptQcZlm0fRoCorcQAvD_BwE',
+    url: 'https://lovable.dev/',
     iconUrl: 'https://lovable.dev/favicon.ico',
     description: 'AI-assisted software development platform',
     category: 'coding'
@@ -396,7 +396,7 @@ export const tools: Tool[] = [
   {
     name: 'Rork',
     url: 'https://rork.ai/',
-    iconUrl: '	https://www.google.com/s2/favicons?sz=64&domain=rork.ai',
+    iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=rork.ai',
     description: 'AI pair programming assistant',
     category: 'coding'
   },
@@ -410,7 +410,7 @@ export const tools: Tool[] = [
   {
     name: 'Reweb',
     url: 'https://www.reweb.so/',
-    iconUrl: '	https://www.reweb.so/favicon.ico',
+    iconUrl: 'https://www.reweb.so/favicon.ico',
     description: 'AI-powered web development automation',
     category: 'coding'
   },
@@ -526,7 +526,7 @@ export const tools: Tool[] = [
 
   // Meeting Notes/Recording Tools
   {
-    name: '클로바노트',
+    name: 'Clova Note',
     url: 'https://clovanote.naver.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=clovanote.naver.com',
     description: 'AI meeting assistant and transcription tool',
@@ -534,8 +534,8 @@ export const tools: Tool[] = [
   },
   {
     name: 'Tiro',
-    url: 'https://tiro.ooo/ko/',
-    iconUrl: '	https://www.google.com/s2/favicons?sz=64&domain=tiro.ooo',
+    url: 'https://tiro.ooo/',
+    iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=tiro.ooo',
     description: 'AI meeting transcription and summarization',
     category: 'meeting-notes'
   },
@@ -628,7 +628,7 @@ export const tools: Tool[] = [
 
   // Image Generation Tools
   {
-    name: '미드저니',
+    name: 'Midjourney',
     url: 'https://www.midjourney.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=midjourney.com',
     description: 'Text-to-image AI that creates detailed visuals',
@@ -725,7 +725,7 @@ export const tools: Tool[] = [
     category: 'academic'
   },
   {
-    name: '노트북LM',
+    name: 'Notebook LM',
     url: 'https://notebooklm.google/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=notebooklm.google',
     description: 'AI-powered note-taking for researchers',
@@ -741,7 +741,7 @@ export const tools: Tool[] = [
 
   // AI Models
   {
-    name: '허깅페이스',
+    name: 'Hugging Face',
     url: 'https://huggingface.co/',
     iconUrl: 'https://huggingface.co/favicon.ico',
     description: 'Open-source platform for machine learning models',
@@ -767,223 +767,223 @@ export const tools: Tool[] = [
     iconUrl: 'https://tost.ai/favicon.ico',
     description: 'AI model deployment platform',
     category: 'models'
-  }, 
-  // AI 만화 / 스토리보드
+  },
+  
+  // AI Comics & Storyboard
   {
     name: 'AniFusion',
     url: 'https://www.anifusion.ai/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=anifusion.ai',
-    description: 'AI 기반 만화 제작 도구',
+    description: 'AI-based comic creation tool',
     category: 'storyboard'
   },
   {
     name: 'Novel AI',
     url: 'https://novelai.net/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=novelai.net',
-    description: '스토리 생성 및 소설 작성 AI',
+    description: 'Story generation and novel writing AI',
     category: 'storyboard'
   },
   {
     name: 'Story Tribe',
     url: 'https://storytribeapp.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=storytribeapp.com',
-    description: '스토리텔링을 위한 AI 도우미',
+    description: 'AI assistant for storytelling',
     category: 'storyboard'
   },
   
-  // 자동화
+  // Automation
   {
     name: 'Make',
     url: 'https://www.make.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=make.com',
-    description: '노코드 워크플로우 자동화 플랫폼',
+    description: 'No-code workflow automation platform',
     category: 'automation'
   },
   {
     name: 'Dify',
     url: 'https://dify.ai/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=dify.ai',
-    description: 'AI 기반 앱 자동화 도구',
+    description: 'AI-based app automation tool',
     category: 'automation'
   },
   {
     name: 'n8n',
     url: 'https://n8n.io/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=n8n.io',
-    description: '오픈소스 워크플로우 자동화 도구',
+    description: 'Open-source workflow automation tool',
     category: 'automation'
   },
   {
     name: 'Zapier',
     url: 'https://zapier.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=zapier.com',
-    description: '앱 간 연결 및 작업 자동화',
+    description: 'App integration and task automation',
     category: 'automation'
   },
   
-  // 음성 합성
+  // Voice Generation
   {
     name: 'ElevenLabs',
     url: 'https://www.elevenlabs.io/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=elevenlabs.io',
-    description: '고품질 음성 생성 및 보이스 클로닝',
+    description: 'High-quality voice generation and voice cloning',
     category: 'voice-generation'
   },
   
-  // 번역
+  // Translation
   {
     name: 'DeepL',
     url: 'https://www.deepl.com/',
     iconUrl: 'https://www.deepl.com/favicon.ico',
-    description: '정확한 AI 기반 번역기',
+    description: 'Accurate AI-based translator',
     category: 'translation'
   },
   {
     name: 'Genspark',
     url: 'https://genspark.ai/',
     iconUrl: 'https://genspark.ai/favicon.ico',
-    description: '리서치 및 번역을 포함한 생성형 AI',
+    description: 'Generative AI including research and translation',
     category: 'translation'
   },
   
-  // 음악 생성
+  // Music Generation
   {
     name: 'Suno',
     url: 'https://suno-ai.org/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=suno-ai.org',
-    description: 'AI 기반 음악 생성 플랫폼',
+    description: 'AI-based music generation platform',
     category: 'music-generation'
   },
   {
     name: 'Udio',
     url: 'https://www.udio.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=udio.com',
-    description: 'AI 작곡 도우미',
+    description: 'AI composition assistant',
     category: 'music-generation'
   },
   {
     name: 'MusicFX',
     url: 'https://labs.google/fx/tools/music-fx-dj',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=labs.google',
-    description: 'Google의 AI 음악 프로젝트',
+    description: 'Google\'s AI music project',
     category: 'music-generation'
   },
   
-  // 로컬 AI
+  // Local AI
   {
     name: 'Pinokio',
     url: 'https://pinokio.computer/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=pinokio.computer',
-    description: '앱 설치 자동화 및 로컬 AI 환경',
+    description: 'App installation automation and local AI environment',
     category: 'local-ai'
   },
   {
     name: 'ComfyUI',
-    url: 'hhttps://www.comfy.org/',
+    url: 'https://www.comfy.org/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=comfy.org',
-    description: '로컬 이미지 생성용 워크플로우 UI',
+    description: 'Workflow UI for local image generation',
     category: 'local-ai'
   },
   {
     name: 'Ollama',
     url: 'https://ollama.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=ollama.com',
-    description: '로컬에서 LLM 실행 가능',
+    description: 'Run LLMs locally',
     category: 'local-ai'
   },
   {
     name: 'LmStudio',
     url: 'https://lmstudio.ai/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=lmstudio.ai',
-    description: '로컬 LLM 실행 및 인터페이스',
+    description: 'Local LLM execution and interface',
     category: 'local-ai'
   },
   
-  // 캐릭터 챗봇
+  // Character Chatbots
   {
-    name: '캐릭터AI',
+    name: 'Character AI',
     url: 'https://beta.character.ai/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=character.ai',
-    description: '성격 있는 캐릭터 챗봇 생성 플랫폼',
+    description: 'Platform for creating character-based chatbots',
     category: 'character-chatbot'
   },
   {
-    name: '크랙',
+    name: 'Crack',
     url: 'https://crack.wrtn.ai/superchat',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=wrtn.ai',
-    description: '한국형 캐릭터 기반 AI 챗봇',
+    description: 'Character-based AI chatbot',
     category: 'character-chatbot'
   },
   
-  // 추론 AI
+  // Inference AI
   {
     name: 'Groq',
     url: 'https://groq.com/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=groq.com',
-    description: '초고속 AI 추론 칩셋 및 플랫폼',
+    description: 'Ultra-fast AI inference chipset and platform',
     category: 'inference-ai'
   },
   {
     name: 'Cerebras',
     url: 'https://www.cerebras.net/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=cerebras.net',
-    description: '대규모 AI 모델 추론 플랫폼',
+    description: 'Large-scale AI model inference platform',
     category: 'inference-ai'
   },
   {
     name: 'Together AI',
     url: 'https://www.together.ai/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=together.ai',
-    description: 'AI 모델 호스팅 및 추론 서비스',
+    description: 'AI model hosting and inference service',
     category: 'inference-ai'
   },
   
-  // AI 에이전트
+  // AI Agents
   {
     name: 'Manus',
     url: 'https://manus.im/guest',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=manus.im',
-    description: 'AI 에이전트 멀티 툴',
+    description: 'AI agent multi-tool',
     category: 'ai-agent'
   },
   {
     name: 'OpenWebUI',
     url: 'https://github.com/open-webui/open-webui',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=github.com',
-    description: '로컬 LLM용 Web UI',
+    description: 'Web UI for local LLMs',
     category: 'ai-agent'
   },
   {
     name: 'Transformers',
     url: 'https://huggingface.co/docs/transformers/index',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=huggingface.co',
-    description: 'Hugging Face의 모델 실행 프레임워크',
+    description: 'Hugging Face\'s model execution framework',
     category: 'ai-agent'
   },
   {
     name: 'Hunyuan / Wan 2.1',
     url: 'https://www.tencent.com/en-us/articles/2201636.html',
     iconUrl: 'https://www.tencent.com/favicon.ico',
-    description: 'Tencent의 LLM 및 AI 플랫폼',
+    description: 'Tencent\'s LLM and AI platform',
     category: 'ai-agent'
   },
   
-  // 유틸리티
+  // Utilities
   {
     name: 'Firecrawl',
     url: 'https://www.firecrawl.dev/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=firecrawl.dev',
-    description: '웹사이트를 실시간 분석하고 요약',
+    description: 'Real-time website analysis and summarization',
     category: 'utility'
   },
   
-  // 슬기로운 대학생활
+  // Smart College Life
   {
     name: 'Lilys AI',
     url: 'https://www.lilys.ai/',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=lilys.ai',
-    description: '논문 정리 및 대학 리서치 도우미',
+    description: 'Paper summarization and academic research assistant',
     category: 'college-life'
   }
-
 ];

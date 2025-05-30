@@ -4,18 +4,15 @@ import { ExternalLink } from 'lucide-react';
 
 interface ToolCardProps {
   tool: Tool;
-  language: 'ko' | 'en';
 }
 
-const ToolCard: React.FC<ToolCardProps> = ({ tool, language }) => {
+const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [imageError, setImageError] = useState(false);
   
   const handleImageError = () => {
     setImageError(true);
   };
-
-  const description = language === 'ko' ? tool.description : (tool.descriptionEn || tool.description);
 
   return (
     <div 
@@ -56,7 +53,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, language }) => {
       {showTooltip && (
         <div className="absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
           <div className="relative">
-            {description}
+            {tool.description}
             <div className="absolute w-2 h-2 bg-gray-900 transform rotate-45 left-1/2 -ml-1 bottom-0 translate-y-1/2"></div>
           </div>
         </div>
