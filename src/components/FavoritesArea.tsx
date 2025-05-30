@@ -13,9 +13,13 @@ const FavoritesArea: React.FC<FavoritesAreaProps> = ({ allTools }) => {
 
   if (!currentUser || !userProfile) return null;
 
-  const favoriteTools = allTools.filter(tool => 
-    userProfile.favorites?.includes(tool.name.toLowerCase())
-  );
+  const favoriteTools = Array.from(
+  new Map(
+    allTools
+      .filter(tool => userProfile.favorites?.includes(tool.name.toLowerCase()))
+      .map(tool => [tool.name.toLowerCase(), tool]) // Map key by name to remove duplicates
+  ).values()
+);
 
   if (favoriteTools.length === 0) {
     return (
