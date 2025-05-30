@@ -4,7 +4,6 @@ import NavBar from './components/NavBar';
 import SearchBar from './components/SearchBar';
 import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
-import { Globe } from 'lucide-react';
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -13,24 +12,20 @@ function App() {
 
   useEffect(() => {
     const filtered = tools.filter((tool) => {
-      // Get the category info for this tool
       const toolCategory = categories.find(cat => cat.id === tool.category);
       
-      // Convert all searchable text to lowercase for case-insensitive search
       const searchLower = searchQuery.toLowerCase();
       const nameLower = tool.name.toLowerCase();
       const descriptionLower = tool.description.toLowerCase();
       const categoryTitleLower = toolCategory?.title.toLowerCase() || '';
       const categoryDescLower = toolCategory?.description.toLowerCase() || '';
 
-      // Filter by search query across multiple fields
       const matchesSearch = searchQuery === '' || 
         nameLower.includes(searchLower) ||
         descriptionLower.includes(searchLower) ||
         categoryTitleLower.includes(searchLower) ||
         categoryDescLower.includes(searchLower);
       
-      // Filter by category
       const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
       
       return matchesSearch && matchesCategory;
@@ -41,7 +36,6 @@ function App() {
 
   const handleCategoryChange = (categoryId: string) => {
     setActiveCategory(categoryId);
-    // Scroll to category section if a specific category is selected
     if (categoryId !== 'all') {
       const element = document.getElementById(categoryId);
       if (element) {
@@ -56,23 +50,17 @@ function App() {
     setSearchQuery(query);
   };
 
-  // Group tools by category
   const toolsByCategory = categories.reduce((acc, category) => {
     acc[category.id] = filteredTools.filter(tool => tool.category === category.id);
     return acc;
   }, {} as Record<string, typeof tools>);
 
-  // Count total filtered tools
   const filteredToolCount = filteredTools.length;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <NavBar 
-          categories={categories} 
-          activeCategory={activeCategory} 
-          onCategoryChange={handleCategoryChange}
-        />
+        <NavBar />
         
         <header className="py-12">
           <div className="text-center">
@@ -84,11 +72,25 @@ function App() {
             </p>
           </div>
           
-          <div className="mt-10">
-            <SearchBar 
-              onSearch={handleSearch} 
-              placeholder="Search AI tools.."
-            />
+          <div className="mt-10 flex items-center justify-center space-x-4">
+            <div className="flex-1 max-w-md">
+              <SearchBar 
+                onSearch={handleSearch} 
+                placeholder="Search AI tools.."
+              />
+            </div>
+            <select
+              value={activeCategory}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.title}
+                </option>
+              ))}
+            </select>
           </div>
           
           {searchQuery && (
@@ -99,7 +101,6 @@ function App() {
         </header>
 
         <main>
-          {/* If no tools found */}
           {filteredToolCount === 0 && (
             <div className="text-center py-16">
               <h2 className="text-xl font-medium text-gray-600">
@@ -111,7 +112,6 @@ function App() {
             </div>
           )}
 
-          {/* Show all categories or filtered categories */}
           {categories.map(category => (
             <CategorySection 
               key={category.id} 
