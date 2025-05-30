@@ -10,7 +10,6 @@ function App() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredTools, setFilteredTools] = useState(tools);
-  const [language, setLanguage] = useState<'ko' | 'en'>('ko');
 
   useEffect(() => {
     const filtered = tools.filter((tool) => {
@@ -57,10 +56,6 @@ function App() {
     setSearchQuery(query);
   };
 
-  const toggleLanguage = () => {
-    setLanguage(prev => prev === 'ko' ? 'en' : 'ko');
-  };
-
   // Group tools by category
   const toolsByCategory = categories.reduce((acc, category) => {
     acc[category.id] = filteredTools.filter(tool => tool.category === category.id);
@@ -73,47 +68,32 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-end pt-4">
-          <button
-            onClick={toggleLanguage}
-            className="flex items-center gap-2 px-3 py-1 rounded-md bg-white shadow-sm hover:bg-gray-50 transition-colors"
-          >
-            <Globe className="w-4 h-4" />
-            <span className="text-sm font-medium">{language === 'ko' ? 'EN' : 'KO'}</span>
-          </button>
-        </div>
-        
         <NavBar 
           categories={categories} 
           activeCategory={activeCategory} 
-          onCategoryChange={handleCategoryChange} 
-          language={language}
+          onCategoryChange={handleCategoryChange}
         />
         
         <header className="py-12">
           <div className="text-center">
             <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
-              {language === 'ko' ? '리버의 AI 툴 모음' : "River's AI Tools Collection"}
+              AI Sapiens Directory
             </h1>
             <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500">
-              {language === 'ko' 
-                ? '최고의 AI 툴들을 카테고리 별로 확인하세요' 
-                : 'Discover the best AI tools organized by category'}
+              Discover the best AI tools organized by category
             </p>
           </div>
           
           <div className="mt-10">
             <SearchBar 
               onSearch={handleSearch} 
-              placeholder={language === 'ko' ? 'AI 툴 검색하기..' : 'Search AI tools..'}
+              placeholder="Search AI tools.."
             />
           </div>
           
           {searchQuery && (
             <div className="mt-4 text-center text-sm text-gray-500">
-              {language === 'ko'
-                ? `${filteredToolCount}개의 AI 툴이 "${searchQuery}"와(과) 관련이 있습니다`
-                : `Found ${filteredToolCount} AI tool${filteredToolCount !== 1 ? 's' : ''} related to "${searchQuery}"`}
+              Found {filteredToolCount} AI tool{filteredToolCount !== 1 ? 's' : ''} related to "{searchQuery}"
             </div>
           )}
         </header>
@@ -123,10 +103,10 @@ function App() {
           {filteredToolCount === 0 && (
             <div className="text-center py-16">
               <h2 className="text-xl font-medium text-gray-600">
-                {language === 'ko' ? '관련된 AI 툴이 없습니다.' : 'No AI tools found.'}
+                No AI tools found.
               </h2>
               <p className="mt-2 text-gray-500">
-                {language === 'ko' ? '검색 조건을 변경해보세요.' : 'Try changing your search criteria.'}
+                Try changing your search criteria.
               </p>
             </div>
           )}
@@ -137,15 +117,12 @@ function App() {
               key={category.id} 
               category={category} 
               tools={toolsByCategory[category.id] || []}
-              language={language}
             />
           ))}
         </main>
       </div>
       
-      <Footer language={language} />
+      <Footer />
     </div>
   );
 }
-
-export default App;
