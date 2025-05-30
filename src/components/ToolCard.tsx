@@ -29,8 +29,22 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
     await toggleFavorite(tool.name.toLowerCase());
   };
 
+  const getPricingBadge = () => {
+    switch (tool.pricing) {
+      case 'free':
+        return <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-green-100 text-green-800 text-[10px] font-medium rounded">Free</span>;
+      case 'paid':
+        return <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-medium rounded">Paid</span>;
+      case 'freemium':
+        return <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-medium rounded">Freemium</span>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <Card className="group relative p-4 hover:border-blue-400">
+      {getPricingBadge()}
       <HoverCard>
         <HoverCardTrigger asChild>
           <a 
@@ -66,7 +80,18 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
         </HoverCardTrigger>
         <HoverCardContent className="w-80">
           <div className="space-y-2">
-            <h4 className="text-sm font-semibold">{tool.name}</h4>
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-semibold">{tool.name}</h4>
+              {tool.pricing && (
+                <span className={`text-xs font-medium px-2 py-0.5 rounded ${
+                  tool.pricing === 'free' ? 'bg-green-100 text-green-800' :
+                  tool.pricing === 'paid' ? 'bg-blue-100 text-blue-800' :
+                  'bg-purple-100 text-purple-800'
+                }`}>
+                  {tool.pricing.charAt(0).toUpperCase() + tool.pricing.slice(1)}
+                </span>
+              )}
+            </div>
             <p className="text-sm text-gray-500">{tool.description}</p>
             <div className="pt-2">
               <Button

@@ -5,6 +5,7 @@ export interface Tool {
   description: string;
   descriptionEn?: string;
   category: string;
+  pricing?: 'free' | 'paid' | 'freemium';
 }
 
 export interface CategoryInfo {
