@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hovercard';
 
 interface ToolCardProps {
   tool: Tool;
