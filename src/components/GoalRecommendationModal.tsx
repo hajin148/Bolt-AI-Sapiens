@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import { Tool } from '../types/Tool';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { tools } from '../data/tools';
 
 interface GoalRecommendationModalProps {
   isOpen: boolean;
@@ -30,18 +37,17 @@ const GoalRecommendationModal: React.FC<GoalRecommendationModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // This would typically call an API to get personalized recommendations
-    // For now, we'll use mock data
+    // Mock recommendations based on the goal
     const mockRecommendations: RecommendedTool[] = [
       {
-        ...tools.find(t => t.name === 'V0') as Tool,
+        ...tools.find(t => t.name === 'V0')!,
         monthlyCost: 'Free - $20/mo',
         tutorialUrl: 'https://youtube.com/watch?v=example1',
         tutorialDuration: '15:30',
         sampleProjectUrl: 'https://example.com/project1'
       },
       {
-        ...tools.find(t => t.name === 'Dora') as Tool,
+        ...tools.find(t => t.name === 'Dora')!,
         monthlyCost: '$29/mo',
         tutorialUrl: 'https://youtube.com/watch?v=example2',
         tutorialDuration: '45:20',
@@ -53,74 +59,76 @@ const GoalRecommendationModal: React.FC<GoalRecommendationModalProps> = ({
     setSubmitted(true);
   };
 
+  const handleReset = () => {
+    setSubmitted(false);
+    setRecommendations([]);
+  };
+
   return (
-    <Dialog.Root open={isOpen} onOpenChange={onClose}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <Dialog.Title className="text-2xl font-bold mb-4">
-            Tool Recommendations for: {goal}
-          </Dialog.Title>
-          
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-          >
-            <X size={20} />
-          </button>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">
+            Tool Recommendations
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="mt-4">
+          <p className="text-sm text-gray-600 mb-6">
+            Goal: <span className="font-medium text-gray-900">{goal}</span>
+          </p>
 
           {!submitted ? (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Programming Level
-                </label>
-                <select
-                  value={level}
-                  onChange={(e) => setLevel(e.target.value)}
-                  className="w-full rounded-md border border-gray-300 p-2"
-                >
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
-                </select>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Programming Level
+                  </label>
+                  <select
+                    value={level}
+                    onChange={(e) => setLevel(e.target.value)}
+                    className="w-full rounded-md border border-gray-300 p-2"
+                  >
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Time Available
+                  </label>
+                  <select
+                    value={timeAvailable}
+                    onChange={(e) => setTimeAvailable(e.target.value)}
+                    className="w-full rounded-md border border-gray-300 p-2"
+                  >
+                    <option value="1 hour">1 hour</option>
+                    <option value="1 day">1 day</option>
+                    <option value="1 week">1 week</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Preferred Language
+                  </label>
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                    className="w-full rounded-md border border-gray-300 p-2"
+                  >
+                    <option value="English">English</option>
+                    <option value="Korean">Korean</option>
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Time Available
-                </label>
-                <select
-                  value={timeAvailable}
-                  onChange={(e) => setTimeAvailable(e.target.value)}
-                  className="w-full rounded-md border border-gray-300 p-2"
-                >
-                  <option value="1 hour">1 hour</option>
-                  <option value="1 day">1 day</option>
-                  <option value="1 week">1 week</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Preferred Language
-                </label>
-                <select
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full rounded-md border border-gray-300 p-2"
-                >
-                  <option value="English">English</option>
-                  <option value="Korean">Korean</option>
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
-              >
+              <Button type="submit" className="w-full">
                 Get Recommendations
-              </button>
+              </Button>
             </form>
           ) : (
             <div className="space-y-6">
@@ -168,17 +176,18 @@ const GoalRecommendationModal: React.FC<GoalRecommendationModalProps> = ({
                 </div>
               ))}
 
-              <button
-                onClick={() => setSubmitted(false)}
-                className="w-full mt-4 border border-gray-300 text-gray-700 py-2 rounded-md hover:bg-gray-50 transition-colors"
+              <Button
+                variant="outline"
+                onClick={handleReset}
+                className="w-full mt-4"
               >
                 Modify Preferences
-              </button>
+              </Button>
             </div>
           )}
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
