@@ -762,7 +762,6 @@ export const tools: Tool[] = [
     iconUrl: 'https://fal.ai/favicon.ico',
     description: 'Infrastructure for running AI models at scale',
     category: 'models',
-    pricing: '
     pricing: 'paid'
   },
   {
