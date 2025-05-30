@@ -82,17 +82,17 @@ function App() {
             </div>
 
             <div className="relative">
-              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-gray-50 to-transparent z-10" />
-              <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-50 to-transparent z-10" />
+              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
               
               <div className="overflow-x-auto scrollbar-hide">
-                <div className="flex space-x-2 px-8 min-w-max py-2">
+                <div className="flex space-x-2 px-4 min-w-max py-2">
                   <button
                     onClick={() => handleCategoryChange('all')}
                     className={`
-                      px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
+                      px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:ring-2 hover:ring-blue-300
                       ${activeCategory === 'all'
-                        ? 'bg-blue-600 text-white shadow-md'
+                        ? 'bg-blue-600 text-white shadow-md transform scale-105'
                         : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                       }
                     `}
@@ -105,14 +105,14 @@ function App() {
                       key={category.id}
                       onClick={() => handleCategoryChange(category.id)}
                       className={`
-                        px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
+                        px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:ring-2 hover:ring-blue-300
                         ${activeCategory === category.id
-                          ? 'bg-blue-600 text-white shadow-md'
+                          ? 'bg-blue-600 text-white shadow-md transform scale-105'
                           : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                         }
                       `}
                     >
-                      <span className="mr-1">{category.icon}</span>
+                      <span className="mr-2">{category.icon}</span>
                       {category.title}
                     </button>
                   ))}
