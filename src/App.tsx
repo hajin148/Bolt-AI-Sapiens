@@ -80,8 +80,27 @@ function App() {
                 placeholder="Search AI tools.."
               />
             </div>
+
+            <FavoritesArea allTools={tools} />
             
-            <div className="w-full max-w-4xl">
+            {/* Mobile Dropdown */}
+            <div className="w-full max-w-xs md:hidden">
+              <select
+                value={activeCategory}
+                onChange={(e) => handleCategoryChange(e.target.value)}
+                className="w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm"
+              >
+                <option value="all">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Desktop Category Buttons */}
+            <div className="hidden md:block w-full max-w-4xl">
               <div className="flex flex-wrap gap-2 justify-center">
                 <button
                   onClick={() => handleCategoryChange('all')}
@@ -119,8 +138,6 @@ function App() {
         </header>
 
         <main>
-          <FavoritesArea allTools={tools} />
-
           {filteredToolCount === 0 && (
             <div className="text-center py-16">
               <h2 className="text-xl font-medium text-gray-600">
