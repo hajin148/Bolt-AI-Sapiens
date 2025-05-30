@@ -4,6 +4,7 @@ import NavBar from './components/NavBar';
 import SearchBar from './components/SearchBar';
 import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
+import FavoritesArea from './components/FavoritesArea';
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -101,6 +102,8 @@ function App() {
         </header>
 
         <main>
+          <FavoritesArea allTools={tools} />
+
           {filteredToolCount === 0 && (
             <div className="text-center py-16">
               <h2 className="text-xl font-medium text-gray-600">
@@ -127,4 +130,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tool } from '../types/Tool';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Heart } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ToolCardProps {
   tool: Tool;
@@ -9,9 +10,21 @@ interface ToolCardProps {
 const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const { currentUser, userProfile, toggleFavorite } = useAuth();
   
   const handleImageError = () => {
     setImageError(true);
+  };
+
+  const isFavorite = userProfile?.favorites?.includes(tool.name.toLowerCase());
+
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!currentUser) {
+      // TODO: Show login prompt
+      return;
+    }
+    await toggleFavorite(tool.name.toLowerCase());
   };
 
   return (
@@ -49,6 +62,20 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
           <ExternalLink size={14} className="text-gray-400" />
         </span>
       </a>
+
+      {currentUser && (
+        <button
+          onClick={handleFavoriteClick}
+          className="absolute top-2 right-2 p-1 rounded-full bg-white shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        >
+          <Heart
+            size={16}
+            className={`${
+              isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'
+            }`}
+          />
+        </button>
+      )}
       
       {showTooltip && (
         <div className="absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
