@@ -81,12 +81,12 @@ function App() {
               />
             </div>
 
-            <div className="w-full overflow-x-auto pb-4 px-4">
-              <div className="flex whitespace-nowrap gap-2 min-w-full justify-start md:justify-center pl-4 md:pl-0">
+            <div className="w-full overflow-x-auto pb-4">
+              <div className="flex whitespace-nowrap space-x-2 min-w-full justify-center">
                 <button
                   onClick={() => handleCategoryChange('all')}
                   className={`
-                    px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex-shrink-0
+                    px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
                     ${activeCategory === 'all'
                       ? 'bg-blue-600 text-white shadow-md'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
@@ -100,7 +100,7 @@ function App() {
                     key={category.id}
                     onClick={() => handleCategoryChange(category.id)}
                     className={`
-                      px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex-shrink-0
+                      px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
                       ${activeCategory === category.id
                         ? 'bg-blue-600 text-white shadow-md'
                         : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
