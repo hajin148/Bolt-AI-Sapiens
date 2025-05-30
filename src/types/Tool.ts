@@ -16,6 +16,16 @@ export interface CategoryInfo {
   descriptionEn?: string;
 }
 
+export interface UserProfile {
+  username: string;
+  email: string;
+  phone?: string;
+  job: string;
+  interests: string[];
+  favorites: string[];
+  isPaid?: boolean;
+}
+
 export const JOB_OPTIONS = [
   'Developer',
   'Designer',
