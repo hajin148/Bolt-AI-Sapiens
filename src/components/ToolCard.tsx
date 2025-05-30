@@ -118,10 +118,11 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
       {currentUser && (
         <button
           onClick={handleFavoriteClick}
-          className="absolute top-2 right-2 p-1 rounded-full bg-white shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className="absolute top-2 right-2 p-1.5 rounded-full bg-white shadow-sm hover:bg-gray-50 transition-all duration-200"
+          style={{ zIndex: 10 }}
         >
           <Heart
-            size={16}
+            size={14}
             className={`${
               isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'
             }`}
