@@ -128,7 +128,7 @@ export const categories: CategoryInfo[] = [
     description: 'AI model platforms for high-speed inference'
   },
   {
-    id: 'ai-agent',
+    id: 'agent',
     title: 'AI Agents',
     icon: '🤖',
     description: 'AI assistant agents performing various tasks'
@@ -945,28 +945,28 @@ export const tools: Tool[] = [
     url: 'https://manus.im/guest',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=manus.im',
     description: 'AI agent multi-tool',
-    category: 'ai-agent'
+    category: 'agent'
   },
   {
     name: 'OpenWebUI',
     url: 'https://github.com/open-webui/open-webui',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=github.com',
     description: 'Web UI for local LLMs',
-    category: 'ai-agent'
+    category: 'agent'
   },
   {
     name: 'Transformers',
     url: 'https://huggingface.co/docs/transformers/index',
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=huggingface.co',
     description: 'Hugging Face\'s model execution framework',
-    category: 'ai-agent'
+    category: 'agent'
   },
   {
     name: 'Hunyuan / Wan 2.1',
     url: 'https://www.tencent.com/en-us/articles/2201636.html',
     iconUrl: 'https://www.tencent.com/favicon.ico',
     description: 'Tencent\'s LLM and AI platform',
-    category: 'ai-agent'
+    category: 'agent'
   },
   
   // Utilities
