@@ -30,8 +30,8 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   };
 
   return (
-    <Card className="group relative h-full">
-      <CardHeader className="space-y-2">
+    <Card className="group relative h-full flex flex-col">
+      <CardHeader className="flex-none">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 relative flex items-center justify-center">
@@ -49,7 +49,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
                 </div>
               )}
             </div>
-            <div className="space-y-1">
+            <div>
               <CardTitle className="text-base">
                 <HoverCard>
                   <HoverCardTrigger asChild>
@@ -71,7 +71,9 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
                   </HoverCardContent>
                 </HoverCard>
               </CardTitle>
-              <CardDescription>{tool.description}</CardDescription>
+              <Badge variant="secondary" className="text-xs mt-2">
+                {tool.category}
+              </Badge>
             </div>
           </div>
           {currentUser && (
@@ -91,12 +93,10 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
           )}
         </div>
       </CardHeader>
-      <CardContent>
-        <Badge variant="secondary" className="text-xs">
-          {tool.category}
-        </Badge>
+      <CardContent className="flex-grow">
+        <p className="text-sm text-gray-600">{tool.description}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex-none mt-auto">
         <Button
           variant="outline"
           size="sm"
