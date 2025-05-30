@@ -14,12 +14,12 @@ const FavoritesArea: React.FC<FavoritesAreaProps> = ({ allTools }) => {
   if (!currentUser || !userProfile) return null;
 
   const favoriteTools = Array.from(
-    new Map(
-      allTools
-        .filter(tool => userProfile.favorites?.includes(tool.name.toLowerCase()))
-        .map(tool => [tool.name.toLowerCase(), tool]) 
-    ).values()
-  );
+  new Map(
+    allTools
+      .filter(tool => userProfile.favorites?.includes(tool.name.toLowerCase()))
+      .map(tool => [tool.name.toLowerCase(), tool]) 
+  ).values()
+);
 
   if (favoriteTools.length === 0) {
     return (
@@ -51,20 +51,7 @@ const FavoritesArea: React.FC<FavoritesAreaProps> = ({ allTools }) => {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {favoriteTools.map((tool) => (
-            <div key={`favorite-${tool.name}`} className="relative">
-              <ToolCard tool={tool} />
-              {tool.pricing && (
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded ${
-                    tool.pricing === 'free' ? 'bg-green-100 text-green-800' :
-                    tool.pricing === 'paid' ? 'bg-blue-100 text-blue-800' :
-                    'bg-purple-100 text-purple-800'
-                  }`}>
-                    {tool.pricing.charAt(0).toUpperCase() + tool.pricing.slice(1)}
-                  </span>
-                </div>
-              )}
-            </div>
+            <ToolCard key={`favorite-${tool.name}`} tool={tool} />
           ))}
         </div>
       </div>
