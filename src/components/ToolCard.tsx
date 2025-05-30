@@ -29,7 +29,57 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
     await toggleFavorite(tool.name.toLowerCase());
   };
 
-  return (
+  // Mobile card layout
+  const MobileCard = () => (
+    <div className="group relative rounded-lg p-4 bg-white border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all duration-300 ease-in-out flex flex-col items-center justify-center">
+      <a 
+        href={tool.url} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="flex flex-col items-center w-full h-full"
+      >
+        <div className="w-12 h-12 mb-3 relative flex items-center justify-center">
+          {!imageError ? (
+            <img 
+              src={tool.iconUrl} 
+              alt={`${tool.name} logo`} 
+              className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110"
+              onError={handleImageError}
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+              {tool.name.charAt(0)}
+            </div>
+          )}
+        </div>
+        <h3 className="text-sm font-medium text-center text-gray-800 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+          {tool.name}
+        </h3>
+        
+        <span className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <ExternalLink size={14} className="text-gray-400" />
+        </span>
+      </a>
+
+      {currentUser && (
+        <button
+          onClick={handleFavoriteClick}
+          className="absolute top-2 right-2 p-1 rounded-full bg-white shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        >
+          <Heart
+            size={16}
+            className={`${
+              isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'
+            }`}
+          />
+        </button>
+      )}
+    </div>
+  );
+
+  // Desktop card layout
+  const DesktopCard = () => (
     <Card className="group relative h-full flex flex-col">
       <CardHeader className="flex-none">
         <div className="flex items-start justify-between">
@@ -115,6 +165,17 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
         </Button>
       </CardFooter>
     </Card>
+  );
+
+  return (
+    <>
+      <div className="hidden md:block">
+        <DesktopCard />
+      </div>
+      <div className="block md:hidden">
+        <MobileCard />
+      </div>
+    </>
   );
 };
 
