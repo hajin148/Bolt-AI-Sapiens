@@ -8,23 +8,16 @@ import {
 } from 'firebase/auth';
 import { ref, set, get } from 'firebase/database';
 import { auth, database } from '../lib/firebase';
-
-export interface UserProfile {
-  username: string;
-  email: string;
-  phone?: string;
-  job: string;
-  interests: string[];
-  favorites: string[];
-}
+import { UserProfile } from '../types/Tool';
 
 interface AuthContextType {
   currentUser: User | null;
   userProfile: UserProfile | null;
-  signup: (email: string, password: string, profile: Omit<UserProfile, 'favorites'>) => Promise<void>;
+  signup: (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   toggleFavorite: (toolId: string) => Promise<void>;
+  updateSubscription: (isPaid: boolean) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -60,11 +53,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return unsubscribe;
   }, []);
 
-  const signup = async (email: string, password: string, profile: Omit<UserProfile, 'favorites'>) => {
+  const signup = async (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
     await set(ref(database, `users/${user.uid}`), {
       ...profile,
-      favorites: []
+      favorites: [],
+      isPaid: false
     });
   };
 
@@ -88,13 +82,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUserProfile({ ...userProfile, favorites: newFavorites });
   };
 
+  const updateSubscription = async (isPaid: boolean) => {
+    if (!currentUser || !userProfile) return;
+
+    await set(ref(database, `users/${currentUser.uid}/isPaid`), isPaid);
+    setUserProfile({ ...userProfile, isPaid });
+  };
+
   const value = {
     currentUser,
     userProfile,
     signup,
     login,
     logout,
-    toggleFavorite
+    toggleFavorite,
+    updateSubscription
   };
 
   return (

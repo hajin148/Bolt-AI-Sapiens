@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
+import PricingModal from './PricingModal';
+import { Button } from './ui/button';
 
 const NavBar: React.FC = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const { currentUser, logout } = useAuth();
+  const { currentUser, userProfile, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,26 +45,38 @@ const NavBar: React.FC = () => {
           </div>
           <div className="flex items-center space-x-2">
             {currentUser ? (
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors duration-200"
-              >
-                Logout
-              </button>
+              <div className="flex items-center space-x-4">
+                {!userProfile?.isPaid && (
+                  <Button
+                    onClick={() => setShowPricingModal(true)}
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700"
+                  >
+                    Upgrade to Pro
+                  </Button>
+                )}
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  className="text-red-600 border-red-200 hover:bg-red-50"
+                >
+                  Logout
+                </Button>
+              </div>
             ) : (
               <>
-                <button
+                <Button
                   onClick={() => openAuthModal('login')}
-                  className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                  variant="ghost"
+                  className="text-blue-600 hover:text-blue-700"
                 >
                   Login
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => openAuthModal('signup')}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors duration-200"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
                 >
                   Sign Up
-                </button>
+                </Button>
               </>
             )}
           </div>
@@ -73,6 +88,11 @@ const NavBar: React.FC = () => {
         onClose={() => setShowAuthModal(false)}
         mode={authMode}
         onSwitchMode={(mode) => setAuthMode(mode)}
+      />
+
+      <PricingModal
+        isOpen={showPricingModal}
+        onClose={() => setShowPricingModal(false)}
       />
     </nav>
   );
