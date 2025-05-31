@@ -43,7 +43,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   };
 
   return (
-    <Card className="group relative p-4 hover:border-blue-400">
+    <Card className="group relative z-0 p-4 hover:border-blue-400">
       {getPricingBadge()}
       <HoverCard>
         <HoverCardTrigger asChild>
