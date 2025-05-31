@@ -32,11 +32,11 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   const getPricingBadge = () => {
     switch (tool.pricing) {
       case 'free':
-        return <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-green-100 text-green-800 text-[10px] font-medium rounded">Free</span>;
+        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-green-100 text-green-800 text-[10px] font-medium rounded-full z-10">Free</span>;
       case 'paid':
-        return <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-medium rounded">Paid</span>;
+        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-medium rounded-full z-10">Paid</span>;
       case 'freemium':
-        return <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-medium rounded">Freemium</span>;
+        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-medium rounded-full z-10">Freemium</span>;
       default:
         return null;
     }
@@ -53,7 +53,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
             rel="noopener noreferrer"
             className="block"
           >
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center pt-4">
               <div className="w-12 h-12 mb-2 relative flex items-center justify-center">
                 {!imageError ? (
                   <img 
@@ -83,7 +83,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-semibold">{tool.name}</h4>
               {tool.pricing && (
-                <span className={`text-xs font-medium px-2 py-0.5 rounded ${
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                   tool.pricing === 'free' ? 'bg-green-100 text-green-800' :
                   tool.pricing === 'paid' ? 'bg-blue-100 text-blue-800' :
                   'bg-purple-100 text-purple-800'
@@ -118,8 +118,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
       {currentUser && (
         <button
           onClick={handleFavoriteClick}
-          className="absolute top-2 right-2 p-1.5 rounded-full bg-white shadow-sm hover:bg-gray-50 transition-all duration-200"
-          style={{ zIndex: 10 }}
+          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 shadow-sm hover:bg-white transition-all duration-200 z-20"
         >
           <Heart
             size={14}
