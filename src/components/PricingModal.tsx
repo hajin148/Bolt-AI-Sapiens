@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext'; 
 
 interface PricingModalProps {
   isOpen: boolean;
