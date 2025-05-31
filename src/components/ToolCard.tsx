@@ -28,11 +28,11 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
   const getPricingBadge = () => {
     switch (tool.pricing) {
       case 'free':
-        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-green-100 text-green-800 text-[10px] font-medium rounded-full z-[1]">Free</span>;
+        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-green-100 text-green-800 text-[10px] font-medium rounded-full z-[1] opacity-0 group-hover:opacity-100 transition-opacity duration-200">Free</span>;
       case 'paid':
-        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-medium rounded-full z-[1]">Paid</span>;
+        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-medium rounded-full z-[1] opacity-0 group-hover:opacity-100 transition-opacity duration-200">Paid</span>;
       case 'freemium':
-        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-medium rounded-full z-[1]">Freemium</span>;
+        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-medium rounded-full z-[1] opacity-0 group-hover:opacity-100 transition-opacity duration-200">Freemium</span>;
       default:
         return null;
     }
@@ -123,7 +123,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
       {currentUser && (
         <button
           onClick={handleFavoriteClick}
-          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 shadow-sm hover:bg-white transition-all duration-200 z-[1]"
+          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 shadow-sm hover:bg-white transition-all duration-200 z-[1] opacity-0 group-hover:opacity-100"
         >
           <Heart
             size={14}
