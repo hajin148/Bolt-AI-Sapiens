@@ -24,7 +24,6 @@ const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
   // Mark user as paid
   await updateSubscription(true);
 
-  // Optionally close the modal
   onClose();
 };
 
