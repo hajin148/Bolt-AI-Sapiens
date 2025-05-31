@@ -39,7 +39,8 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
   };
 
   return (
-    <Card className="group relative z-0 p-4 hover:border-blue-400 w-[180px] sm:w-[200px]">
+    <Card className="group relative z-0 p-4 hover:border-blue-400 min-w-[165px] max-w-[180px]">
+
       {getPricingBadge()}
       {!dialogOpen ? (
         <HoverCard>
