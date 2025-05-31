@@ -12,14 +12,13 @@ const HoverCardContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <HoverCardPrimitive.Content
   ref={ref}
-  portalled
-  sideOffset={8} 
   className={cn(
-    "z-[9999] w-64 rounded-md border border-gray-200 bg-white p-4 shadow-md outline-none",
+    "z-50 w-64 rounded-md border border-gray-200 bg-white p-4 shadow-md outline-none",
     className
   )}
   {...props}
 />
+
 ));
 HoverCardContent.displayName = HoverCardPrimitive.Content.displayName;
 
