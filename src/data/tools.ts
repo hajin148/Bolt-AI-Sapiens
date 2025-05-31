@@ -274,7 +274,7 @@ export const tools: Tool[] = [
     iconUrl: 'https://openai.com/favicon.ico',
     description: 'OpenAI\'s text-to-video generation model',
     category: 'video-generation',
-    pricing: 'unreleased'
+    pricing: 'paid'
   },
   {
     name: 'Veo2',
@@ -282,7 +282,7 @@ export const tools: Tool[] = [
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=deepmind.google',
     description: 'Advanced AI video generation platform',
     category: 'video-generation',
-    pricing: 'unreleased'
+    pricing: 'freemium'
   },
   {
     name: 'Runway',
@@ -642,7 +642,7 @@ export const tools: Tool[] = [
     iconUrl: 'https://www.google.com/s2/favicons?sz=64&domain=deepmind.google',
     description: 'Google\'s text-to-image generation platform',
     category: 'image-generation',
-    pricing: 'unreleased'
+    pricing: 'freemium'
   },
   {
     name: 'Redraft',
@@ -970,7 +970,7 @@ export const tools: Tool[] = [
     iconUrl: 'https://www.tencent.com/favicon.ico',
     description: 'Tencent\'s LLM and AI platform',
     category: 'agent',
-    pricing: 'unreleased'
+    pricing: 'paid'
   },
   {
     name: 'Firecrawl',
