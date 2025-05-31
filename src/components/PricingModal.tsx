@@ -14,18 +14,19 @@ interface PricingModalProps {
   onClose: () => void;
 }
 
-const { updateSubscription } = useAuth(); // get the function from context
+// For payment system
+// const { updateSubscription } = useAuth(); // get the function from context
 
-const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
-  // TODO: Integrate with Stripe or payment gateway here
+// const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
+//   // TODO: Integrate with Stripe or payment gateway here
 
-  console.log(`Subscribing to ${plan} plan`);
+//   console.log(`Subscribing to ${plan} plan`);
   
-  // Mark user as paid
-  await updateSubscription(true);
+//   // Mark user as paid
+//   await updateSubscription(true);
 
-  onClose();
-};
+//   onClose();
+// };
 
 const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
   const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
