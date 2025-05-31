@@ -78,7 +78,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
             </div>
           </a>
         </HoverCardTrigger>
-        <HoverCardContent className="w-80 z-[100]">
+        <HoverCardContent className="w-80 absolute z-[9999]">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-semibold">{tool.name}</h4>
