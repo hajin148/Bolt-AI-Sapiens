@@ -11,13 +11,15 @@ const HoverCardContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content>
 >(({ className, ...props }, ref) => (
   <HoverCardPrimitive.Content
-    ref={ref}
-    className={cn(
-      "z-50 w-64 rounded-md border border-gray-200 bg-white p-4 shadow-md outline-none",
-      className
-    )}
-    {...props}
-  />
+  ref={ref}
+  portalled
+  sideOffset={8} // optional: 카드와 간격 띄우기
+  className={cn(
+    "z-[9999] w-64 rounded-md border border-gray-200 bg-white p-4 shadow-md outline-none",
+    className
+  )}
+  {...props}
+/>
 ));
 HoverCardContent.displayName = HoverCardPrimitive.Content.displayName;
 
