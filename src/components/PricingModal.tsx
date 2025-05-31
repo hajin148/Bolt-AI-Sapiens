@@ -14,6 +14,20 @@ interface PricingModalProps {
   onClose: () => void;
 }
 
+const { updateSubscription } = useAuth(); // get the function from context
+
+const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
+  // TODO: Integrate with Stripe or payment gateway here
+
+  console.log(`Subscribing to ${plan} plan`);
+  
+  // Mark user as paid
+  await updateSubscription(true);
+
+  // Optionally close the modal
+  onClose();
+};
+
 const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
   const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
     // TODO: Implement actual payment processing
