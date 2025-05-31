@@ -28,23 +28,22 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
   const getPricingBadge = () => {
     switch (tool.pricing) {
       case 'free':
-        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-green-100 text-green-800 text-[10px] font-medium rounded-full z-[1]">Free</span>;
+        return <span className="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-medium rounded-full">Free</span>;
       case 'paid':
-        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-medium rounded-full z-[1]">Paid</span>;
+        return <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Paid</span>;
       case 'freemium':
-        return <span className="absolute top-2 left-2 px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-medium rounded-full z-[1]">Freemium</span>;
+        return <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">Freemium</span>;
       default:
         return null;
     }
   };
 
   return (
-    <Card className="group relative z-0 p-4 hover:border-blue-400">
-      {getPricingBadge()}
+    <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg">
       {!dialogOpen ? (
         <HoverCard>
           <HoverCardTrigger asChild>
-            <a href={tool.url} target="_blank" rel="noopener noreferrer" className="block">
+            <a href={tool.url} target="_blank" rel="noopener noreferrer" className="block p-4">
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 mb-2 relative flex items-center justify-center">
                   {!imageError ? (
@@ -66,21 +65,21 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
                 </h3>
                 <span className="text-xs text-gray-500 mt-1 hidden md:block">{categoryName}</span>
               </div>
+
+              {/* Overlay content that appears on hover */}
+              <div className="absolute inset-0 bg-white/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
+                <div className="space-y-2 text-center">
+                  {getPricingBadge()}
+                  <p className="text-xs text-gray-600 mt-2 line-clamp-2">{tool.description}</p>
+                </div>
+              </div>
             </a>
           </HoverCardTrigger>
           <HoverCardContent className="w-80">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-semibold">{tool.name}</h4>
-                {tool.pricing && (
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    tool.pricing === 'free' ? 'bg-green-100 text-green-800' :
-                    tool.pricing === 'paid' ? 'bg-blue-100 text-blue-800' :
-                    'bg-purple-100 text-purple-800'
-                  }`}>
-                    {tool.pricing.charAt(0).toUpperCase() + tool.pricing.slice(1)}
-                  </span>
-                )}
+                {tool.pricing && getPricingBadge()}
               </div>
               <p className="text-sm text-gray-500">{tool.description}</p>
               <div className="pt-2">
@@ -95,7 +94,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
           </HoverCardContent>
         </HoverCard>
       ) : (
-        <a href={tool.url} target="_blank" rel="noopener noreferrer" className="block">
+        <a href={tool.url} target="_blank" rel="noopener noreferrer" className="block p-4">
           <div className="flex flex-col items-center">
             <div className="w-12 h-12 mb-2 relative flex items-center justify-center">
               {!imageError ? (
@@ -123,7 +122,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
       {currentUser && (
         <button
           onClick={handleFavoriteClick}
-          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 shadow-sm hover:bg-white transition-all duration-200 z-[1]"
+          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white shadow-sm hover:shadow-md"
         >
           <Heart
             size={14}
