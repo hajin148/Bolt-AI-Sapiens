@@ -1,4 +1,3 @@
-// ToolCard.tsx
 import React, { useState } from 'react';
 import { ExternalLink, Heart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -40,13 +39,13 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
   };
 
   return (
-    <Card className="group relative z-0 p-4 hover:border-blue-400">
+    <Card className="group relative p-4 hover:border-blue-400">
       {getPricingBadge()}
       {!dialogOpen ? (
         <HoverCard>
           <HoverCardTrigger asChild>
             <a href={tool.url} target="_blank" rel="noopener noreferrer" className="block">
-              <div className="flex flex-col items-center pt-4">
+              <div className="flex flex-col items-center">
                 <div className="w-12 h-12 mb-2 relative flex items-center justify-center">
                   {!imageError ? (
                     <img
@@ -69,17 +68,19 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
               </div>
             </a>
           </HoverCardTrigger>
-          <HoverCardContent portalled sideOffset={8} className="w-80 z-[9999]">
+          <HoverCardContent className="w-80">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-semibold">{tool.name}</h4>
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                  tool.pricing === 'free' ? 'bg-green-100 text-green-800' :
-                  tool.pricing === 'paid' ? 'bg-blue-100 text-blue-800' :
-                  'bg-purple-100 text-purple-800'
-                }`}>
-                  {tool.pricing.charAt(0).toUpperCase() + tool.pricing.slice(1)}
-                </span>
+                {tool.pricing && (
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                    tool.pricing === 'free' ? 'bg-green-100 text-green-800' :
+                    tool.pricing === 'paid' ? 'bg-blue-100 text-blue-800' :
+                    'bg-purple-100 text-purple-800'
+                  }`}>
+                    {tool.pricing.charAt(0).toUpperCase() + tool.pricing.slice(1)}
+                  </span>
+                )}
               </div>
               <p className="text-sm text-gray-500">{tool.description}</p>
               <div className="pt-2">
@@ -94,9 +95,8 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
           </HoverCardContent>
         </HoverCard>
       ) : (
-        // fallback rendering if dialog is open
         <a href={tool.url} target="_blank" rel="noopener noreferrer" className="block">
-          <div className="flex flex-col items-center pt-4">
+          <div className="flex flex-col items-center">
             <div className="w-12 h-12 mb-2 relative flex items-center justify-center">
               {!imageError ? (
                 <img
@@ -127,9 +127,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, dialogOpen = false }) => {
         >
           <Heart
             size={14}
-            className={
-              isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'
-            }
+            className={isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}
           />
         </button>
       )}
