@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: [
+    exclude: [
       'firebase/app',
       'firebase/auth',
       'firebase/database'
