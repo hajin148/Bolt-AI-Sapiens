@@ -10,14 +10,13 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeClick }) => {
   const [isSticky, setIsSticky] = useState(false);
-  const { currentUser, userProfile, logout } = useAuth();
+  const { currentUser, userProfile, logout, loading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
       setIsSticky(offset > 100);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -30,14 +29,17 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
     }
   };
 
+  if (loading) {
+    // ❗ Supabase 세션 확인 중엔 아무것도 렌더링하지 않음
+    return null;
+  }
+
   return (
     <nav className={`${isSticky ? 'sticky top-0 z-10 bg-white/95 shadow-md backdrop-blur-sm py-2' : 'py-4'} transition-all duration-300 ease-in-out`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-gray-900">
-              AI Sapiens
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">AI Sapiens</h1>
           </div>
           <div className="flex items-center space-x-2">
             {currentUser ? (
