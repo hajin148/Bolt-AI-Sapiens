@@ -7,7 +7,11 @@ interface AuthContextType {
   currentUser: User | null;
   userProfile: UserProfile | null;
   session: Session | null;
-  signup: (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => Promise<void>;
+  signup: (
+    email: string,
+    password: string,
+    profile: Omit<UserProfile, 'favorites' | 'isPaid'>
+  ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   toggleFavorite: (toolId: string) => Promise<void>;
@@ -35,21 +39,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let mounted = true;
 
     const initializeAuth = async () => {
+      console.log('[Auth] Initializing...');
       const { data: { session }, error } = await supabase.auth.getSession();
 
       if (error) {
-        console.error('Error getting session:', error);
+        console.error('[Auth] Error getting session:', error);
         if (mounted) setLoading(false);
         return;
       }
+
+      console.log('[Auth] Initial session:', session);
 
       if (mounted) {
         setSession(session);
         setCurrentUser(session?.user ?? null);
 
         if (session?.user) {
+          console.log('[Auth] Fetching profile...');
           await fetchUserProfile(session.user.id);
         } else {
+          console.log('[Auth] No user in session');
           setLoading(false);
         }
       }
@@ -57,19 +66,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) return;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log(`[Auth] Auth state changed: ${event}`);
+        if (!mounted) return;
 
-      setSession(session);
-      setCurrentUser(session?.user ?? null);
+        setSession(session);
+        setCurrentUser(session?.user ?? null);
 
-      if (session?.user) {
-        await fetchUserProfile(session.user.id);
-      } else {
-        setUserProfile(null);
-        setLoading(false);
+        if (session?.user) {
+          console.log('[Auth] User signed in, fetching profile...');
+          await fetchUserProfile(session.user.id);
+        } else {
+          console.log('[Auth] User signed out');
+          setUserProfile(null);
+          setLoading(false);
+        }
       }
-    });
+    );
 
     return () => {
       mounted = false;
@@ -78,6 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
+    console.log('[Profile] Fetching user profile for:', userId);
     try {
       const { data, error } = await supabase
         .from('user_profiles')
@@ -87,14 +102,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         if (error.code === 'PGRST116') {
-          console.log('No user profile found - user may need to complete signup');
+          console.log('[Profile] No user profile found – likely a new user');
         } else {
-          console.error('Error fetching user profile:', error);
+          console.error('[Profile] Error fetching profile:', error);
         }
         setUserProfile(null);
-        setLoading(false);
         return;
       }
+
+      console.log('[Profile] Profile data:', data);
 
       if (data) {
         setUserProfile({
@@ -110,10 +126,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUserProfile(null);
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('[Profile] Unexpected error:', error);
       setUserProfile(null);
     } finally {
       setLoading(false);
+      console.log('[Auth] Loading set to false');
     }
   };
 
@@ -122,12 +139,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     password: string,
     profile: Omit<UserProfile, 'favorites' | 'isPaid'>
   ) => {
+    console.log('[Auth] Signing up...');
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('[Auth] Signup error:', error);
+      throw error;
+    }
 
     if (data.user) {
       const { error: profileError } = await supabase
@@ -144,24 +165,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
       if (profileError) {
-        console.error('Error creating user profile:', profileError);
+        console.error('[Auth] Error creating profile:', profileError);
         throw profileError;
       }
+
+      console.log('[Auth] User profile created');
     }
   };
 
   const login = async (email: string, password: string) => {
+    console.log('[Auth] Logging in...');
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('[Auth] Login error:', error);
+      throw error;
+    }
+
+    console.log('[Auth] Login successful');
   };
 
   const logout = async () => {
+    console.log('[Auth] Logging out...');
     const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+
+    if (error) {
+      console.error('[Auth] Logout error:', error);
+      throw error;
+    }
+
+    console.log('[Auth] Logged out');
   };
 
   const toggleFavorite = async (toolId: string) => {
@@ -178,11 +214,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .eq('user_id', currentUser.id);
 
     if (error) {
-      console.error('Error updating favorites:', error);
+      console.error('[Profile] Error updating favorites:', error);
       throw error;
     }
 
     setUserProfile({ ...userProfile, favorites: newFavorites });
+    console.log('[Profile] Favorites updated');
   };
 
   const updateSubscription = async (isPaid: boolean) => {
@@ -194,11 +231,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .eq('user_id', currentUser.id);
 
     if (error) {
-      console.error('Error updating subscription:', error);
+      console.error('[Profile] Error updating subscription:', error);
       throw error;
     }
 
     setUserProfile({ ...userProfile, isPaid });
+    console.log('[Profile] Subscription updated');
   };
 
   const value: AuthContextType = {
