@@ -24,9 +24,13 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
 
   const handleLogout = async () => {
     try {
+      console.log('NavBar: Starting logout process...');
       await logout();
+      console.log('NavBar: Logout completed successfully');
     } catch (error) {
-      console.error('Failed to log out:', error);
+      console.error('NavBar: Failed to log out:', error);
+      // Show user-friendly error message
+      alert('Failed to log out. Please try again.');
     }
   };
 
@@ -42,7 +46,10 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
           <div className="flex items-center space-x-2">
             {currentUser ? (
               <div className="flex items-center space-x-4">
-                {!userProfile?.isPaid && (
+                <span className="text-sm text-gray-600">
+                  Welcome, {userProfile?.username || currentUser.email}
+                </span>
+                {!userProfile?.is_paid && (
                   <Button
                     onClick={onUpgradeClick}
                     className="bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700"

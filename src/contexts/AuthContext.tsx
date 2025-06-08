@@ -47,12 +47,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email);
+      
       setSession(session);
       setCurrentUser(session?.user ?? null);
       
       if (session?.user) {
         await fetchUserProfile(session.user.id);
       } else {
+        // Clear user data when logged out
         setUserProfile(null);
         setLoading(false);
       }
@@ -118,8 +121,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    try {
+      console.log('Attempting to logout...');
+      
+      // Clear local state immediately
+      setCurrentUser(null);
+      setSession(null);
+      setUserProfile(null);
+      
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Logout error:', error);
+        throw error;
+      }
+      
+      console.log('Logout successful');
+    } catch (error) {
+      console.error('Failed to log out:', error);
+      // Re-throw the error so the UI can handle it
+      throw error;
+    }
   };
 
   const toggleFavorite = async (toolId: string) => {
