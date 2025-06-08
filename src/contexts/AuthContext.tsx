@@ -32,21 +32,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setCurrentUser(session?.user ?? null);
-      if (session?.user) {
-        fetchUserProfile(session.user.id);
-      } else {
-        setLoading(false);
+    let mounted = true;
+
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
+
+        if (error) {
+          console.error('Error getting session:', error);
+          setLoading(false);
+          return;
+        }
+
+        setSession(session);
+        setCurrentUser(session?.user ?? null);
+
+        if (session?.user) {
+          await fetchUserProfile(session.user.id);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        if (mounted) {
+          setLoading(false);
+        }
       }
-    });
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+
+      console.log('Auth state changed:', event, session?.user?.id);
+      
       setSession(session);
       setCurrentUser(session?.user ?? null);
       
@@ -58,7 +84,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
@@ -69,15 +98,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('user_id', userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching user profile:', error);
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No profile found - this is okay for new users
+          console.log('No user profile found');
+          setUserProfile(null);
+        } else {
+          console.error('Error fetching user profile:', error);
+        }
+        setLoading(false);
         return;
       }
-
-      if (!data) {
-      setUserProfile(null);
-      return;
-    }
 
       if (data) {
         setUserProfile({
@@ -89,6 +120,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           favorites: data.favorites || [],
           isPaid: data.is_paid || false,
         });
+      } else {
+        setUserProfile(null);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);

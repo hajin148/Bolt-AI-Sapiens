@@ -17,6 +17,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
       const offset = window.scrollY;
       setIsSticky(offset > 100);
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -38,7 +39,10 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
           </div>
           <div className="flex items-center space-x-2">
             {loading ? (
-              <div className="text-gray-400 text-sm">Loading...</div>
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                <span className="text-gray-600 text-sm">Loading...</span>
+              </div>
             ) : currentUser ? (
               <div className="flex items-center space-x-4">
                 {!userProfile?.isPaid && (
