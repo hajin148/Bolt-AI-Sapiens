@@ -11,7 +11,7 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMode }) => {
-  const { login, signup } = useAuth();
+  const { login, signup, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -19,7 +19,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
   const [job, setJob] = useState<JobType>(JOB_OPTIONS[0]);
   const [interests, setInterests] = useState<InterestType[]>([]);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -32,30 +32,62 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
     };
   }, [isOpen]);
 
+  // Reset form when modal opens/closes or mode changes
+  useEffect(() => {
+    if (isOpen) {
+      setError('');
+      setSubmitting(false);
+    }
+  }, [isOpen, mode]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (submitting) return; // Prevent double submission
+    
     setError('');
-    setLoading(true);
+    setSubmitting(true);
 
     try {
+      console.log('Form submitted:', mode, email);
+      
       if (mode === 'signup') {
+        if (!username.trim()) {
+          throw new Error('Username is required');
+        }
+        if (!job.trim()) {
+          throw new Error('Job field is required');
+        }
+        
         await signup(email, password, {
-          username,
-          email,
-          phone,
+          username: username.trim(),
+          email: email.trim(),
+          phone: phone.trim() || undefined,
           job,
           interests,
         });
       } else {
         await login(email, password);
       }
+      
+      console.log('Auth operation completed successfully');
+      
+      // Reset form
+      setEmail('');
+      setPassword('');
+      setUsername('');
+      setPhone('');
+      setJob(JOB_OPTIONS[0]);
+      setInterests([]);
+      
+      // Close modal
       onClose();
-    } catch (error) {
-      setError('Failed to ' + mode);
-      console.error(error);
+    } catch (error: any) {
+      console.error('Auth error:', error);
+      setError(error.message || `Failed to ${mode}`);
+    } finally {
+      setSubmitting(false);
     }
-
-    setLoading(false);
   };
 
   const toggleInterest = (interest: InterestType) => {
@@ -66,6 +98,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
 
   if (!isOpen) return null;
 
+  const isLoading = loading || submitting;
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -74,7 +108,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
       <div className="bg-white rounded-lg p-8 max-w-md w-full max-h-screen overflow-y-auto relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          disabled={isLoading}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 disabled:opacity-50"
         >
           <X size={20} />
         </button>
@@ -93,13 +128,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
           {mode === 'signup' && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Username</label>
+                <label className="block text-sm font-medium text-gray-700">Username *</label>
                 <input
                   type="text"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  disabled={isLoading}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50"
                 />
               </div>
 
@@ -109,16 +145,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  disabled={isLoading}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Job Field</label>
+                <label className="block text-sm font-medium text-gray-700">Job Field *</label>
                 <select
                   value={job}
                   onChange={(e) => setJob(e.target.value as JobType)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  disabled={isLoading}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50"
                 >
                   {JOB_OPTIONS.map((option) => (
                     <option key={option} value={option}>
@@ -139,7 +177,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                         type="checkbox"
                         checked={interests.includes(interest)}
                         onChange={() => toggleInterest(interest)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled={isLoading}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
                       />
                       <span className="text-sm">{interest}</span>
                     </label>
@@ -150,40 +189,53 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700">Email *</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              disabled={isLoading}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label className="block text-sm font-medium text-gray-700">Password *</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              disabled={isLoading}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50"
             />
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            disabled={isLoading}
+            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Processing...' : mode === 'login' ? 'Login' : 'Sign Up'}
+            {isLoading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processing...
+              </span>
+            ) : (
+              mode === 'login' ? 'Login' : 'Sign Up'
+            )}
           </button>
         </form>
 
         <div className="mt-4 text-center">
           <button
             onClick={() => onSwitchMode(mode === 'login' ? 'signup' : 'login')}
-            className="text-sm text-blue-600 hover:text-blue-500"
+            disabled={isLoading}
+            className="text-sm text-blue-600 hover:text-blue-500 disabled:opacity-50"
           >
             {mode === 'login'
               ? "Don't have an account? Sign up"
