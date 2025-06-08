@@ -29,11 +29,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
     }
   };
 
-  if (loading) {
-    // ❗ Supabase 세션 확인 중엔 아무것도 렌더링하지 않음
-    return null;
-  }
-
   return (
     <nav className={`${isSticky ? 'sticky top-0 z-10 bg-white/95 shadow-md backdrop-blur-sm py-2' : 'py-4'} transition-all duration-300 ease-in-out`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,7 +37,9 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
             <h1 className="text-2xl font-bold text-gray-900">AI Sapiens</h1>
           </div>
           <div className="flex items-center space-x-2">
-            {currentUser ? (
+            {loading ? (
+              <div className="text-gray-400 text-sm">Loading...</div>
+            ) : currentUser ? (
               <div className="flex items-center space-x-4">
                 {!userProfile?.isPaid && (
                   <Button
