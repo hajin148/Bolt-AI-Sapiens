@@ -7,11 +7,7 @@ interface AuthContextType {
   currentUser: User | null;
   userProfile: UserProfile | null;
   session: Session | null;
-  signup: (
-    email: string,
-    password: string,
-    profile: Omit<UserProfile, 'favorites' | 'isPaid'>
-  ) => Promise<void>;
+  signup: (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   toggleFavorite: (toolId: string) => Promise<void>;
@@ -21,15 +17,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
+function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-};
+}
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -58,7 +54,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('[Auth] Fetching profile...');
           await fetchUserProfile(session.user.id);
         } else {
-          console.log('[Auth] No user in session');
           setLoading(false);
         }
       }
@@ -67,18 +62,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initializeAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log(`[Auth] Auth state changed: ${event}`);
+      async (_event, session) => {
         if (!mounted) return;
 
         setSession(session);
         setCurrentUser(session?.user ?? null);
 
         if (session?.user) {
-          console.log('[Auth] User signed in, fetching profile...');
           await fetchUserProfile(session.user.id);
         } else {
-          console.log('[Auth] User signed out');
           setUserProfile(null);
           setLoading(false);
         }
@@ -110,8 +102,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      console.log('[Profile] Profile data:', data);
-
       if (data) {
         setUserProfile({
           username: data.username,
@@ -139,16 +129,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     password: string,
     profile: Omit<UserProfile, 'favorites' | 'isPaid'>
   ) => {
-    console.log('[Auth] Signing up...');
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
-    if (error) {
-      console.error('[Auth] Signup error:', error);
-      throw error;
-    }
+    if (error) throw error;
 
     if (data.user) {
       const { error: profileError } = await supabase
@@ -168,36 +154,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('[Auth] Error creating profile:', profileError);
         throw profileError;
       }
-
-      console.log('[Auth] User profile created');
     }
   };
 
   const login = async (email: string, password: string) => {
-    console.log('[Auth] Logging in...');
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
-      console.error('[Auth] Login error:', error);
-      throw error;
-    }
-
-    console.log('[Auth] Login successful');
+    if (error) throw error;
   };
 
   const logout = async () => {
-    console.log('[Auth] Logging out...');
     const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      console.error('[Auth] Logout error:', error);
-      throw error;
-    }
-
-    console.log('[Auth] Logged out');
+    if (error) throw error;
   };
 
   const toggleFavorite = async (toolId: string) => {
@@ -219,7 +190,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     setUserProfile({ ...userProfile, favorites: newFavorites });
-    console.log('[Profile] Favorites updated');
   };
 
   const updateSubscription = async (isPaid: boolean) => {
@@ -236,7 +206,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     setUserProfile({ ...userProfile, isPaid });
-    console.log('[Profile] Subscription updated');
   };
 
   const value: AuthContextType = {
@@ -257,3 +226,5 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     </AuthContext.Provider>
   );
 };
+
+export { AuthProvider, useAuth };
