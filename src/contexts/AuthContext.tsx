@@ -98,8 +98,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('user_id', userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching user profile:', error);
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No profile found - this is okay for new users
+          console.log('No user profile found - user may need to complete signup');
+          setUserProfile(null);
+        } else {
+          console.error('Error fetching user profile:', error);
+          setUserProfile(null);
+        }
         setLoading(false);
         return;
       }
@@ -114,9 +121,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           favorites: data.favorites || [],
           isPaid: data.is_paid || false,
         });
+      } else {
+        setUserProfile(null);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      setUserProfile(null);
     } finally {
       setLoading(false);
     }
