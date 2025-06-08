@@ -1,14 +1,17 @@
 export interface Tool {
-  id: string;
   name: string;
+  url: string;
+  iconUrl: string;
   description: string;
   category: string;
-  isPaid: boolean;
-  url: string;
-  tags: string[];
-  rating: number;
-  reviews: number;
-  image: string;
+  pricing?: 'free' | 'paid' | 'freemium';
+}
+
+export interface CategoryInfo {
+  id: string;
+  title: string;
+  icon: string;
+  description: string;
 }
 
 export interface UserProfile {
