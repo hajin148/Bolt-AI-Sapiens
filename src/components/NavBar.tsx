@@ -10,7 +10,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeClick }) => {
   const [isSticky, setIsSticky] = useState(false);
-  const { currentUser, userProfile, logout, loading } = useAuth();
+  const { currentUser, userProfile, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,12 +38,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
             <h1 className="text-2xl font-bold text-gray-900">AI Sapiens</h1>
           </div>
           <div className="flex items-center space-x-2">
-            {loading ? (
-              <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span className="text-gray-600 text-sm">Loading...</span>
-              </div>
-            ) : currentUser ? (
+            {currentUser ? (
               <div className="flex items-center space-x-4">
                 {!userProfile?.isPaid && (
                   <Button

@@ -12,7 +12,6 @@ interface AuthContextType {
   logout: () => Promise<void>;
   toggleFavorite: (toolId: string) => Promise<void>;
   updateSubscription: (isPaid: boolean) => Promise<void>;
-  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,50 +28,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
-
-    const initializeAuth = async () => {
-      try {
-        // Get initial session
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (!mounted) return;
-
-        if (error) {
-          console.error('Error getting session:', error);
-          setLoading(false);
-          return;
-        }
-
-        setSession(session);
-        setCurrentUser(session?.user ?? null);
-
-        if (session?.user) {
-          await fetchUserProfile(session.user.id);
-        } else {
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-        if (mounted) {
-          setLoading(false);
-        }
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setCurrentUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
       }
-    };
-
-    initializeAuth();
+    });
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
-
-      console.log('Auth state changed:', event, session?.user?.id);
-      
       setSession(session);
       setCurrentUser(session?.user ?? null);
       
@@ -80,14 +50,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await fetchUserProfile(session.user.id);
       } else {
         setUserProfile(null);
-        setLoading(false);
       }
     });
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
@@ -98,15 +64,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('user_id', userId)
         .single();
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // No profile found - this is okay for new users
-          console.log('No user profile found');
-          setUserProfile(null);
-        } else {
-          console.error('Error fetching user profile:', error);
-        }
-        setLoading(false);
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching user profile:', error);
         return;
       }
 
@@ -120,13 +79,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           favorites: data.favorites || [],
           isPaid: data.is_paid || false,
         });
-      } else {
-        setUserProfile(null);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -220,7 +175,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logout,
     toggleFavorite,
     updateSubscription,
-    loading,
   };
 
   return (

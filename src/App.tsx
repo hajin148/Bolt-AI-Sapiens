@@ -18,8 +18,6 @@ function App() {
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
-  const { loading } = useAuth();
-
   useEffect(() => {
     const filtered = tools.filter((tool) => {
       const toolCategory = categories.find(cat => cat.id === tool.category);
