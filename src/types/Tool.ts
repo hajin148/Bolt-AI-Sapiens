@@ -18,6 +18,7 @@ export interface CategoryInfo {
 }
 
 export interface UserProfile {
+  user_id?: string;
   username: string;
   email: string;
   phone?: string;
@@ -25,6 +26,8 @@ export interface UserProfile {
   interests: string[];
   favorites: string[];
   isPaid?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const JOB_OPTIONS = [

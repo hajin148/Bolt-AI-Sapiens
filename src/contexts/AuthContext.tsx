@@ -1,13 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  User,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from 'firebase/auth';
-import { ref, set, get } from 'firebase/database';
-import { auth, database } from '../lib/firebase';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
 import { UserProfile } from '../types/Tool';
 
 interface AuthContextType {
@@ -36,38 +29,91 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        const profileRef = ref(database, `users/${user.uid}`);
-        const snapshot = await get(profileRef);
-        if (snapshot.exists()) {
-          setUserProfile(snapshot.val());
-        }
-      } else {
-        setUserProfile(null);
+    // Get initial session
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setCurrentUser(session.user);
+        await fetchUserProfile(session.user.id);
       }
       setLoading(false);
+    };
+
+    getInitialSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setCurrentUser(session.user);
+        await fetchUserProfile(session.user.id);
+      } else {
+        setCurrentUser(null);
+        setUserProfile(null);
+      }
     });
 
-    return unsubscribe;
+    return () => subscription.unsubscribe();
   }, []);
 
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
+        console.error('Error fetching user profile:', error);
+        return;
+      }
+
+      if (data) {
+        setUserProfile(data);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
+
   const signup = async (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => {
-    const { user } = await createUserWithEmailAndPassword(auth, email, password);
-    await set(ref(database, `users/${user.uid}`), {
-      ...profile,
-      favorites: [],
-      isPaid: false
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
     });
+
+    if (error) throw error;
+
+    if (data.user) {
+      // Create user profile
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({
+          user_id: data.user.id,
+          ...profile,
+          favorites: [],
+          isPaid: false
+        });
+
+      if (profileError) {
+        console.error('Error creating user profile:', profileError);
+        throw profileError;
+      }
+    }
   };
 
-  const login = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw error;
   };
 
-  const logout = () => {
-    return signOut(auth);
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   };
 
   const toggleFavorite = async (toolId: string) => {
@@ -78,14 +124,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ? favorites.filter(id => id !== toolId)
       : [...favorites, toolId];
 
-    await set(ref(database, `users/${currentUser.uid}/favorites`), newFavorites);
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ favorites: newFavorites })
+      .eq('user_id', currentUser.id);
+
+    if (error) {
+      console.error('Error updating favorites:', error);
+      throw error;
+    }
+
     setUserProfile({ ...userProfile, favorites: newFavorites });
   };
 
   const updateSubscription = async (isPaid: boolean) => {
     if (!currentUser || !userProfile) return;
 
-    await set(ref(database, `users/${currentUser.uid}/isPaid`), isPaid);
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ isPaid })
+      .eq('user_id', currentUser.id);
+
+    if (error) {
+      console.error('Error updating subscription:', error);
+      throw error;
+    }
+
     setUserProfile({ ...userProfile, isPaid });
   };
 
