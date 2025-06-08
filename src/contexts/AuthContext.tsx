@@ -74,6 +74,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
+      if (!data) {
+      setUserProfile(null);
+      return;
+    }
+
       if (data) {
         setUserProfile({
           username: data.username,
