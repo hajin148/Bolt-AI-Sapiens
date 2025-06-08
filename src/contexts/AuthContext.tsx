@@ -35,31 +35,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let mounted = true;
 
     const initializeAuth = async () => {
-      try {
-        // Get initial session
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting session:', error);
-          if (mounted) {
-            setLoading(false);
-          }
-          return;
-        }
+      const { data: { session }, error } = await supabase.auth.getSession();
 
-        if (mounted) {
-          setSession(session);
-          setCurrentUser(session?.user ?? null);
-          
-          if (session?.user) {
-            await fetchUserProfile(session.user.id);
-          } else {
-            setLoading(false);
-          }
-        }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-        if (mounted) {
+      if (error) {
+        console.error('Error getting session:', error);
+        if (mounted) setLoading(false);
+        return;
+      }
+
+      if (mounted) {
+        setSession(session);
+        setCurrentUser(session?.user ?? null);
+
+        if (session?.user) {
+          await fetchUserProfile(session.user.id);
+        } else {
           setLoading(false);
         }
       }
@@ -67,15 +57,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     initializeAuth();
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (!mounted) return;
 
       setSession(session);
       setCurrentUser(session?.user ?? null);
-      
+
       if (session?.user) {
         await fetchUserProfile(session.user.id);
       } else {
@@ -100,13 +87,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         if (error.code === 'PGRST116') {
-          // No profile found - this is okay for new users
           console.log('No user profile found - user may need to complete signup');
-          setUserProfile(null);
         } else {
           console.error('Error fetching user profile:', error);
-          setUserProfile(null);
         }
+        setUserProfile(null);
         setLoading(false);
         return;
       }
@@ -132,7 +117,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signup = async (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => {
+  const signup = async (
+    email: string,
+    password: string,
+    profile: Omit<UserProfile, 'favorites' | 'isPaid'>
+  ) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -141,7 +130,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error;
 
     if (data.user) {
-      // Create user profile
       const { error: profileError } = await supabase
         .from('user_profiles')
         .insert({
@@ -181,7 +169,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const favorites = userProfile.favorites || [];
     const newFavorites = favorites.includes(toolId)
-      ? favorites.filter(id => id !== toolId)
+      ? favorites.filter((id) => id !== toolId)
       : [...favorites, toolId];
 
     const { error } = await supabase
@@ -213,7 +201,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUserProfile({ ...userProfile, isPaid });
   };
 
-  const value = {
+  const value: AuthContextType = {
     currentUser,
     userProfile,
     session,
