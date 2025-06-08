@@ -1,57 +1,26 @@
 export interface Tool {
-  name: string;
-  url: string;
-  iconUrl: string;
-  description: string;
-  descriptionEn?: string;
-  category: string;
-  pricing?: 'free' | 'paid' | 'freemium';
-}
-
-export interface CategoryInfo {
   id: string;
-  title: string;
-  titleEn?: string;
-  icon: string;
+  name: string;
   description: string;
-  descriptionEn?: string;
+  category: string;
+  isPaid: boolean;
+  url: string;
+  tags: string[];
+  rating: number;
+  reviews: number;
+  image: string;
 }
 
 export interface UserProfile {
+  id: string;
+  user_id: string;
   username: string;
   email: string;
   phone?: string;
   job: string;
   interests: string[];
   favorites: string[];
-  isPaid?: boolean;
+  is_paid: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
-
-export const JOB_OPTIONS = [
-  'Developer',
-  'Designer',
-  'Product Manager',
-  'Marketer',
-  'Researcher',
-  'Educator',
-  'Entrepreneur',
-  'Student',
-  'Freelancer',
-  'Other'
-] as const;
-
-export const INTEREST_OPTIONS = [
-  'Video Editing',
-  'Web Development',
-  'App Development',
-  'UI/UX Design',
-  'Data Visualization',
-  'Game Development',
-  'AI/ML',
-  'No-code Tools',
-  'Marketing Automation',
-  'Audio/Music Creation'
-] as const;
-
-export type JobType = typeof JOB_OPTIONS[number];
-export type InterestType = typeof INTEREST_OPTIONS[number];

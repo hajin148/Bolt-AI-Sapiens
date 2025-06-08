@@ -1,23 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  User,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from 'firebase/auth';
-import { ref, set, get } from 'firebase/database';
-import { auth, database } from '../lib/firebase';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
 import { UserProfile } from '../types/Tool';
 
 interface AuthContextType {
   currentUser: User | null;
+  session: Session | null;
   userProfile: UserProfile | null;
-  signup: (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => Promise<void>;
+  signup: (email: string, password: string, profile: Omit<UserProfile, 'id' | 'user_id' | 'favorites' | 'is_paid' | 'created_at' | 'updated_at'>) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   toggleFavorite: (toolId: string) => Promise<void>;
   updateSubscription: (isPaid: boolean) => Promise<void>;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,42 +27,99 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        const profileRef = ref(database, `users/${user.uid}`);
-        const snapshot = await get(profileRef);
-        if (snapshot.exists()) {
-          setUserProfile(snapshot.val());
-        }
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setCurrentUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session);
+      setCurrentUser(session?.user ?? null);
+      
+      if (session?.user) {
+        await fetchUserProfile(session.user.id);
       } else {
         setUserProfile(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return unsubscribe;
+    return () => subscription.unsubscribe();
   }, []);
 
-  const signup = async (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => {
-    const { user } = await createUserWithEmailAndPassword(auth, email, password);
-    await set(ref(database, `users/${user.uid}`), {
-      ...profile,
-      favorites: [],
-      isPaid: false
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching user profile:', error);
+      } else if (data) {
+        setUserProfile(data);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signup = async (email: string, password: string, profile: Omit<UserProfile, 'id' | 'user_id' | 'favorites' | 'is_paid' | 'created_at' | 'updated_at'>) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
     });
+
+    if (error) throw error;
+
+    if (data.user) {
+      // Create user profile
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({
+          user_id: data.user.id,
+          username: profile.username,
+          email: profile.email,
+          phone: profile.phone,
+          job: profile.job,
+          interests: profile.interests,
+          favorites: [],
+          is_paid: false,
+        });
+
+      if (profileError) throw profileError;
+    }
   };
 
-  const login = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw error;
   };
 
-  const logout = () => {
-    return signOut(auth);
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   };
 
   const toggleFavorite = async (toolId: string) => {
@@ -78,30 +130,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ? favorites.filter(id => id !== toolId)
       : [...favorites, toolId];
 
-    await set(ref(database, `users/${currentUser.uid}/favorites`), newFavorites);
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ favorites: newFavorites })
+      .eq('user_id', currentUser.id);
+
+    if (error) throw error;
+
     setUserProfile({ ...userProfile, favorites: newFavorites });
   };
 
   const updateSubscription = async (isPaid: boolean) => {
     if (!currentUser || !userProfile) return;
 
-    await set(ref(database, `users/${currentUser.uid}/isPaid`), isPaid);
-    setUserProfile({ ...userProfile, isPaid });
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ is_paid: isPaid })
+      .eq('user_id', currentUser.id);
+
+    if (error) throw error;
+
+    setUserProfile({ ...userProfile, is_paid: isPaid });
   };
 
   const value = {
     currentUser,
+    session,
     userProfile,
     signup,
     login,
     logout,
     toggleFavorite,
-    updateSubscription
+    updateSubscription,
+    loading
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
