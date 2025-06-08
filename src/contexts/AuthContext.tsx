@@ -17,94 +17,51 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}
+};
 
-const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const AUTO_LOGOUT_ON_START = false; // 개발 중 강제 초기화가 필요하면 true로 바꿔서 쓸 수 있음
-
   useEffect(() => {
-    let mounted = true;
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setCurrentUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
 
-    const logLocalStorageState = () => {
-      console.log('[Debug] localStorage:', localStorage);
-      console.log('[Debug] sessionStorage:', sessionStorage);
-      indexedDB.databases?.().then((dbs) => console.log('[Debug] IndexedDB:', dbs));
-    };
-
-    const initializeAuth = async () => {
-      console.log('[Auth] Initializing...');
-      logLocalStorageState();
-
-      if (AUTO_LOGOUT_ON_START) {
-        console.log('[Dev] AUTO_LOGOUT_ON_START enabled – forcing logout');
-        await supabase.auth.signOut();
-        setCurrentUser(null);
-        setSession(null);
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session);
+      setCurrentUser(session?.user ?? null);
+      
+      if (session?.user) {
+        await fetchUserProfile(session.user.id);
+      } else {
         setUserProfile(null);
         setLoading(false);
-        return;
       }
+    });
 
-      const { data: { session }, error } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error('[Auth] Error getting session:', error);
-        if (mounted) setLoading(false);
-        return;
-      }
-
-      console.log('[Auth] Initial session:', session);
-
-      if (mounted) {
-        setSession(session);
-        setCurrentUser(session?.user ?? null);
-
-        if (session?.user) {
-          console.log('[Auth] Fetching profile...');
-          await fetchUserProfile(session.user.id);
-        } else {
-          setLoading(false);
-        }
-      }
-    };
-
-    initializeAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        if (!mounted) return;
-
-        setSession(session);
-        setCurrentUser(session?.user ?? null);
-
-        if (session?.user) {
-          await fetchUserProfile(session.user.id);
-        } else {
-          setUserProfile(null);
-          setLoading(false);
-        }
-      }
-    );
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
-    console.log('[Profile] Fetching user profile for:', userId);
     try {
       const { data, error } = await supabase
         .from('user_profiles')
@@ -112,13 +69,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         .eq('user_id', userId)
         .single();
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          console.log('[Profile] No user profile found – likely a new user');
-        } else {
-          console.error('[Profile] Error fetching profile:', error);
-        }
-        setUserProfile(null);
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching user profile:', error);
         return;
       }
 
@@ -132,23 +84,15 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
           favorites: data.favorites || [],
           isPaid: data.is_paid || false,
         });
-      } else {
-        setUserProfile(null);
       }
     } catch (error) {
-      console.error('[Profile] Unexpected error:', error);
-      setUserProfile(null);
+      console.error('Error fetching user profile:', error);
     } finally {
       setLoading(false);
-      console.log('[Auth] Loading set to false');
     }
   };
 
-  const signup = async (
-    email: string,
-    password: string,
-    profile: Omit<UserProfile, 'favorites' | 'isPaid'>
-  ) => {
+  const signup = async (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -157,6 +101,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     if (error) throw error;
 
     if (data.user) {
+      // Create user profile
       const { error: profileError } = await supabase
         .from('user_profiles')
         .insert({
@@ -171,23 +116,24 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         });
 
       if (profileError) {
-        console.error('[Auth] Error creating profile:', profileError);
+        console.error('Error creating user profile:', profileError);
         throw profileError;
       }
     }
   };
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
     if (error) throw error;
   };
 
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    setCurrentUser(null);
-    setSession(null);
-    setUserProfile(null);
   };
 
   const toggleFavorite = async (toolId: string) => {
@@ -195,7 +141,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
     const favorites = userProfile.favorites || [];
     const newFavorites = favorites.includes(toolId)
-      ? favorites.filter((id) => id !== toolId)
+      ? favorites.filter(id => id !== toolId)
       : [...favorites, toolId];
 
     const { error } = await supabase
@@ -204,7 +150,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       .eq('user_id', currentUser.id);
 
     if (error) {
-      console.error('[Profile] Error updating favorites:', error);
+      console.error('Error updating favorites:', error);
       throw error;
     }
 
@@ -220,14 +166,14 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       .eq('user_id', currentUser.id);
 
     if (error) {
-      console.error('[Profile] Error updating subscription:', error);
+      console.error('Error updating subscription:', error);
       throw error;
     }
 
     setUserProfile({ ...userProfile, isPaid });
   };
 
-  const value: AuthContextType = {
+  const value = {
     currentUser,
     userProfile,
     session,
@@ -245,5 +191,3 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     </AuthContext.Provider>
   );
 };
-
-export { AuthProvider, useAuth };
