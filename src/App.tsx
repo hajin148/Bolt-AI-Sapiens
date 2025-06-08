@@ -7,6 +7,7 @@ import SearchBar from './components/SearchBar';
 import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
 import FavoritesArea from './components/FavoritesArea';
+import { useAuth } from './contexts/AuthContext';
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -16,6 +17,8 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+
+  const { loading } = useAuth();
 
   useEffect(() => {
     const filtered = tools.filter((tool) => {
@@ -62,9 +65,19 @@ function App() {
 
   const filteredToolCount = filteredTools.length;
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ✅ 모달은 nav 밖에서 최상단에 위치 */}
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
