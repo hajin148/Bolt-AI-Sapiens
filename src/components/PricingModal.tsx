@@ -7,27 +7,31 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext'; 
 
 interface PricingModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
-  const { updateSubscription } = useAuth();
+// For payment system
+// const { updateSubscription } = useAuth(); // get the function from context
 
+// const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
+//   // TODO: Integrate with Stripe or payment gateway here
+
+//   console.log(`Subscribing to ${plan} plan`);
+  
+//   // Mark user as paid
+//   await updateSubscription(true);
+
+//   onClose();
+// };
+
+const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
   const handleSubscribe = async (plan: 'monthly' | 'yearly') => {
-    try {
-      // TODO: Integrate with Stripe payment processing here
-      console.log(`Subscribing to ${plan} plan`);
-      
-      // For now, just mark user as paid
-      await updateSubscription(true);
-      onClose();
-    } catch (error) {
-      console.error('Error subscribing:', error);
-    }
+    // TODO: Implement actual payment processing
+    console.log(`Subscribing to ${plan} plan`);
   };
 
   return (
