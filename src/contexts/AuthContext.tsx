@@ -31,11 +31,31 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const AUTO_LOGOUT_ON_START = false; // 개발 중 강제 초기화가 필요하면 true로 바꿔서 쓸 수 있음
+
   useEffect(() => {
     let mounted = true;
 
+    const logLocalStorageState = () => {
+      console.log('[Debug] localStorage:', localStorage);
+      console.log('[Debug] sessionStorage:', sessionStorage);
+      indexedDB.databases?.().then((dbs) => console.log('[Debug] IndexedDB:', dbs));
+    };
+
     const initializeAuth = async () => {
       console.log('[Auth] Initializing...');
+      logLocalStorageState();
+
+      if (AUTO_LOGOUT_ON_START) {
+        console.log('[Dev] AUTO_LOGOUT_ON_START enabled – forcing logout');
+        await supabase.auth.signOut();
+        setCurrentUser(null);
+        setSession(null);
+        setUserProfile(null);
+        setLoading(false);
+        return;
+      }
+
       const { data: { session }, error } = await supabase.auth.getSession();
 
       if (error) {
@@ -158,17 +178,16 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
   };
 
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+    setCurrentUser(null);
+    setSession(null);
+    setUserProfile(null);
   };
 
   const toggleFavorite = async (toolId: string) => {
