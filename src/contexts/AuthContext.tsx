@@ -69,7 +69,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (data) {
-        setUserProfile(data);
+        // Map database column name to TypeScript interface
+        const profile = {
+          ...data,
+          isPaid: data.is_paid
+        };
+        setUserProfile(profile);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -85,14 +90,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error;
 
     if (data.user) {
-      // Create user profile
+      // Create user profile - map TypeScript interface to database columns
       const { error: profileError } = await supabase
         .from('user_profiles')
         .insert({
           user_id: data.user.id,
           ...profile,
           favorites: [],
-          isPaid: false
+          is_paid: false
         });
 
       if (profileError) {
@@ -140,9 +145,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateSubscription = async (isPaid: boolean) => {
     if (!currentUser || !userProfile) return;
 
+    // Map TypeScript interface to database column name
     const { error } = await supabase
       .from('user_profiles')
-      .update({ isPaid })
+      .update({ is_paid: isPaid })
       .eq('user_id', currentUser.id);
 
     if (error) {
