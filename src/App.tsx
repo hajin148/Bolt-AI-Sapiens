@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { categories, tools } from './data/tools';
 import NavBar from './components/NavBar';
 import AuthModal from './components/AuthModal';
@@ -7,8 +8,11 @@ import SearchBar from './components/SearchBar';
 import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
 import FavoritesArea from './components/FavoritesArea';
+import PricingPage from './pages/PricingPage';
+import SuccessPage from './pages/SuccessPage';
+import CancelPage from './pages/CancelPage';
 
-function App() {
+function HomePage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredTools, setFilteredTools] = useState(tools);
@@ -171,6 +175,17 @@ function App() {
 
       <Footer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/success" element={<SuccessPage />} />
+      <Route path="/cancel" element={<CancelPage />} />
+    </Routes>
   );
 }
 
