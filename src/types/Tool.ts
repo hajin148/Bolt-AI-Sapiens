@@ -3,6 +3,7 @@ export interface Tool {
   url: string;
   iconUrl: string;
   description: string;
+  descriptionEn?: string;
   category: string;
   pricing?: 'free' | 'paid' | 'freemium';
 }
@@ -10,60 +11,46 @@ export interface Tool {
 export interface CategoryInfo {
   id: string;
   title: string;
+  titleEn?: string;
   icon: string;
   description: string;
+  descriptionEn?: string;
 }
 
 export interface UserProfile {
-  id: string;
-  user_id: string;
   username: string;
   email: string;
   phone?: string;
   job: string;
   interests: string[];
   favorites: string[];
-  is_paid: boolean;
-  created_at?: string;
-  updated_at?: string;
+  isPaid?: boolean;
 }
 
 export const JOB_OPTIONS = [
-  'Software Developer',
-  'Data Scientist',
-  'Product Manager',
+  'Developer',
   'Designer',
-  'Marketing Manager',
-  'Sales Representative',
-  'Business Analyst',
-  'Project Manager',
-  'Consultant',
+  'Product Manager',
+  'Marketer',
+  'Researcher',
+  'Educator',
   'Entrepreneur',
   'Student',
+  'Freelancer',
   'Other'
 ] as const;
 
 export const INTEREST_OPTIONS = [
+  'Video Editing',
   'Web Development',
-  'Mobile Development',
-  'Data Science',
-  'Machine Learning',
-  'Artificial Intelligence',
-  'Cloud Computing',
-  'DevOps',
-  'Cybersecurity',
-  'Blockchain',
-  'IoT',
-  'Game Development',
+  'App Development',
   'UI/UX Design',
-  'Digital Marketing',
-  'E-commerce',
-  'Productivity',
-  'Project Management',
-  'Analytics',
-  'Automation',
-  'API Development',
-  'Database Management'
+  'Data Visualization',
+  'Game Development',
+  'AI/ML',
+  'No-code Tools',
+  'Marketing Automation',
+  'Audio/Music Creation'
 ] as const;
 
 export type JobType = typeof JOB_OPTIONS[number];
