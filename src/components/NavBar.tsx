@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 
 interface NavBarProps {
@@ -11,6 +12,8 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeClick }) => {
   const [isSticky, setIsSticky] = useState(false);
   const { currentUser, userProfile, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,13 +33,47 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
     }
   };
 
+  const isNewsPage = location.pathname.startsWith('/news');
+
   return (
     <nav className={`${isSticky ? 'sticky top-0 z-10 bg-white/95 shadow-md backdrop-blur-sm py-2' : 'py-4'} transition-all duration-300 ease-in-out`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-gray-900">AI Sapiens</h1>
+          <div className="flex items-center space-x-8">
+            <div className="flex-shrink-0">
+              <button
+                onClick={() => navigate('/')}
+                className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
+              >
+                AI Sapiens
+              </button>
+            </div>
+            
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center space-x-6">
+              <button
+                onClick={() => navigate('/')}
+                className={`text-sm font-medium transition-colors ${
+                  !isNewsPage 
+                    ? 'text-blue-600 border-b-2 border-blue-600 pb-1' 
+                    : 'text-gray-600 hover:text-blue-600'
+                }`}
+              >
+                AI Tools
+              </button>
+              <button
+                onClick={() => navigate('/news')}
+                className={`text-sm font-medium transition-colors ${
+                  isNewsPage 
+                    ? 'text-blue-600 border-b-2 border-blue-600 pb-1' 
+                    : 'text-gray-600 hover:text-blue-600'
+                }`}
+              >
+                YouTube News
+              </button>
+            </div>
           </div>
+
           <div className="flex items-center space-x-2">
             {currentUser ? (
               <div className="flex items-center space-x-4">
@@ -74,6 +111,30 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               </>
             )}
           </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden mt-4 flex space-x-4">
+          <button
+            onClick={() => navigate('/')}
+            className={`text-sm font-medium transition-colors ${
+              !isNewsPage 
+                ? 'text-blue-600 border-b-2 border-blue-600 pb-1' 
+                : 'text-gray-600 hover:text-blue-600'
+            }`}
+          >
+            AI Tools
+          </button>
+          <button
+            onClick={() => navigate('/news')}
+            className={`text-sm font-medium transition-colors ${
+              isNewsPage 
+                ? 'text-blue-600 border-b-2 border-blue-600 pb-1' 
+                : 'text-gray-600 hover:text-blue-600'
+            }`}
+          >
+            YouTube News
+          </button>
         </div>
       </div>
     </nav>
