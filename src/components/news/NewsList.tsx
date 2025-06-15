@@ -14,19 +14,17 @@ const NewsList: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchDigests = useCallback(async (offset = 0, isRefresh = false) => {
+  const fetchDigests = useCallback(
+  async (offset = 0, isRefresh = false) => {
+    // (1) START 로그
+    console.time('fetchDigests');
+    console.log('▶️ FETCH START  offset =', offset);
+
     try {
-      if (offset === 0) {
-        setLoading(true);
-        setError(null);
-      } else {
-        setLoadingMore(true);
-      }
+      offset === 0 ? setLoading(true) : setLoadingMore(true);
+      setError(null);
 
-      console.log(`Fetching digests with offset: ${offset}`);
-
-      // First, let's try a simple query without the join to see if we get data
-      const { data, error: fetchError } = await supabase
+      const { data, error } = await supabase
         .from('youtube_digests')
         .select(`
           video_id,
@@ -35,72 +33,42 @@ const NewsList: React.FC = () => {
           published_at,
           summary,
           lang,
-          channel_id
+          youtube_channels(name)   -- OUTER JOIN
         `)
         .order('published_at', { ascending: false })
         .range(offset, offset + ITEMS_PER_PAGE - 1);
 
-      console.log('RAW DATA:', data);
-      console.log('FETCH ERROR:', fetchError);
+      // (2) Supabase가 준 에러·데이터 직접 출력
+      if (error) console.error('❌ SUPABASE ERROR', error);
+      console.log('📦 RAW DATA', data);        // 배열 길이·내용 확인
 
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      if (!data) {
-        console.log('No data returned from query');
-        setDigests([]);
-        setHasMore(false);
-        return;
-      }
-
-      console.log(`Found ${data.length} digests`);
-
-      // Now get channel names separately to avoid join issues
-      const channelIds = [...new Set(data.map(d => d.channel_id).filter(Boolean))];
-      let channelMap: Record<string, string> = {};
-
-      if (channelIds.length > 0) {
-        const { data: channels } = await supabase
-          .from('youtube_channels')
-          .select('channel_id, name')
-          .in('channel_id', channelIds);
-
-        if (channels) {
-          channelMap = channels.reduce((acc, channel) => {
-            acc[channel.channel_id] = channel.name;
-            return acc;
-          }, {} as Record<string, string>);
-        }
-      }
-
-      const formattedData: DigestCardData[] = data.map(item => ({
-        video_id: item.video_id,
-        title: item.title,
-        thumbnail: item.thumbnail,
-        published_at: item.published_at,
-        summary: item.summary,
-        lang: item.lang,
-        channel_name: channelMap[item.channel_id] || 'Unknown Channel'
+      const formatted: DigestCardData[] = (data ?? []).map((d) => ({
+        video_id: d.video_id,
+        title: d.title,
+        thumbnail: d.thumbnail,
+        published_at: d.published_at,
+        summary: d.summary,
+        lang: d.lang,
+        channel_name: d.youtube_channels?.name ?? null,
       }));
 
-      console.log('FORMATTED DATA:', formattedData);
-
-      if (offset === 0 || isRefresh) {
-        setDigests(formattedData);
-      } else {
-        setDigests(prev => [...prev, ...formattedData]);
-      }
-
-      setHasMore(formattedData.length === ITEMS_PER_PAGE);
+      setDigests((prev) =>
+        offset === 0 || isRefresh ? formatted : [...prev, ...formatted],
+      );
+      setHasMore(formatted.length === ITEMS_PER_PAGE);
     } catch (err) {
-      console.error('Error fetching digests:', err);
+      console.error('💥 UNHANDLED ERROR', err);
       setError('Failed to load news articles. Please try again.');
     } finally {
+      // (3) END 로그
+      console.log('✅ FETCH END');
+      console.timeEnd('fetchDigests');
       setLoading(false);
       setLoadingMore(false);
     }
-  }, []);
+  },
+  [],
+);
 
   useEffect(() => {
     fetchDigests();
