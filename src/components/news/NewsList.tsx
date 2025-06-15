@@ -15,64 +15,56 @@ const NewsList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchDigests = useCallback(
-  async (offset = 0, isRefresh = false) => {
-    // (1) START 로그
-    console.time('fetchDigests');
-    console.log('▶️ FETCH START  offset =', offset);
+    async (offset = 0, isRefresh = false) => {
+      try {
+        offset === 0 ? setLoading(true) : setLoadingMore(true);
+        setError(null);
 
-    try {
-      offset === 0 ? setLoading(true) : setLoadingMore(true);
-      setError(null);
+        const { data, error } = await supabase
+          .from('youtube_digests')
+          .select(`
+            video_id,
+            title,
+            thumbnail,
+            published_at,
+            summary,
+            lang,
+            youtube_channels(name)   -- OUTER JOIN
+          `)
+          .order('published_at', { ascending: false })
+          .range(offset, offset + ITEMS_PER_PAGE - 1);
 
-      const { data, error } = await supabase
-        .from('youtube_digests')
-        .select(`
-          video_id,
-          title,
-          thumbnail,
-          published_at,
-          summary,
-          lang,
-          youtube_channels(name)   -- OUTER JOIN
-        `)
-        .order('published_at', { ascending: false })
-        .range(offset, offset + ITEMS_PER_PAGE - 1);
+        if (error) throw error;
 
-      // (2) Supabase가 준 에러·데이터 직접 출력
-      if (error) console.error('❌ SUPABASE ERROR', error);
-      console.log('📦 RAW DATA', data);        // 배열 길이·내용 확인
+        const formatted: DigestCardData[] = (data ?? []).map((d) => ({
+          video_id: d.video_id,
+          title: d.title,
+          thumbnail: d.thumbnail,
+          published_at: d.published_at,
+          summary: d.summary,
+          lang: d.lang,
+          channel_name: d.youtube_channels?.name ?? null,
+        }));
 
-      const formatted: DigestCardData[] = (data ?? []).map((d) => ({
-        video_id: d.video_id,
-        title: d.title,
-        thumbnail: d.thumbnail,
-        published_at: d.published_at,
-        summary: d.summary,
-        lang: d.lang,
-        channel_name: d.youtube_channels?.name ?? null,
-      }));
-
-      setDigests((prev) =>
-        offset === 0 || isRefresh ? formatted : [...prev, ...formatted],
-      );
-      setHasMore(formatted.length === ITEMS_PER_PAGE);
-    } catch (err) {
-      console.error('💥 UNHANDLED ERROR', err);
-      setError('Failed to load news articles. Please try again.');
-    } finally {
-      // (3) END 로그
-      console.log('✅ FETCH END');
-      console.timeEnd('fetchDigests');
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  },
-  [],
-);
+        setDigests((prev) =>
+          offset === 0 || isRefresh ? formatted : [...prev, ...formatted],
+        );
+        setHasMore(formatted.length === ITEMS_PER_PAGE);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to load news articles. Please try again.');
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     fetchDigests();
   }, [fetchDigests]);
+
 
   const handleLoadMore = () => {
     if (!loadingMore && hasMore) {
