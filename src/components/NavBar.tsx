@@ -69,7 +69,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                     : 'text-gray-600 hover:text-blue-600'
                 }`}
               >
-                YouTube News
+                AI News
               </button>
             </div>
           </div>
