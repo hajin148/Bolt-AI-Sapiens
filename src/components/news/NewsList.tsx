@@ -67,7 +67,6 @@ const NewsList: React.FC = () => {
     fetchDigests();
   }, [fetchDigests]);
 
-
   const handleLoadMore = () => {
     if (!loadingMore && hasMore) {
       fetchDigests(digests.length);
