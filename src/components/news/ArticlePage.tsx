@@ -22,9 +22,7 @@ const ArticlePage: React.FC = () => {
       }
 
       try {
-        console.log(`Fetching article for video ID: ${videoId}`);
-
-        const { data, error: fetchError } = await supabase
+        const { data, error } = await supabase
           .from('youtube_digests')
           .select(`
             video_id,
@@ -32,35 +30,16 @@ const ArticlePage: React.FC = () => {
             published_at,
             article_content,
             lang,
-            channel_id
+            channel_id,
+            youtube_channels(name)
           `)
           .eq('video_id', videoId)
           .single();
 
-        console.log('Article data:', data);
-        console.log('Article error:', fetchError);
-
-        if (fetchError) {
-          throw fetchError;
-        }
-
+        if (error) throw error;
         if (!data) {
           setError('Article not found');
           return;
-        }
-
-        // Get channel name separately
-        let channelName = 'Unknown Channel';
-        if (data.channel_id) {
-          const { data: channelData } = await supabase
-            .from('youtube_channels')
-            .select('name')
-            .eq('channel_id', data.channel_id)
-            .single();
-
-          if (channelData) {
-            channelName = channelData.name;
-          }
         }
 
         setArticle({
@@ -70,10 +49,10 @@ const ArticlePage: React.FC = () => {
           article_content: data.article_content,
           lang: data.lang,
           channel_id: data.channel_id,
-          channel_name: channelName
+          channel_name: data.youtube_channels?.name ?? 'Unknown Channel',
         });
       } catch (err) {
-        console.error('Error fetching article:', err);
+        console.error(err);
         setError('Failed to load article. Please try again.');
       } finally {
         setLoading(false);
