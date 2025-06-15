@@ -24,22 +24,21 @@ const ArticlePage: React.FC = () => {
       try {
         const { data, error: fetchError } = await supabase
           .from('youtube_digests')
-          .select(`
+          .select(
+            `
             video_id,
             title,
             published_at,
             article_content,
             lang,
             channel_id,
-            youtube_channels!inner(name)
-          `)
+            youtube_channels(name)
+          `,
+          )
           .eq('video_id', videoId)
           .single();
 
-        if (fetchError) {
-          throw fetchError;
-        }
-
+        if (fetchError) throw fetchError;
         if (!data) {
           setError('Article not found');
           return;
@@ -52,7 +51,7 @@ const ArticlePage: React.FC = () => {
           article_content: data.article_content,
           lang: data.lang,
           channel_id: data.channel_id,
-          channel_name: (data.youtube_channels as any)?.name
+          channel_name: data.youtube_channels?.name ?? null,
         });
       } catch (err) {
         console.error('Error fetching article:', err);
