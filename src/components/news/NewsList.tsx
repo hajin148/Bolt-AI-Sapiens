@@ -14,62 +14,59 @@ const NewsList: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchDigests = useCallback(async (offset = 0, isRefresh = false) => {
-    try {
-      if (offset === 0) {
-        setLoading(true);
+  const fetchDigests = useCallback(
+    async (offset = 0, isRefresh = false) => {
+      try {
+        offset === 0 ? setLoading(true) : setLoadingMore(true);
         setError(null);
-      } else {
-        setLoadingMore(true);
+
+        const { data, error: fetchError } = await supabase
+          .from('youtube_digests')
+          .select(
+            `
+            video_id,
+            title,
+            thumbnail,
+            published_at,
+            summary,
+            lang,
+            youtube_channels(name)
+          `,
+          )
+          .order('published_at', { ascending: false })
+          .range(offset, offset + ITEMS_PER_PAGE - 1);
+
+        if (fetchError) throw fetchError;
+
+        const formatted: DigestCardData[] = (data ?? []).map((d) => ({
+          video_id: d.video_id,
+          title: d.title,
+          thumbnail: d.thumbnail,
+          published_at: d.published_at,
+          summary: d.summary,
+          lang: d.lang,
+          channel_name: d.youtube_channels?.name ?? null,
+        }));
+
+        setDigests((prev) =>
+          offset === 0 || isRefresh ? formatted : [...prev, ...formatted],
+        );
+        setHasMore(formatted.length === ITEMS_PER_PAGE);
+      } catch (err) {
+        console.error('Error fetching digests:', err);
+        setError('Failed to load news articles. Please try again.');
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
       }
-
-      const { data, error: fetchError } = await supabase
-        .from('youtube_digests')
-        .select(`
-          video_id,
-          title,
-          thumbnail,
-          published_at,
-          summary,
-          lang,
-          youtube_channels!inner(name)
-        `)
-        .order('published_at', { ascending: false })
-        .range(offset, offset + ITEMS_PER_PAGE - 1);
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      const formattedData: DigestCardData[] = (data || []).map(item => ({
-        video_id: item.video_id,
-        title: item.title,
-        thumbnail: item.thumbnail,
-        published_at: item.published_at,
-        summary: item.summary,
-        lang: item.lang,
-        channel_name: (item.youtube_channels as any)?.name
-      }));
-
-      if (offset === 0 || isRefresh) {
-        setDigests(formattedData);
-      } else {
-        setDigests(prev => [...prev, ...formattedData]);
-      }
-
-      setHasMore(formattedData.length === ITEMS_PER_PAGE);
-    } catch (err) {
-      console.error('Error fetching digests:', err);
-      setError('Failed to load news articles. Please try again.');
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  }, []);
+    },
+    [],
+  );
 
   useEffect(() => {
     fetchDigests();
   }, [fetchDigests]);
+
 
   const handleLoadMore = () => {
     if (!loadingMore && hasMore) {
