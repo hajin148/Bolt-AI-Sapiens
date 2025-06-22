@@ -12,7 +12,7 @@ import {
   BookOpen, 
   Edit, 
   Trash2, 
-  GripVertical,
+  ChevronRight,
   Loader2,
   AlertCircle
 } from 'lucide-react';
@@ -85,12 +85,14 @@ const ClassroomDetailPage: React.FC = () => {
     }
   };
 
-  const handleEditModule = (module: Module) => {
+  const handleEditModule = (module: Module, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation when editing
     setEditingModule(module);
     setShowModuleModal(true);
   };
 
-  const handleDeleteModule = async (moduleId: string) => {
+  const handleDeleteModule = async (moduleId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation when deleting
     if (window.confirm('Are you sure you want to delete this module?')) {
       try {
         await deleteModule(moduleId);
@@ -98,6 +100,10 @@ const ClassroomDetailPage: React.FC = () => {
         console.error('Error deleting module:', error);
       }
     }
+  };
+
+  const handleModuleClick = (module: Module) => {
+    navigate(`/classroom/${id}/module/${module.id}`);
   };
 
   const handleAddModule = () => {
@@ -232,11 +238,15 @@ const ClassroomDetailPage: React.FC = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {modules.map((module, index) => (
-                <Card key={module.id} className="group hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
+                <Card 
+                  key={module.id} 
+                  className="group hover:shadow-md transition-all duration-200 cursor-pointer hover:border-blue-300"
+                  onClick={() => handleModuleClick(module)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-4">
                       <div className="flex-shrink-0">
                         <div 
                           className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
@@ -247,37 +257,31 @@ const ClassroomDetailPage: React.FC = () => {
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                              {module.title}
-                            </h3>
-                            {module.description && (
-                              <p className="text-gray-600 leading-relaxed">
-                                {module.description}
-                              </p>
-                            )}
-                          </div>
-                          
-                          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-4">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEditModule(module)}
-                              className="h-8 w-8 p-0 hover:bg-gray-100"
-                            >
-                              <Edit size={14} />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteModule(module.id)}
-                              className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
-                            >
-                              <Trash2 size={14} />
-                            </Button>
-                          </div>
+                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                          {module.title}
+                        </h3>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => handleEditModule(module, e)}
+                            className="h-8 w-8 p-0 hover:bg-gray-100"
+                          >
+                            <Edit size={14} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => handleDeleteModule(module.id, e)}
+                            className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
+                          >
+                            <Trash2 size={14} />
+                          </Button>
                         </div>
+                        <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
                       </div>
                     </div>
                   </CardContent>
