@@ -10,6 +10,8 @@ import Footer from './components/Footer';
 import FavoritesArea from './components/FavoritesArea';
 import NewsPage from './pages/NewsPage';
 import ArticlePage from './components/news/ArticlePage';
+import LearningSpacePage from './pages/LearningSpacePage';
+import ClassroomDetailPage from './pages/ClassroomDetailPage';
 import { useAuth } from './contexts/AuthContext';
 
 function HomePage() {
@@ -153,6 +155,7 @@ function App() {
   const location = useLocation();
 
   const isNewsRoute = location.pathname.startsWith('/news');
+  const isLearningRoute = location.pathname.startsWith('/learning') || location.pathname.startsWith('/classroom');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -184,10 +187,12 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/news/:videoId" element={<ArticlePage />} />
+          <Route path="/learning" element={<LearningSpacePage />} />
+          <Route path="/classroom/:id" element={<ClassroomDetailPage />} />
         </Routes>
       </div>
 
-      {!isNewsRoute && <Footer />}
+      {!isNewsRoute && !isLearningRoute && <Footer />}
     </div>
   );
 }
