@@ -34,6 +34,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
   };
 
   const isNewsPage = location.pathname.startsWith('/news');
+  const isLearningPage = location.pathname.startsWith('/learning') || location.pathname.startsWith('/classroom');
 
   return (
     <nav className={`${isSticky ? 'sticky top-0 z-10 bg-white/95 shadow-md backdrop-blur-sm py-2' : 'py-4'} transition-all duration-300 ease-in-out`}>
@@ -54,7 +55,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               <button
                 onClick={() => navigate('/')}
                 className={`text-sm font-medium transition-colors ${
-                  !isNewsPage 
+                  !isNewsPage && !isLearningPage
                     ? 'text-blue-600 border-b-2 border-blue-600 pb-1' 
                     : 'text-gray-600 hover:text-blue-600'
                 }`}
@@ -71,6 +72,18 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               >
                 AI News
               </button>
+              {currentUser && (
+                <button
+                  onClick={() => navigate('/learning')}
+                  className={`text-sm font-medium transition-colors ${
+                    isLearningPage 
+                      ? 'text-blue-600 border-b-2 border-blue-600 pb-1' 
+                      : 'text-gray-600 hover:text-blue-600'
+                  }`}
+                >
+                  Learning Space
+                </button>
+              )}
             </div>
           </div>
 
@@ -118,7 +131,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
           <button
             onClick={() => navigate('/')}
             className={`text-sm font-medium transition-colors ${
-              !isNewsPage 
+              !isNewsPage && !isLearningPage
                 ? 'text-blue-600 border-b-2 border-blue-600 pb-1' 
                 : 'text-gray-600 hover:text-blue-600'
             }`}
@@ -133,8 +146,20 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                 : 'text-gray-600 hover:text-blue-600'
             }`}
           >
-            YouTube News
+            AI News
           </button>
+          {currentUser && (
+            <button
+              onClick={() => navigate('/learning')}
+              className={`text-sm font-medium transition-colors ${
+                isLearningPage 
+                  ? 'text-blue-600 border-b-2 border-blue-600 pb-1' 
+                  : 'text-gray-600 hover:text-blue-600'
+              }`}
+            >
+              Learning
+            </button>
+          )}
         </div>
       </div>
     </nav>
