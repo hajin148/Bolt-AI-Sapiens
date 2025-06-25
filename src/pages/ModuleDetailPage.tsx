@@ -185,7 +185,7 @@ const ModuleDetailPage: React.FC = () => {
             <CardContent className="p-8">
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen className="h-5 w-5 text-blue-600" />
-                <h2 className="text-xl font-semibold text-gray-900">모듈 개요</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Module Overview</h2>
               </div>
               <div className="prose max-w-none">
                 <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">
@@ -199,7 +199,7 @@ const ModuleDetailPage: React.FC = () => {
           {module.content && module.content.length > 0 && (
             <Card>
               <CardContent className="p-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">상세 학습 내용</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">Detailed Learning Content</h2>
                 <ContentRenderer content={module.content} />
               </CardContent>
             </Card>
@@ -220,13 +220,13 @@ const ModuleDetailPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <Clock className="h-4 w-4" />
-                  <span>예상 학습 시간: 15-30분</span>
+                  <span>Estimated learning time: 15-30 minutes</span>
                 </div>
                 <Button
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   <CheckCircle className="h-4 w-4 mr-2" />
-                  학습 완료
+                  Mark as Complete
                 </Button>
               </div>
             </CardContent>
@@ -244,7 +244,7 @@ const ModuleDetailPage: React.FC = () => {
               >
                 <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                 <div className="text-left">
-                  <div className="text-xs text-gray-500">이전</div>
+                  <div className="text-xs text-gray-500">Previous</div>
                   <div className="font-medium">{previousModule.title}</div>
                 </div>
               </Button>
@@ -265,7 +265,7 @@ const ModuleDetailPage: React.FC = () => {
                 style={{ backgroundColor: classroom.color }}
               >
                 <div className="text-right">
-                  <div className="text-xs opacity-90">다음</div>
+                  <div className="text-xs opacity-90">Next</div>
                   <div className="font-medium">{nextModule.title}</div>
                 </div>
                 <ArrowLeft className="h-4 w-4 ml-2 rotate-180 group-hover:translate-x-1 transition-transform" />
@@ -277,7 +277,7 @@ const ModuleDetailPage: React.FC = () => {
         {/* Module List Sidebar */}
         <Card className="mt-8">
           <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">전체 모듈</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">All Modules</h3>
             <div className="space-y-2">
               {allModules.map((mod) => (
                 <button
@@ -307,18 +307,18 @@ const ModuleDetailPage: React.FC = () => {
                         {mod.title}
                       </div>
                       {mod.id === moduleId && (
-                        <div className="text-xs text-blue-600 mt-1">현재 학습 중</div>
+                        <div className="text-xs text-blue-600 mt-1">Currently Learning</div>
                       )}
                       {/* Content indicators */}
                       <div className="flex items-center gap-2 mt-1">
                         {mod.content && mod.content.length > 0 && (
                           <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded">
-                            콘텐츠 {mod.content.length}개
+                            {mod.content.length} Content Items
                           </span>
                         )}
                         {mod.digests && mod.digests.length > 0 && (
                           <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
-                            영상 {mod.digests.length}개
+                            {mod.digests.length} Videos
                           </span>
                         )}
                       </div>

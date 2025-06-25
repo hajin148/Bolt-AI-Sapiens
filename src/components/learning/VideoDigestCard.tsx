@@ -69,7 +69,7 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
               </div>
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <ExternalLink className="h-4 w-4" />
-                <span>YouTube에서 보기</span>
+                <span>Watch on YouTube</span>
               </div>
             </div>
           </div>

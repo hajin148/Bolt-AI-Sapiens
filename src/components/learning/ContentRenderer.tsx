@@ -15,7 +15,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({ content }) => {
           <div key={index} className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <BookOpen className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">설명</span>
+              <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">Description</span>
             </div>
             <div className="prose prose-lg max-w-none">
               <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">
@@ -31,7 +31,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({ content }) => {
             <div className="flex items-center gap-2 mb-4">
               <Code className="h-5 w-5 text-green-600" />
               <span className="text-sm font-semibold text-green-600 uppercase tracking-wide">
-                코드 예제 {item.language && `(${item.language})`}
+                Code Example {item.language && `(${item.language})`}
               </span>
             </div>
             <Card className="bg-gray-900 border-gray-700 overflow-hidden">
@@ -51,7 +51,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({ content }) => {
           <div key={index} className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <CheckSquare className="h-5 w-5 text-purple-600" />
-              <span className="text-sm font-semibold text-purple-600 uppercase tracking-wide">실습 과제</span>
+              <span className="text-sm font-semibold text-purple-600 uppercase tracking-wide">Practice Exercise</span>
             </div>
             <Card className="bg-purple-50 border-purple-200 overflow-hidden">
               <CardContent className="p-6">
@@ -60,7 +60,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({ content }) => {
                     <CheckSquare className="h-4 w-4 text-purple-600" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-purple-900 font-semibold mb-3">실습 과제</h4>
+                    <h4 className="text-purple-900 font-semibold mb-3">Practice Exercise</h4>
                     <div className="text-purple-800 whitespace-pre-wrap leading-relaxed">
                       {item.value}
                     </div>
@@ -80,8 +80,8 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({ content }) => {
     return (
       <div className="text-center py-12">
         <BookOpen className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">아직 콘텐츠가 준비되지 않았습니다</h3>
-        <p className="text-gray-500">AI가 생성한 새로운 모듈에서 상세 콘텐츠를 확인할 수 있습니다.</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Content not yet available</h3>
+        <p className="text-gray-500">Detailed content will be available in AI-generated modules.</p>
       </div>
     );
   }
