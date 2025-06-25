@@ -121,6 +121,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                   onClick={handleLogout}
                   variant="outline"
                   className="text-red-600 border-red-200 hover:bg-red-50"
+                  disabled={loading}
                 >
                   Logout
                 </Button>
@@ -131,12 +132,14 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                   onClick={onLoginClick}
                   variant="ghost"
                   className="text-blue-600 hover:text-blue-700"
+                  disabled={loading}
                 >
                   Login
                 </Button>
                 <Button
                   onClick={onSignupClick}
                   className="bg-blue-600 text-white hover:bg-blue-700"
+                  disabled={loading}
                 >
                   Sign Up
                 </Button>

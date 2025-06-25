@@ -11,7 +11,7 @@ interface FavoritesAreaProps {
 const FavoritesArea: React.FC<FavoritesAreaProps> = ({ allTools }) => {
   const { currentUser, userProfile, loading } = useAuth();
 
-  // Don't show anything while loading
+  // Show loading only when actively loading (login/logout operations)
   if (loading) {
     return (
       <section className="py-8 bg-blue-50 rounded-lg mb-8">
@@ -25,7 +25,7 @@ const FavoritesArea: React.FC<FavoritesAreaProps> = ({ allTools }) => {
     );
   }
 
-  // Don't show favorites area if user is not logged in
+  // ✅ Don't show favorites area if user is not explicitly logged in
   if (!currentUser || !userProfile) return null;
 
   const favoriteTools = Array.from(

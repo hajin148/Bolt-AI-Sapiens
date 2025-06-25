@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Start as false since no auto-login
 
   const fetchUserProfile = async (userId: string) => {
     try {
@@ -60,106 +60,105 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Initialize auth state on mount
+  // ❌ REMOVED: Automatic session initialization
+  // No useEffect for getSession() - users must explicitly log in
+
+  // Listen for auth state changes (logout events only)
   useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        setLoading(true);
-        
-        // Get initial session
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        
-        setSession(session);
-        setCurrentUser(session?.user ?? null);
-        
-        if (session?.user) {
-          await fetchUserProfile(session.user.id);
-        } else {
-          setUserProfile(null);
-        }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initializeAuth();
-
-    // Listen for auth changes across all tabs
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
+      console.log('Auth state changed:', event);
       
-      setSession(session);
-      setCurrentUser(session?.user ?? null);
-      
-      if (session?.user) {
-        await fetchUserProfile(session.user.id);
-      } else {
+      // Only handle logout events, not automatic logins
+      if (event === 'SIGNED_OUT' || !session) {
+        setSession(null);
+        setCurrentUser(null);
         setUserProfile(null);
       }
       
-      // Ensure loading is false after auth state change
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  // Fallback: If we have a user but no profile, try to fetch it
-  useEffect(() => {
-    if (currentUser && !userProfile && !loading) {
-      console.log('User exists but profile missing, fetching profile...');
-      fetchUserProfile(currentUser.id);
-    }
-  }, [currentUser, userProfile, loading]);
-
   const signup = async (email: string, password: string, profile: Omit<UserProfile, 'favorites' | 'isPaid'>) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    if (error) throw error;
+      if (error) throw error;
 
-    if (data.user) {
-      // Create user profile
-      const { error: profileError } = await supabase
-        .from('user_profiles')
-        .insert({
-          user_id: data.user.id,
-          username: profile.username,
-          email: profile.email,
-          phone: profile.phone,
-          job: profile.job,
-          interests: profile.interests,
-          favorites: [],
-          is_paid: false,
-        });
+      if (data.user && data.session) {
+        // ✅ Explicitly set auth state only after successful signup
+        setSession(data.session);
+        setCurrentUser(data.user);
 
-      if (profileError) {
-        console.error('Error creating user profile:', profileError);
-        throw profileError;
+        // Create user profile
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: data.user.id,
+            username: profile.username,
+            email: profile.email,
+            phone: profile.phone,
+            job: profile.job,
+            interests: profile.interests,
+            favorites: [],
+            is_paid: false,
+          });
+
+        if (profileError) {
+          console.error('Error creating user profile:', profileError);
+          throw profileError;
+        }
+
+        // Fetch the created profile
+        await fetchUserProfile(data.user.id);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) throw error;
+      if (error) throw error;
+
+      if (data.user && data.session) {
+        // ✅ Explicitly set auth state only after successful login
+        setSession(data.session);
+        setCurrentUser(data.user);
+        await fetchUserProfile(data.user.id);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      // Clear state immediately
+      setSession(null);
+      setCurrentUser(null);
+      setUserProfile(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleFavorite = async (toolId: string) => {
