@@ -4,13 +4,16 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import ContentRenderer from '../components/learning/ContentRenderer';
+import VideoDigestList from '../components/learning/VideoDigestList';
 import { 
   ArrowLeft, 
   BookOpen, 
   Clock,
   CheckCircle,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Youtube
 } from 'lucide-react';
 import { Module, Classroom } from '../types/Learning';
 
@@ -24,6 +27,7 @@ const ModuleDetailPage: React.FC = () => {
   const [allModules, setAllModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'content' | 'videos'>('content');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,6 +95,9 @@ const ModuleDetailPage: React.FC = () => {
   const navigateToModule = (targetModule: Module) => {
     navigate(`/classroom/${classroomId}/module/${targetModule.id}`);
   };
+
+  const hasContent = module?.content && module.content.length > 0;
+  const hasVideos = module?.digests && module.digests.length > 0;
 
   if (!currentUser) {
     return (
@@ -176,36 +183,84 @@ const ModuleDetailPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Content Tabs */}
+        {(hasContent || hasVideos) && (
+          <div className="mb-6">
+            <div className="border-b border-gray-200">
+              <nav className="-mb-px flex space-x-8">
+                <button
+                  onClick={() => setActiveTab('content')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'content'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    학습 콘텐츠
+                    {hasContent && <span className="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">{module.content?.length}</span>}
+                  </div>
+                </button>
+                <button
+                  onClick={() => setActiveTab('videos')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'videos'
+                      ? 'border-red-500 text-red-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Youtube className="h-4 w-4" />
+                    추천 영상
+                    {hasVideos && <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">{module.digests?.length}</span>}
+                  </div>
+                </button>
+              </nav>
+            </div>
+          </div>
+        )}
+
         {/* Module Content */}
         <Card className="mb-8">
           <CardContent className="p-8">
-            <div className="prose max-w-none">
-              {module.description ? (
-                <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">
+            {/* Basic Description */}
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">모듈 개요</h2>
+              <div className="prose max-w-none">
+                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">
                   {module.description}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <BookOpen className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  <p className="text-gray-500 text-lg">No content available for this module yet.</p>
-                  <p className="text-gray-400 text-sm mt-2">Content will be added soon.</p>
-                </div>
-              )}
+                </p>
+              </div>
             </div>
+
+            {/* Tab Content */}
+            {activeTab === 'content' && (
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">상세 학습 내용</h2>
+                <ContentRenderer content={module.content || []} />
+              </div>
+            )}
+
+            {activeTab === 'videos' && (
+              <div>
+                <VideoDigestList digests={module.digests || []} />
+              </div>
+            )}
 
             {/* Module Actions */}
             <div className="mt-8 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <Clock className="h-4 w-4" />
-                  <span>Estimated reading time: 5-10 minutes</span>
+                  <span>예상 학습 시간: 15-30분</span>
                 </div>
                 <Button
                   variant="outline"
                   className="text-green-600 border-green-200 hover:bg-green-50"
                 >
                   <CheckCircle className="h-4 w-4 mr-2" />
-                  Mark as Complete
+                  학습 완료
                 </Button>
               </div>
             </div>
@@ -223,7 +278,7 @@ const ModuleDetailPage: React.FC = () => {
               >
                 <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                 <div className="text-left">
-                  <div className="text-xs text-gray-500">Previous</div>
+                  <div className="text-xs text-gray-500">이전</div>
                   <div className="font-medium">{previousModule.title}</div>
                 </div>
               </Button>
@@ -244,7 +299,7 @@ const ModuleDetailPage: React.FC = () => {
                 style={{ backgroundColor: classroom.color }}
               >
                 <div className="text-right">
-                  <div className="text-xs opacity-90">Next</div>
+                  <div className="text-xs opacity-90">다음</div>
                   <div className="font-medium">{nextModule.title}</div>
                 </div>
                 <ArrowLeft className="h-4 w-4 ml-2 rotate-180 group-hover:translate-x-1 transition-transform" />
@@ -256,7 +311,7 @@ const ModuleDetailPage: React.FC = () => {
         {/* Module List Sidebar */}
         <Card className="mt-8">
           <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">All Modules</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">전체 모듈</h3>
             <div className="space-y-2">
               {allModules.map((mod) => (
                 <button
@@ -286,8 +341,21 @@ const ModuleDetailPage: React.FC = () => {
                         {mod.title}
                       </div>
                       {mod.id === moduleId && (
-                        <div className="text-xs text-blue-600 mt-1">Currently viewing</div>
+                        <div className="text-xs text-blue-600 mt-1">현재 학습 중</div>
                       )}
+                      {/* Content indicators */}
+                      <div className="flex items-center gap-2 mt-1">
+                        {mod.content && mod.content.length > 0 && (
+                          <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded">
+                            콘텐츠 {mod.content.length}개
+                          </span>
+                        )}
+                        {mod.digests && mod.digests.length > 0 && (
+                          <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
+                            영상 {mod.digests.length}개
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </button>

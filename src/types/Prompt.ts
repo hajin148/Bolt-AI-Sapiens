@@ -46,5 +46,16 @@ export interface LearningSpaceData {
     title: string;
     description: string;
     step_number: number;
+    content: Array<{
+      type: 'text' | 'code' | 'exercise';
+      value: string;
+      language?: string;
+    }>;
+    digests: Array<{
+      title: string;
+      url: string;
+      duration: string;
+      thumbnail?: string;
+    }>;
   }>;
 }

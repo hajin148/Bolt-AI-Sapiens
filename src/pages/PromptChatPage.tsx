@@ -203,7 +203,7 @@ const PromptChatPage: React.FC = () => {
 
       if (classroomError) throw classroomError;
 
-      // Create modules
+      // Create modules with enhanced content and digests
       const { error: modulesError } = await supabase
         .from('modules')
         .insert(
@@ -211,7 +211,9 @@ const PromptChatPage: React.FC = () => {
             classroom_id: classroom.id,
             title: module.title,
             description: module.description,
-            step_number: module.step_number
+            step_number: module.step_number,
+            content: module.content,
+            digests: module.digests
           }))
         );
 
@@ -389,8 +391,11 @@ const PromptChatPage: React.FC = () => {
                         ) : (
                           <Sparkles className="h-4 w-4 mr-2" />
                         )}
-                        Create Learning Space
+                        Create Enhanced Learning Space
                       </Button>
+                      <p className="text-xs text-gray-500 mt-2">
+                        AI will generate detailed content, code examples, and YouTube video recommendations
+                      </p>
                     </div>
                   )}
                 </div>
