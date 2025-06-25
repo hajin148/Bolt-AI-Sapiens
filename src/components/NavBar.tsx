@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
+import { Loader2 } from 'lucide-react';
 
 interface NavBarProps {
   onLoginClick: () => void;
@@ -11,7 +12,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeClick }) => {
   const [isSticky, setIsSticky] = useState(false);
-  const { currentUser, userProfile, logout } = useAuth();
+  const { currentUser, userProfile, logout, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -101,9 +102,14 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
           </div>
 
           <div className="flex items-center space-x-2">
-            {currentUser ? (
+            {loading ? (
+              <div className="flex items-center space-x-2">
+                <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+                <span className="text-sm text-gray-500">Loading...</span>
+              </div>
+            ) : currentUser ? (
               <div className="flex items-center space-x-4">
-                {!userProfile?.isPaid && (
+                {userProfile && !userProfile.isPaid && (
                   <Button
                     onClick={onUpgradeClick}
                     className="bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700"

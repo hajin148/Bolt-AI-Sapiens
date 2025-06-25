@@ -2,24 +2,39 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Tool } from '../types/Tool';
 import ToolCard from './ToolCard';
-import { Heart } from 'lucide-react';
+import { Heart, Loader2 } from 'lucide-react';
 
 interface FavoritesAreaProps {
   allTools: Tool[];
 }
 
 const FavoritesArea: React.FC<FavoritesAreaProps> = ({ allTools }) => {
-  const { currentUser, userProfile } = useAuth();
+  const { currentUser, userProfile, loading } = useAuth();
 
+  // Don't show anything while loading
+  if (loading) {
+    return (
+      <section className="py-8 bg-blue-50 rounded-lg mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-8">
+            <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600 mb-4" />
+            <p className="text-gray-600">Loading your favorites...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Don't show favorites area if user is not logged in
   if (!currentUser || !userProfile) return null;
 
   const favoriteTools = Array.from(
-  new Map(
-    allTools
-      .filter(tool => userProfile.favorites?.includes(tool.name.toLowerCase()))
-      .map(tool => [tool.name.toLowerCase(), tool]) 
-  ).values()
-);
+    new Map(
+      allTools
+        .filter(tool => userProfile.favorites?.includes(tool.name.toLowerCase()))
+        .map(tool => [tool.name.toLowerCase(), tool]) 
+    ).values()
+  );
 
   if (favoriteTools.length === 0) {
     return (
