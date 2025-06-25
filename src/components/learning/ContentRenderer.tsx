@@ -15,7 +15,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({ content }) => {
           <div key={index} className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <BookOpen className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">Description</span>
+              <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">Content</span>
             </div>
             <div className="prose prose-lg max-w-none">
               <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">

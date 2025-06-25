@@ -26,9 +26,9 @@ const VideoDigestList: React.FC<VideoDigestListProps> = ({ digests }) => {
         <span className="text-sm text-gray-500">({digests.length} videos)</span>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {digests.map((digest, index) => (
-          <VideoDigestCard key={index} digest={digest} />
+          <VideoDigestCard key={digest.video_id || index} digest={digest} />
         ))}
       </div>
     </div>
