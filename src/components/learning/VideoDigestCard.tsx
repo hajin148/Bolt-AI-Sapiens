@@ -26,13 +26,13 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
 
   return (
     <Card 
-      className="group cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-red-300"
+      className="group cursor-pointer hover:shadow-lg transition-all duration-300 hover:border-red-300 overflow-hidden"
       onClick={handleVideoClick}
     >
       <CardContent className="p-0">
         <div className="relative">
           {/* Thumbnail */}
-          <div className="relative w-full h-32 bg-gray-200 rounded-t-lg overflow-hidden">
+          <div className="relative w-full h-40 bg-gray-200 overflow-hidden">
             <img
               src={getThumbnailUrl(digest.url)}
               alt={digest.title}
@@ -44,31 +44,31 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
             />
             
             {/* Play button overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
-                <Play className="h-6 w-6 text-white ml-1" fill="currentColor" />
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                <Play className="h-8 w-8 text-white ml-1" fill="currentColor" />
               </div>
             </div>
 
             {/* Duration badge */}
-            <div className="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded">
+            <div className="absolute bottom-3 right-3 bg-black bg-opacity-90 text-white text-sm px-3 py-1 rounded-md font-medium">
               {digest.duration}
             </div>
           </div>
 
           {/* Content */}
           <div className="p-4">
-            <h4 className="font-medium text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 mb-2">
+            <h4 className="font-semibold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 mb-3 leading-snug">
               {digest.title}
             </h4>
             
-            <div className="flex items-center justify-between text-xs text-gray-500">
+            <div className="flex items-center justify-between text-sm text-gray-500">
               <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3" />
+                <Clock className="h-4 w-4" />
                 <span>{digest.duration}</span>
               </div>
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <ExternalLink className="h-3 w-3" />
+                <ExternalLink className="h-4 w-4" />
                 <span>YouTube에서 보기</span>
               </div>
             </div>

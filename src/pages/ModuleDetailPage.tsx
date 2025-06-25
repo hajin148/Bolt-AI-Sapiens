@@ -12,8 +12,7 @@ import {
   Clock,
   CheckCircle,
   Loader2,
-  AlertCircle,
-  Youtube
+  AlertCircle
 } from 'lucide-react';
 import { Module, Classroom } from '../types/Learning';
 
@@ -27,7 +26,6 @@ const ModuleDetailPage: React.FC = () => {
   const [allModules, setAllModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'content' | 'videos'>('content');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,9 +93,6 @@ const ModuleDetailPage: React.FC = () => {
   const navigateToModule = (targetModule: Module) => {
     navigate(`/classroom/${classroomId}/module/${targetModule.id}`);
   };
-
-  const hasContent = module?.content && module.content.length > 0;
-  const hasVideos = module?.digests && module.digests.length > 0;
 
   if (!currentUser) {
     return (
@@ -183,92 +178,63 @@ const ModuleDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Content Tabs */}
-        {(hasContent || hasVideos) && (
-          <div className="mb-6">
-            <div className="border-b border-gray-200">
-              <nav className="-mb-px flex space-x-8">
-                <button
-                  onClick={() => setActiveTab('content')}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === 'content'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    학습 콘텐츠
-                    {hasContent && <span className="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">{module.content?.length}</span>}
-                  </div>
-                </button>
-                <button
-                  onClick={() => setActiveTab('videos')}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === 'videos'
-                      ? 'border-red-500 text-red-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <Youtube className="h-4 w-4" />
-                    추천 영상
-                    {hasVideos && <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">{module.digests?.length}</span>}
-                  </div>
-                </button>
-              </nav>
-            </div>
-          </div>
-        )}
-
-        {/* Module Content */}
-        <Card className="mb-8">
-          <CardContent className="p-8">
-            {/* Basic Description */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">모듈 개요</h2>
+        {/* Single Scrollable Content */}
+        <div className="space-y-8">
+          {/* Module Overview */}
+          <Card>
+            <CardContent className="p-8">
+              <div className="flex items-center gap-2 mb-4">
+                <BookOpen className="h-5 w-5 text-blue-600" />
+                <h2 className="text-xl font-semibold text-gray-900">모듈 개요</h2>
+              </div>
               <div className="prose max-w-none">
                 <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">
                   {module.description}
                 </p>
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            {/* Tab Content */}
-            {activeTab === 'content' && (
-              <div>
+          {/* Detailed Learning Content */}
+          {module.content && module.content.length > 0 && (
+            <Card>
+              <CardContent className="p-8">
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">상세 학습 내용</h2>
-                <ContentRenderer content={module.content || []} />
-              </div>
-            )}
+                <ContentRenderer content={module.content} />
+              </CardContent>
+            </Card>
+          )}
 
-            {activeTab === 'videos' && (
-              <div>
-                <VideoDigestList digests={module.digests || []} />
-              </div>
-            )}
+          {/* Recommended Videos */}
+          {module.digests && module.digests.length > 0 && (
+            <Card>
+              <CardContent className="p-8">
+                <VideoDigestList digests={module.digests} />
+              </CardContent>
+            </Card>
+          )}
 
-            {/* Module Actions */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
+          {/* Completion Section */}
+          <Card>
+            <CardContent className="p-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <Clock className="h-4 w-4" />
                   <span>예상 학습 시간: 15-30분</span>
                 </div>
                 <Button
-                  variant="outline"
-                  className="text-green-600 border-green-200 hover:bg-green-50"
+                  className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   <CheckCircle className="h-4 w-4 mr-2" />
                   학습 완료
                 </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-12">
           <div className="flex-1">
             {previousModule && (
               <Button

@@ -19,14 +19,14 @@ const VideoDigestList: React.FC<VideoDigestListProps> = ({ digests }) => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="space-y-6">
+      <div className="flex items-center gap-2">
         <Youtube className="h-5 w-5 text-red-600" />
-        <h3 className="text-lg font-semibold text-gray-900">추천 영상</h3>
+        <h3 className="text-xl font-semibold text-gray-900">추천 유튜브 영상</h3>
         <span className="text-sm text-gray-500">({digests.length}개)</span>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {digests.map((digest, index) => (
           <VideoDigestCard key={index} digest={digest} />
         ))}
