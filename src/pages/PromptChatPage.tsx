@@ -18,7 +18,8 @@ import {
   Heart,
   Tag
 } from 'lucide-react';
-import { PromptSession, PromptMessage, GeminiResponse, LearningSpaceData } from '../types/Prompt';
+import { PromptSession, PromptMessage, GeminiResponse, LearningSpaceData, EnhancedVideoDigest } from '../types/Prompt';
+import { VideoDigest, ContentItem } from '../types/Learning';
 
 const PromptChatPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -160,6 +161,21 @@ const PromptChatPage: React.FC = () => {
     }
   };
 
+  // Helper function to convert enhanced video digest to simple format
+  const convertVideoDigest = (enhancedDigest: EnhancedVideoDigest): VideoDigest => {
+    return {
+      video_id: enhancedDigest.video_id,
+      title: enhancedDigest.title,
+      url: enhancedDigest.url || (enhancedDigest.video_id ? `https://www.youtube.com/watch?v=${enhancedDigest.video_id}` : undefined),
+      duration: enhancedDigest.duration || '0:00',
+      thumbnail: enhancedDigest.thumbnail,
+      published_at: enhancedDigest.published_at,
+      summary: enhancedDigest.summary,
+      lang: enhancedDigest.lang,
+      youtube_channels: enhancedDigest.youtube_channels
+    };
+  };
+
   const handleCreateLearningSpace = async () => {
     if (!sessionId || creatingLearningSpace) return;
 
@@ -212,8 +228,8 @@ const PromptChatPage: React.FC = () => {
             title: module.title,
             description: module.description,
             step_number: module.step_number,
-            content: module.content,
-            digests: module.digests
+            content: module.content as ContentItem[],
+            digests: module.digests.map(convertVideoDigest) as VideoDigest[]
           }))
         );
 

@@ -14,11 +14,19 @@ export interface ContentItem {
   language?: string; // for code blocks
 }
 
+// Enhanced video digest to handle both simple and complex structures
 export interface VideoDigest {
+  video_id?: string;
   title: string;
-  url: string;
-  duration: string;
+  url?: string;
+  duration?: string;
   thumbnail?: string;
+  published_at?: string;
+  summary?: string;
+  lang?: string;
+  youtube_channels?: {
+    name: string;
+  };
 }
 
 export interface Module {

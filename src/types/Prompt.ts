@@ -36,6 +36,21 @@ export interface GeminiResponse {
   main_prompt?: string;
 }
 
+// Enhanced video digest structure to match Gemini response
+export interface EnhancedVideoDigest {
+  video_id?: string;
+  title: string;
+  url?: string;
+  duration?: string;
+  thumbnail?: string;
+  published_at?: string;
+  summary?: string;
+  lang?: string;
+  youtube_channels?: {
+    name: string;
+  };
+}
+
 export interface LearningSpaceData {
   classroom: {
     name: string;
@@ -51,11 +66,6 @@ export interface LearningSpaceData {
       value: string;
       language?: string;
     }>;
-    digests: Array<{
-      title: string;
-      url: string;
-      duration: string;
-      thumbnail?: string;
-    }>;
+    digests: EnhancedVideoDigest[];
   }>;
 }

@@ -1,27 +1,54 @@
 import React from 'react';
 import { VideoDigest } from '../../types/Learning';
 import { Card, CardContent } from '@/components/ui/card';
-import { Play, Clock, ExternalLink } from 'lucide-react';
+import { Play, Clock, ExternalLink, Calendar, User } from 'lucide-react';
 
 interface VideoDigestCardProps {
   digest: VideoDigest;
 }
 
 const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
-  const getYouTubeVideoId = (url: string) => {
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-    return match ? match[1] : null;
+  // Handle both old simple URL format and new enhanced format
+  const getVideoUrl = () => {
+    if (digest.url) {
+      return digest.url;
+    }
+    if (digest.video_id) {
+      return `https://www.youtube.com/watch?v=${digest.video_id}`;
+    }
+    return '#';
   };
 
-  const getThumbnailUrl = (url: string) => {
-    const videoId = getYouTubeVideoId(url);
+  const getYouTubeVideoId = (url: string) => {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+    return match ? match[1] : digest.video_id || null;
+  };
+
+  const getThumbnailUrl = () => {
+    if (digest.thumbnail) {
+      return digest.thumbnail;
+    }
+    const videoId = getYouTubeVideoId(getVideoUrl());
     return videoId 
       ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
-      : digest.thumbnail || '/placeholder-video.jpg';
+      : '/placeholder-video.jpg';
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
   };
 
   const handleVideoClick = () => {
-    window.open(digest.url, '_blank', 'noopener,noreferrer');
+    const url = getVideoUrl();
+    if (url !== '#') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -34,7 +61,7 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
           {/* Thumbnail */}
           <div className="relative w-full h-40 bg-gray-200 overflow-hidden">
             <img
-              src={getThumbnailUrl(digest.url)}
+              src={getThumbnailUrl()}
               alt={digest.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {
@@ -51,9 +78,11 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
             </div>
 
             {/* Duration badge */}
-            <div className="absolute bottom-3 right-3 bg-black bg-opacity-90 text-white text-sm px-3 py-1 rounded-md font-medium">
-              {digest.duration}
-            </div>
+            {digest.duration && (
+              <div className="absolute bottom-3 right-3 bg-black bg-opacity-90 text-white text-sm px-3 py-1 rounded-md font-medium">
+                {digest.duration}
+              </div>
+            )}
           </div>
 
           {/* Content */}
@@ -62,14 +91,40 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
               {digest.title}
             </h4>
             
+            {/* Summary if available */}
+            {digest.summary && (
+              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                {digest.summary}
+              </p>
+            )}
+            
             <div className="flex items-center justify-between text-sm text-gray-500">
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                <span>{digest.duration}</span>
+              <div className="flex items-center gap-3">
+                {digest.duration && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    <span>{digest.duration}</span>
+                  </div>
+                )}
+                {digest.youtube_channels?.name && (
+                  <div className="flex items-center gap-1">
+                    <User className="h-4 w-4" />
+                    <span className="truncate max-w-24">{digest.youtube_channels.name}</span>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <ExternalLink className="h-4 w-4" />
-                <span>Watch on YouTube</span>
+              
+              <div className="flex items-center gap-2">
+                {digest.published_at && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    <span className="text-xs">{formatDate(digest.published_at)}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ExternalLink className="h-4 w-4" />
+                  <span>Watch</span>
+                </div>
               </div>
             </div>
           </div>
