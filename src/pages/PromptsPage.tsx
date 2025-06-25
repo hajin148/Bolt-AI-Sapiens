@@ -45,7 +45,7 @@ const PromptsPage: React.FC = () => {
 
   const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (window.confirm('이 대화를 삭제하시겠습니까?')) {
+    if (window.confirm('Are you sure you want to delete this conversation?')) {
       try {
         await deleteSession(sessionId);
       } catch (error) {
@@ -62,7 +62,7 @@ const PromptsPage: React.FC = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -75,8 +75,8 @@ const PromptsPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">로그인이 필요합니다</h2>
-          <p className="text-gray-600">프롬프트 기능을 사용하려면 로그인해 주세요.</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
+          <p className="text-gray-600">Please log in to access the AI Prompts feature.</p>
         </div>
       </div>
     );
@@ -86,8 +86,8 @@ const PromptsPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600 mb-4" />
-          <p className="text-gray-600">대화 목록을 불러오는 중...</p>
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-purple-600 mb-4" />
+          <p className="text-gray-600">Loading conversations...</p>
         </div>
       </div>
     );
@@ -98,9 +98,9 @@ const PromptsPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">오류가 발생했습니다</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Conversations</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>다시 시도</Button>
+          <Button onClick={() => window.location.reload()}>Try Again</Button>
         </div>
       </div>
     );
@@ -116,8 +116,8 @@ const PromptsPage: React.FC = () => {
               <MessageSquare className="h-6 w-6 text-purple-600" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">AI 프롬프트</h1>
-              <p className="text-gray-600">AI와 대화하며 맞춤형 학습 공간을 생성하세요</p>
+              <h1 className="text-3xl font-bold text-gray-900">AI Prompts</h1>
+              <p className="text-gray-600">Chat with AI and create personalized learning spaces</p>
             </div>
           </div>
           
@@ -125,7 +125,7 @@ const PromptsPage: React.FC = () => {
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="대화 검색..."
+                placeholder="Search conversations..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -141,7 +141,7 @@ const PromptsPage: React.FC = () => {
               ) : (
                 <Plus className="h-4 w-4 mr-2" />
               )}
-              새 대화 시작
+              Start New Conversation
             </Button>
           </div>
         </div>
@@ -153,12 +153,12 @@ const PromptsPage: React.FC = () => {
               <MessageSquare className="h-12 w-12 text-purple-600" />
             </div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              {searchQuery ? '검색 결과가 없습니다' : 'AI와 첫 대화를 시작해보세요'}
+              {searchQuery ? 'No conversations found' : 'Start your first AI conversation'}
             </h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
               {searchQuery 
-                ? '다른 검색어로 시도해보세요.' 
-                : 'AI와 대화하며 학습하고 싶은 주제를 탐색하고, 맞춤형 학습 공간을 자동으로 생성할 수 있습니다.'
+                ? 'Try searching with different keywords.' 
+                : 'Chat with AI to explore learning topics and automatically generate personalized learning spaces.'
               }
             </p>
             {!searchQuery && (
@@ -173,7 +173,7 @@ const PromptsPage: React.FC = () => {
                 ) : (
                   <MessageSquare className="h-5 w-5 mr-2" />
                 )}
-                첫 대화 시작하기
+                Start First Conversation
               </Button>
             )}
           </div>
@@ -234,7 +234,7 @@ const PromptsPage: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <MessageSquare className="h-3 w-3" />
-                      <span>대화</span>
+                      <span>Chat</span>
                     </div>
                   </div>
                 </CardContent>

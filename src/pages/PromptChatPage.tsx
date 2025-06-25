@@ -32,6 +32,7 @@ const PromptChatPage: React.FC = () => {
   const [sending, setSending] = useState(false);
   const [creatingLearningSpace, setCreatingLearningSpace] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showLearningSpaceButton, setShowLearningSpaceButton] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -81,22 +82,23 @@ const PromptChatPage: React.FC = () => {
     const userMessage = inputValue.trim();
     setInputValue('');
     setSending(true);
+    setError(null);
 
     try {
-      // 사용자 메시지 저장
+      // Save user message
       await addMessage({
         session_id: sessionId,
         sender: 'user',
         content: userMessage
       });
 
-      // 현재 메시지들과 새 메시지를 포함한 배열 생성
+      // Create message array including the new user message
       const allMessages = [
         ...messages,
         { sender: 'user' as const, content: userMessage }
       ];
 
-      // Gemini API 호출
+      // Call Gemini API
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini_chat`, {
         method: 'POST',
         headers: {
@@ -117,14 +119,14 @@ const PromptChatPage: React.FC = () => {
 
       const aiResponse: GeminiResponse = await response.json();
 
-      // AI 응답 저장
-      const aiMessage = await addMessage({
+      // Save AI response
+      await addMessage({
         session_id: sessionId,
         sender: 'ai',
         content: aiResponse.content
       });
 
-      // 세션 업데이트 (main_prompt가 있는 경우)
+      // Update session if main_prompt is provided
       if (aiResponse.main_prompt && session) {
         await supabase
           .from('prompt_sessions')
@@ -145,15 +147,14 @@ const PromptChatPage: React.FC = () => {
         } : null);
       }
 
-      // suggest_learning_space 플래그를 메시지에 추가 (UI에서 사용)
+      // Show learning space button if suggested
       if (aiResponse.suggest_learning_space) {
-        // 메시지 상태에 플래그 추가 (로컬 상태만)
-        // 실제 DB에는 저장하지 않고 UI에서만 사용
+        setShowLearningSpaceButton(true);
       }
 
     } catch (error) {
       console.error('Error sending message:', error);
-      setError('메시지 전송에 실패했습니다. 다시 시도해 주세요.');
+      setError('Failed to send message. Please try again.');
     } finally {
       setSending(false);
     }
@@ -163,8 +164,10 @@ const PromptChatPage: React.FC = () => {
     if (!sessionId || creatingLearningSpace) return;
 
     setCreatingLearningSpace(true);
+    setError(null);
+    
     try {
-      // 전체 메시지 히스토리를 사용하여 학습 공간 생성
+      // Use entire message history to generate learning space
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini_chat`, {
         method: 'POST',
         headers: {
@@ -186,7 +189,7 @@ const PromptChatPage: React.FC = () => {
 
       const learningSpaceData: LearningSpaceData = await response.json();
 
-      // 강의실 생성
+      // Create classroom
       const { data: classroom, error: classroomError } = await supabase
         .from('classrooms')
         .insert({
@@ -200,7 +203,7 @@ const PromptChatPage: React.FC = () => {
 
       if (classroomError) throw classroomError;
 
-      // 모듈들 생성
+      // Create modules
       const { error: modulesError } = await supabase
         .from('modules')
         .insert(
@@ -214,7 +217,7 @@ const PromptChatPage: React.FC = () => {
 
       if (modulesError) throw modulesError;
 
-      // 학습 공간 링크 생성
+      // Create learning space link
       await supabase
         .from('learning_space_links')
         .insert({
@@ -222,12 +225,12 @@ const PromptChatPage: React.FC = () => {
           classroom_id: classroom.id
         });
 
-      // 생성된 강의실로 이동
+      // Navigate to the created classroom
       navigate(`/classroom/${classroom.id}`);
 
     } catch (error) {
       console.error('Error creating learning space:', error);
-      setError('학습 공간 생성에 실패했습니다. 다시 시도해 주세요.');
+      setError('Failed to create learning space. Please try again.');
     } finally {
       setCreatingLearningSpace(false);
     }
@@ -245,8 +248,8 @@ const PromptChatPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">로그인이 필요합니다</h2>
-          <p className="text-gray-600">프롬프트 기능을 사용하려면 로그인해 주세요.</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
+          <p className="text-gray-600">Please log in to access the AI Prompts feature.</p>
         </div>
       </div>
     );
@@ -257,7 +260,7 @@ const PromptChatPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-purple-600 mb-4" />
-          <p className="text-gray-600">대화를 불러오는 중...</p>
+          <p className="text-gray-600">Loading conversation...</p>
         </div>
       </div>
     );
@@ -268,10 +271,10 @@ const PromptChatPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">대화를 찾을 수 없습니다</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Conversation Not Found</h2>
           <p className="text-gray-600 mb-4">{error}</p>
           <Button onClick={() => navigate('/prompts')} variant="outline">
-            대화 목록으로 돌아가기
+            Back to Conversations
           </Button>
         </div>
       </div>
@@ -290,7 +293,7 @@ const PromptChatPage: React.FC = () => {
             className="mb-4 hover:bg-gray-100"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            대화 목록
+            All Conversations
           </Button>
           
           {session && (
@@ -300,7 +303,7 @@ const PromptChatPage: React.FC = () => {
               </h2>
               {session.main_prompt && (
                 <div className="mb-4">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">Main Prompt</h3>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">Main Topic</h3>
                   <div className="p-3 bg-gray-50 rounded-lg">
                     <p className="text-sm text-gray-600">{session.main_prompt}</p>
                   </div>
@@ -347,8 +350,8 @@ const PromptChatPage: React.FC = () => {
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Bot className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">AI와 대화를 시작하세요</h3>
-              <p className="text-gray-600">학습하고 싶은 주제에 대해 질문해보세요.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Start a conversation with AI</h3>
+              <p className="text-gray-600">Ask about any topic you'd like to learn about.</p>
             </div>
           ) : (
             messages.map((message, index) => (
@@ -370,8 +373,11 @@ const PromptChatPage: React.FC = () => {
                     <p className="whitespace-pre-wrap">{message.content}</p>
                   </div>
                   
-                  {/* 학습 공간 생성 버튼 - AI 메시지에만 표시 */}
-                  {message.sender === 'ai' && index === messages.length - 1 && session?.main_prompt && (
+                  {/* Learning space creation button - only show for the last AI message if suggested */}
+                  {message.sender === 'ai' && 
+                   index === messages.length - 1 && 
+                   showLearningSpaceButton && 
+                   session?.main_prompt && (
                     <div className="mt-4">
                       <Button
                         onClick={handleCreateLearningSpace}
@@ -383,7 +389,7 @@ const PromptChatPage: React.FC = () => {
                         ) : (
                           <Sparkles className="h-4 w-4 mr-2" />
                         )}
-                        학습 공간 생성
+                        Create Learning Space
                       </Button>
                     </div>
                   )}
@@ -401,7 +407,7 @@ const PromptChatPage: React.FC = () => {
                 <div className="inline-block p-4 rounded-lg bg-white border border-gray-200">
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="text-gray-600">AI가 응답을 생성하고 있습니다...</span>
+                    <span className="text-gray-600">AI is generating a response...</span>
                   </div>
                 </div>
               </div>
@@ -422,7 +428,7 @@ const PromptChatPage: React.FC = () => {
                 onClick={() => setError(null)}
                 className="mt-2 text-red-600 hover:text-red-700"
               >
-                닫기
+                Dismiss
               </Button>
             </div>
           )}
@@ -433,7 +439,7 @@ const PromptChatPage: React.FC = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="메시지를 입력하세요..."
+              placeholder="Type your message..."
               disabled={sending}
               className="flex-1"
             />
