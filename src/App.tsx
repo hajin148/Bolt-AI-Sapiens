@@ -160,6 +160,7 @@ function App() {
   const isNewsRoute = location.pathname.startsWith('/news');
   const isLearningRoute = location.pathname.startsWith('/learning') || location.pathname.startsWith('/classroom');
   const isPromptRoute = location.pathname.startsWith('/prompts');
+  const isPromptChatRoute = location.pathname.match(/^\/prompts\/[^\/]+$/);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -175,7 +176,8 @@ function App() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {!isPromptRoute && (
+        {/* Show NavBar on all pages except individual chat pages */}
+        {!isPromptChatRoute && (
           <NavBar
             onLoginClick={() => {
               setAuthMode('login');
