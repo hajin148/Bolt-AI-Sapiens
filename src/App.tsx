@@ -13,6 +13,8 @@ import ArticlePage from './components/news/ArticlePage';
 import LearningSpacePage from './pages/LearningSpacePage';
 import ClassroomDetailPage from './pages/ClassroomDetailPage';
 import ModuleDetailPage from './pages/ModuleDetailPage';
+import PromptsPage from './pages/PromptsPage';
+import PromptChatPage from './pages/PromptChatPage';
 import { useAuth } from './contexts/AuthContext';
 
 function HomePage() {
@@ -157,6 +159,7 @@ function App() {
 
   const isNewsRoute = location.pathname.startsWith('/news');
   const isLearningRoute = location.pathname.startsWith('/learning') || location.pathname.startsWith('/classroom');
+  const isPromptRoute = location.pathname.startsWith('/prompts');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -172,17 +175,19 @@ function App() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <NavBar
-          onLoginClick={() => {
-            setAuthMode('login');
-            setShowAuthModal(true);
-          }}
-          onSignupClick={() => {
-            setAuthMode('signup');
-            setShowAuthModal(true);
-          }}
-          onUpgradeClick={() => setShowPricingModal(true)}
-        />
+        {!isPromptRoute && (
+          <NavBar
+            onLoginClick={() => {
+              setAuthMode('login');
+              setShowAuthModal(true);
+            }}
+            onSignupClick={() => {
+              setAuthMode('signup');
+              setShowAuthModal(true);
+            }}
+            onUpgradeClick={() => setShowPricingModal(true)}
+          />
+        )}
 
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -191,10 +196,12 @@ function App() {
           <Route path="/learning" element={<LearningSpacePage />} />
           <Route path="/classroom/:id" element={<ClassroomDetailPage />} />
           <Route path="/classroom/:classroomId/module/:moduleId" element={<ModuleDetailPage />} />
+          <Route path="/prompts" element={<PromptsPage />} />
+          <Route path="/prompts/:sessionId" element={<PromptChatPage />} />
         </Routes>
       </div>
 
-      {!isNewsRoute && !isLearningRoute && <Footer />}
+      {!isNewsRoute && !isLearningRoute && !isPromptRoute && <Footer />}
     </div>
   );
 }
