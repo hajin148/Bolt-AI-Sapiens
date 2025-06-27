@@ -1,5 +1,5 @@
 import React from 'react';
-import { Crown, Check, Zap, Shield, Headphones } from 'lucide-react';
+import { Crown, Check, Zap, Shield, Headphones, BookOpen } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 
 interface UpgradeViewProps {

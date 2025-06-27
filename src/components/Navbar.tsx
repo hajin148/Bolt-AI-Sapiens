@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ user, onAuthClick, onMenuClick, currentView }: NavbarProps) {
-  const showUpgradeButton = !user || currentView === 'upgrade';
+  const showUpgradeButton = !user && currentView === 'upgrade';
 
   return (
     <nav className="bg-white border-b border-gray-200 px-4 py-3">
