@@ -158,7 +158,10 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
   // Real-time subscription for prompt sessions
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      setPromptSessions([]);
+      return;
+    }
 
     fetchPromptSessions();
 
@@ -544,7 +547,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                     ) : (
                       <div className="px-[18px] py-2">
                         <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
-                          {currentUser ? 'No conversations yet' : 'Login to see history'}
+                          No conversations yet
                         </span>
                       </div>
                     )}
@@ -708,7 +711,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                 ) : (
                   <div className="px-[18px] py-2">
                     <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
-                      {currentUser ? 'No conversations yet' : 'Login to see history'}
+                      No conversations yet
                     </span>
                   </div>
                 )}
