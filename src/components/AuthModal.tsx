@@ -100,28 +100,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
             <ArrowLeft size={24} />
           </button>
         )}
-          {/* Title and Description */}
-        {/* Header */}
-        <div className="px-8 pt-8">
-          <div className="space-y-3">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {mode === 'login' 
-                ? 'Welcome back!' 
-                : signupStep === 1 
-                  ? 'Create your account' 
-                  : 'Tell us about yourself'
-              }
-            </h1>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              {mode === 'login' 
-                ? 'Sign in to continue your AI journey' 
-                : signupStep === 1
-                  ? 'Join thousands of users discovering amazing AI tools'
-                  : 'Help us personalize your experience'
-              }
-            </p>
-          </div>
-
           {/* Progress Indicator for Signup */}
           {mode === 'signup' && (
             <div className="flex justify-center mt-8 space-x-2">
