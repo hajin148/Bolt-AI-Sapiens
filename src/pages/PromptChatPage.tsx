@@ -52,9 +52,14 @@ const PromptChatPage: React.FC = () => {
           .select('*')
           .eq('id', sessionId)
           .eq('user_id', currentUser.id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
+        
+        if (!data) {
+          throw new Error('Session not found or you do not have permission to access it');
+        }
+        
         setSession(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch session');
