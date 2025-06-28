@@ -20,12 +20,11 @@ interface SideBarProps {
   onUpgradeClick: () => void;
 }
 
-interface LearningModule {
+interface LearningClassroom {
   id: string;
-  title: string;
-  classroom_id: string;
-  classroom_name: string;
-  step_number: number;
+  name: string;
+  color: string;
+  module_count?: number;
 }
 
 interface PromptSession {
@@ -38,33 +37,20 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, userProfile, userTokens } = useAuth();
-  const [learningModules, setLearningModules] = useState<LearningModule[]>([]);
+  const [learningClassrooms, setLearningClassrooms] = useState<LearningClassroom[]>([]);
   const [promptSessions, setPromptSessions] = useState<PromptSession[]>([]);
-  const [loadingModules, setLoadingModules] = useState(false);
+  const [loadingClassrooms, setLoadingClassrooms] = useState(false);
   const [loadingPrompts, setLoadingPrompts] = useState(false);
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Real-time subscription for learning modules
+  // Real-time subscription for learning classrooms
   useEffect(() => {
     if (!currentUser) return;
 
     const subscription = supabase
-      .channel('learning_modules_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'modules',
-          filter: `classrooms.user_id=eq.${currentUser.id}`
-        },
-        () => {
-          // Refetch learning modules when changes occur
-          fetchLearningModules();
-        }
-      )
+      .channel('learning_classrooms_changes')
       .on(
         'postgres_changes',
         {
@@ -74,8 +60,8 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           filter: `user_id=eq.${currentUser.id}`
         },
         () => {
-          // Refetch learning modules when classrooms change
-          fetchLearningModules();
+          // Refetch learning classrooms when changes occur
+          fetchLearningClassrooms();
         }
       )
       .subscribe();
@@ -100,55 +86,48 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // 사용자의 Learning Space 모듈들 가져오기 함수
-  const fetchLearningModules = async () => {
+  // 사용자의 Learning Space 클래스룸들 가져오기 함수
+  const fetchLearningClassrooms = async () => {
     if (!currentUser) {
-      setLearningModules([]);
+      setLearningClassrooms([]);
       return;
     }
 
-    setLoadingModules(true);
+    setLoadingClassrooms(true);
     try {
       const { data, error } = await supabase
-        .from('modules')
+        .from('classrooms')
         .select(`
           id,
-          title,
-          classroom_id,
-          step_number,
-          classrooms!inner(
-            id,
-            name,
-            user_id
-          )
+          name,
+          color,
+          modules(count)
         `)
-        .eq('classrooms.user_id', currentUser.id)
-        .order('created_at', { foreignTable: 'classrooms', ascending: false })
-        .order('step_number', { ascending: true })
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false })
         .limit(5);
 
       if (error) throw error;
 
-      const modules: LearningModule[] = (data || []).map(item => ({
+      const classrooms: LearningClassroom[] = (data || []).map(item => ({
         id: item.id,
-        title: item.title,
-        classroom_id: item.classroom_id,
-        classroom_name: item.classrooms.name,
-        step_number: item.step_number
+        name: item.name,
+        color: item.color,
+        module_count: item.modules?.[0]?.count || 0
       }));
 
-      setLearningModules(modules);
+      setLearningClassrooms(classrooms);
     } catch (error) {
-      console.error('Error fetching learning modules:', error);
-      setLearningModules([]);
+      console.error('Error fetching learning classrooms:', error);
+      setLearningClassrooms([]);
     } finally {
-      setLoadingModules(false);
+      setLoadingClassrooms(false);
     }
   };
 
-  // 사용자의 Learning Space 모듈들 가져오기
+  // 사용자의 Learning Space 클래스룸들 가져오기
   useEffect(() => {
-    fetchLearningModules();
+    fetchLearningClassrooms();
   }, [currentUser]);
 
   const fetchPromptSessions = async () => {
@@ -216,12 +195,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
       .filter(Boolean);
   };
 
-  const allFavoriteItems = getFavoriteTools();
-  const displayedFavoriteItems = showAllFavorites ? allFavoriteItems : allFavoriteItems.slice(0, 5);
-  const hasMoreFavorites = allFavoriteItems.length > 5;
-
-  const learnSpaceItems = learningModules.map(module => ({ name: module.title }));
-
   const getToolIcon = (toolName: string) => {
     const tool = tools.find(t => t.name.toLowerCase() === toolName.toLowerCase());
     return tool?.iconUrl || null;
@@ -270,11 +243,23 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     if (isMobile) setIsExpanded(false);
   };
 
-  const handleModuleClick = (moduleName: string) => {
-    const module = learningModules.find(m => m.title === moduleName);
-    if (module) {
-      navigate(`/classroom/${module.classroom_id}`);
-    }
+  const handleClassroomClick = (classroomId: string) => {
+    navigate(`/classroom/${classroomId}`);
+    if (isMobile) setIsExpanded(false);
+  };
+
+  const handleLearningSpaceClick = () => {
+    navigate('/learning');
+    if (isMobile) setIsExpanded(false);
+  };
+
+  const handleAllLearningClick = () => {
+    navigate('/learning');
+    if (isMobile) setIsExpanded(false);
+  };
+
+  const handleAllPromptsClick = () => {
+    navigate('/prompts');
     if (isMobile) setIsExpanded(false);
   };
 
@@ -284,23 +269,37 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
   };
 
   // Reusable menu item component
-  const MenuItem = ({ name, section, sessionId }: { name: string; section: 'recent' | 'favorite' | 'learn' | 'prompt'; sessionId?: string }) => {
+  const MenuItem = ({ 
+    name, 
+    section, 
+    sessionId, 
+    classroomId, 
+    color,
+    moduleCount 
+  }: { 
+    name: string; 
+    section: 'recent' | 'favorite' | 'learn' | 'prompt'; 
+    sessionId?: string;
+    classroomId?: string;
+    color?: string;
+    moduleCount?: number;
+  }) => {
     const iconUrl = section === 'favorite' ? getToolIcon(name) : null;
     
     return (
       <div 
-        className="flex items-center gap-2 px-[18px] py-1 w-full cursor-pointer hover:bg-[#4c4c4d] transition-colors"
+        className="flex items-center gap-2 px-[18px] py-2 w-full cursor-pointer hover:bg-[#4c4c4d] transition-colors rounded-md"
         onClick={() => {
           if (section === 'favorite') {
             handleToolClick(name);
-          } else if (section === 'learn') {
-            handleModuleClick(name);
+          } else if (section === 'learn' && classroomId) {
+            handleClassroomClick(classroomId);
           } else if (section === 'prompt' && sessionId) {
             handlePromptClick(sessionId);
           }
         }}
       >
-        {/* Only show icons for favorite section */}
+        {/* Icons for different sections */}
         {section === 'favorite' && (
           <>
             {iconUrl ? (
@@ -316,21 +315,80 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                 }}
               />
             ) : null}
-            <Avatar className={`w-6 h-6 bg-[#565656] rounded flex-shrink-0 ${iconUrl ? 'hidden' : 'flex'}`} />
+            <div className={`w-6 h-6 bg-[#565656] rounded flex-shrink-0 ${iconUrl ? 'hidden' : 'flex'} items-center justify-center`}>
+              <span className="text-white text-xs font-bold">{name.charAt(0)}</span>
+            </div>
           </>
         )}
         
-        <span 
-          className={`font-['Pretendard-Regular',Helvetica] font-normal text-[#d5d5d5] text-[13px] tracking-[-0.20px] leading-[22px] ${
-            (section === 'learn' || section === 'prompt') ? 'truncate' : 'whitespace-nowrap'
-          } flex-1 min-w-0`}
-          title={name} // Show full text on hover
-        >
-          {name}
-        </span>
+        {section === 'learn' && (
+          <div 
+            className="w-6 h-6 rounded flex-shrink-0 flex items-center justify-center"
+            style={{ backgroundColor: color || '#6B7280' }}
+          >
+            <span className="text-white text-xs font-bold">{name.charAt(0)}</span>
+          </div>
+        )}
+        
+        <div className="flex-1 min-w-0">
+          <span 
+            className="font-['Pretendard-Regular',Helvetica] font-normal text-[#d5d5d5] text-[13px] tracking-[-0.20px] leading-[22px] truncate block"
+            title={name}
+          >
+            {name}
+          </span>
+          {section === 'learn' && moduleCount !== undefined && (
+            <span className="text-[11px] text-gray-500">
+              {moduleCount} modules
+            </span>
+          )}
+        </div>
       </div>
     );
   };
+
+  // Show more/less button component
+  const ShowMoreButton = ({ 
+    showAll, 
+    onToggle, 
+    totalCount, 
+    displayedCount,
+    section 
+  }: {
+    showAll: boolean;
+    onToggle: () => void;
+    totalCount: number;
+    displayedCount: number;
+    section: string;
+  }) => (
+    <button
+      onClick={onToggle}
+      className="px-[18px] py-2 w-full text-left text-sm text-blue-400 hover:text-blue-300 transition-colors"
+    >
+      {showAll ? 'Show less' : `See more (${totalCount - displayedCount})`}
+    </button>
+  );
+
+  // View all button component
+  const ViewAllButton = ({ onClick, text }: { onClick: () => void; text: string }) => (
+    <button
+      onClick={onClick}
+      className="px-[18px] py-1 w-full text-left text-xs text-gray-500 hover:text-gray-400 transition-colors"
+    >
+      View all {text} →
+    </button>
+  );
+
+  const allFavoriteItems = getFavoriteTools();
+  const displayedFavoriteItems = showAllFavorites ? allFavoriteItems : allFavoriteItems.slice(0, 5);
+  const hasMoreFavorites = allFavoriteItems.length > 5;
+
+  const learnSpaceItems = learningClassrooms.map(classroom => ({ 
+    name: classroom.name,
+    id: classroom.id,
+    color: classroom.color,
+    moduleCount: classroom.module_count
+  }));
 
   // 모바일에서 햄버거 메뉴만 표시
   if (isMobile) {
@@ -368,7 +426,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                 <Button
                   variant="ghost"
                   className="relative self-stretch w-full h-11 justify-start px-[18px] text-white hover:bg-[#4c4c4d]"
-                  onClick={handleNewPrompt}
+                  onClick={handleCreateNewPrompt}
                 >
                   <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
                   <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
@@ -388,12 +446,13 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                           <MenuItem key={`favorite-${index}`} name={item.name} section="favorite" />
                         ))}
                         {hasMoreFavorites && (
-                          <button
-                            onClick={() => setShowAllFavorites(!showAllFavorites)}
-                            className="px-[18px] py-2 w-full text-left text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                          >
-                            {showAllFavorites ? 'Show less' : `See more (${allFavoriteItems.length - 5})`}
-                          </button>
+                          <ShowMoreButton
+                            showAll={showAllFavorites}
+                            onToggle={() => setShowAllFavorites(!showAllFavorites)}
+                            totalCount={allFavoriteItems.length}
+                            displayedCount={5}
+                            section="favorites"
+                          />
                         )}
                       </>
                     ) : (
@@ -408,11 +467,19 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
                 {/* LearnSpace Section */}
                 <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
-                  <h3 className="px-[18px] pt-[15px] font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
-                    LearnSpace
-                  </h3>
-                  <div className="flex flex-col w-full items-start mt-3">
-                    {loadingModules ? (
+                  <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
+                    <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                      LearnSpace
+                    </h3>
+                    <button
+                      onClick={handleLearningSpaceClick}
+                      className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="flex flex-col w-full items-start">
+                    {loadingClassrooms ? (
                       <div className="px-[18px] py-2 flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
                         <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
@@ -420,13 +487,25 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                         </span>
                       </div>
                     ) : learnSpaceItems.length > 0 ? (
-                      learnSpaceItems.map((item, index) => (
-                        <MenuItem key={`learn-${index}`} name={item.name} section="learn" />
-                      ))
+                      <>
+                        {learnSpaceItems.map((item, index) => (
+                          <MenuItem 
+                            key={`learn-${index}`} 
+                            name={item.name} 
+                            section="learn" 
+                            classroomId={item.id}
+                            color={item.color}
+                            moduleCount={item.moduleCount}
+                          />
+                        ))}
+                        {learnSpaceItems.length >= 5 && (
+                          <ViewAllButton onClick={handleAllLearningClick} text="classrooms" />
+                        )}
+                      </>
                     ) : (
                       <div className="px-[18px] py-2">
                         <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
-                          No modules yet
+                          No classrooms yet
                         </span>
                       </div>
                     )}
@@ -435,10 +514,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
                 {/* Prompt History Section */}
                 <div className="relative self-stretch w-full pb-4">
-                  <h3 className="px-[18px] pt-[15px] font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
-                    Prompt History
-                  </h3>
-                  <div className="flex flex-col w-full items-start mt-3">
+                  <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
+                    <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                      Prompt History
+                    </h3>
+                  </div>
+                  <div className="flex flex-col w-full items-start">
                     {loadingPrompts ? (
                       <div className="px-[18px] py-2 flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
@@ -447,14 +528,19 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                         </span>
                       </div>
                     ) : promptSessions.length > 0 ? (
-                      promptSessions.map((session) => (
-                        <MenuItem 
-                          key={`prompt-${session.id}`} 
-                          name={session.title} 
-                          section="prompt" 
-                          sessionId={session.id}
-                        />
-                      ))
+                      <>
+                        {promptSessions.map((session) => (
+                          <MenuItem 
+                            key={`prompt-${session.id}`} 
+                            name={session.title} 
+                            section="prompt" 
+                            sessionId={session.id}
+                          />
+                        ))}
+                        {promptSessions.length >= 5 && (
+                          <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
+                        )}
+                      </>
                     ) : (
                       <div className="px-[18px] py-2">
                         <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
@@ -469,7 +555,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
             {/* Points Display - Fixed at bottom */}
             <div className="p-2.5 pb-[46px]">
-              <div className="w-full h-[38px] bg-[#222222] rounded-[40px] overflow-hidden flex items-center justify-between px-3">
+              <div 
+                className={`w-full h-[38px] bg-[#222222] rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors ${
+                  currentUser ? 'cursor-pointer hover:bg-[#333333]' : 'cursor-default'
+                }`}
+                onClick={currentUser ? onUpgradeClick : undefined}
+              >
                 <Wallet className="w-5 h-5 text-white flex-shrink-0" />
                 <span className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
                   {userTokens.toLocaleString()}pt
@@ -507,22 +598,25 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
             {/* Favorites Section */}
             <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
-              <h3 className="px-[18px] pt-4 font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
-                Favorites
-              </h3>
-              <div className="flex flex-col w-full items-start mt-3">
+              <div className="flex items-center justify-between px-[18px] pt-4 mb-3">
+                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                  Favorites
+                </h3>
+              </div>
+              <div className="flex flex-col w-full items-start">
                 {displayedFavoriteItems.length > 0 ? (
                   <>
                     {displayedFavoriteItems.map((item, index) => (
                       <MenuItem key={`favorite-${index}`} name={item.name} section="favorite" />
                     ))}
                     {hasMoreFavorites && (
-                      <button
-                        onClick={() => setShowAllFavorites(!showAllFavorites)}
-                        className="px-[18px] py-2 w-full text-left text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                      >
-                        {showAllFavorites ? 'Show less' : `See more (${allFavoriteItems.length - 5})`}
-                      </button>
+                      <ShowMoreButton
+                        showAll={showAllFavorites}
+                        onToggle={() => setShowAllFavorites(!showAllFavorites)}
+                        totalCount={allFavoriteItems.length}
+                        displayedCount={5}
+                        section="favorites"
+                      />
                     )}
                   </>
                 ) : (
@@ -537,11 +631,19 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
             {/* LearnSpace Section */}
             <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
-              <h3 className="px-[18px] pt-[15px] font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
-                LearnSpace
-              </h3>
-              <div className="flex flex-col w-full items-start mt-3">
-                {loadingModules ? (
+              <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
+                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                  LearnSpace
+                </h3>
+                <button
+                  onClick={handleLearningSpaceClick}
+                  className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex flex-col w-full items-start">
+                {loadingClassrooms ? (
                   <div className="px-[18px] py-2 flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
                     <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
@@ -549,13 +651,25 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                     </span>
                   </div>
                 ) : learnSpaceItems.length > 0 ? (
-                  learnSpaceItems.map((item, index) => (
-                    <MenuItem key={`learn-${index}`} name={item.name} section="learn" />
-                  ))
+                  <>
+                    {learnSpaceItems.map((item, index) => (
+                      <MenuItem 
+                        key={`learn-${index}`} 
+                        name={item.name} 
+                        section="learn" 
+                        classroomId={item.id}
+                        color={item.color}
+                        moduleCount={item.moduleCount}
+                      />
+                    ))}
+                    {learnSpaceItems.length >= 5 && (
+                      <ViewAllButton onClick={handleAllLearningClick} text="classrooms" />
+                    )}
+                  </>
                 ) : (
                   <div className="px-[18px] py-2">
                     <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
-                      {currentUser ? 'No modules yet' : 'Login to see modules'}
+                      {currentUser ? 'No classrooms yet' : 'Login to see classrooms'}
                     </span>
                   </div>
                 )}
@@ -564,10 +678,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
             {/* Prompt History Section */}
             <div className="relative self-stretch w-full pb-4">
-              <h3 className="px-[18px] pt-[15px] font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
-                Prompt History
-              </h3>
-              <div className="flex flex-col w-full items-start mt-3">
+              <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
+                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                  Prompt History
+                </h3>
+              </div>
+              <div className="flex flex-col w-full items-start">
                 {loadingPrompts ? (
                   <div className="px-[18px] py-2 flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
@@ -576,14 +692,19 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                     </span>
                   </div>
                 ) : promptSessions.length > 0 ? (
-                  promptSessions.map((session) => (
-                    <MenuItem 
-                      key={`prompt-${session.id}`} 
-                      name={session.title} 
-                      section="prompt" 
-                      sessionId={session.id}
-                    />
-                  ))
+                  <>
+                    {promptSessions.map((session) => (
+                      <MenuItem 
+                        key={`prompt-${session.id}`} 
+                        name={session.title} 
+                        section="prompt" 
+                        sessionId={session.id}
+                      />
+                    ))}
+                    {promptSessions.length >= 5 && (
+                      <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
+                    )}
+                  </>
                 ) : (
                   <div className="px-[18px] py-2">
                     <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
