@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { BellIcon, GlobeIcon, UserIcon, Menu, X } from 'lucide-react';
+import { BellIcon, GlobeIcon, UserIcon, Menu, X, LogOut, LogIn, UserPlus } from 'lucide-react';
 
 interface NavBarProps {
   onLoginClick: () => void;
@@ -12,6 +12,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeClick }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const { currentUser, userProfile, logout, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,8 +30,17 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
   const isPromptPage = location.pathname.startsWith('/prompts');
   const isHomePage = location.pathname === '/';
 
+  const handleUserIconClick = () => {
+    setShowUserDropdown(!showUserDropdown);
+  };
+
+  const handleDropdownItemClick = (action: () => void) => {
+    setShowUserDropdown(false);
+    action();
+  };
+
   return (
-    <header className="bg-[#202020] fixed top-0 left-0 right-0 z-50">
+    <header className="bg-[#202020] fixed top-0 left-0 right-0 z-50 relative">
       <div className="w-full px-4 h-[72px] flex items-center justify-between">
         {/* Logo and Brand */}
         <div className="flex items-center">
@@ -103,40 +113,90 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               <Button variant="ghost" size="icon" className="w-7 h-7 p-0 hover:bg-[#333333]">
                 <GlobeIcon className="w-7 h-7 text-white" />
               </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="w-7 h-7 p-0 hover:bg-[#333333]"
-                onClick={handleLogout}
-              >
-                <UserIcon className="w-7 h-7 text-white" />
-              </Button>
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="w-7 h-7 p-0 hover:bg-[#333333]"
+                  onClick={handleUserIconClick}
+                >
+                  <UserIcon className="w-7 h-7 text-white" />
+                </Button>
+                
+                {/* User Dropdown Menu */}
+                {showUserDropdown && (
+                  <>
+                    {/* Backdrop */}
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setShowUserDropdown(false)}
+                    />
+                    
+                    {/* Dropdown */}
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                      <button
+                        onClick={() => handleDropdownItemClick(handleLogout)}
+                        className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        로그아웃
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
               {userProfile && !userProfile.isPaid && (
                 <Button
                   onClick={onUpgradeClick}
                   className="bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 border-0 text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3"
-                >
+              >
                   Upgrade to Pro
                 </Button>
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <Button
-                onClick={onLoginClick}
-                variant="ghost"
-                className="text-white hover:text-blue-400 hover:bg-[#333333] text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px]"
-                disabled={loading}
-              >
-                Login
-              </Button>
-              <Button
-                onClick={onSignupClick}
-                className="bg-blue-600 text-white hover:bg-blue-700 border-0 text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3"
-                disabled={loading}
-              >
-                Sign Up
-              </Button>
+            <div className="flex items-center gap-3 relative">
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="w-7 h-7 p-0 hover:bg-[#333333]"
+                  onClick={handleUserIconClick}
+                >
+                  <UserIcon className="w-7 h-7 text-white" />
+                </Button>
+                
+                {/* User Dropdown Menu for non-logged in users */}
+                {showUserDropdown && (
+                  <>
+                    {/* Backdrop */}
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setShowUserDropdown(false)}
+                    />
+                    
+                    {/* Dropdown */}
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                      <button
+                        onClick={() => handleDropdownItemClick(onLoginClick)}
+                        className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                        disabled={loading}
+                      >
+                        <LogIn className="h-4 w-4" />
+                        로그인
+                      </button>
+                      <button
+                        onClick={() => handleDropdownItemClick(onSignupClick)}
+                        className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                        disabled={loading}
+                      >
+                        <UserPlus className="h-4 w-4" />
+                        회원가입
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -202,41 +262,41 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               {/* Mobile auth buttons */}
               {currentUser ? (
                 <div className="pt-3 border-t border-gray-700">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="w-7 h-7 p-0 hover:bg-[#333333]"
+                  <button
                     onClick={() => {
                       handleLogout();
                       setIsMobileMenuOpen(false);
                     }}
+                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 flex items-center gap-2"
                   >
-                    <UserIcon className="w-7 h-7 text-white" />
-                  </Button>
+                    <LogOut className="h-4 w-4" />
+                    로그아웃
+                  </button>
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <Button
+                  <button
                     onClick={() => {
                       onLoginClick();
                       setIsMobileMenuOpen(false);
                     }}
-                    variant="ghost"
-                    className="w-full text-white hover:text-blue-400 hover:bg-[#333333] text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px]"
+                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 flex items-center gap-2"
                     disabled={loading}
                   >
-                    Login
-                  </Button>
-                  <Button
+                    <LogIn className="h-4 w-4" />
+                    로그인
+                  </button>
+                  <button
                     onClick={() => {
                       onSignupClick();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full bg-blue-600 text-white hover:bg-blue-700 border-0 text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px]"
+                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 flex items-center gap-2"
                     disabled={loading}
                   >
-                    Sign Up
-                  </Button>
+                    <UserPlus className="h-4 w-4" />
+                    회원가입
+                  </button>
                 </div>
               )}
               
