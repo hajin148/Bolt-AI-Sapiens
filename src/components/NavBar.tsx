@@ -88,9 +88,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
           {/* Action icons and auth */}
           {currentUser ? (
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="w-7 h-7 p-0 hover:bg-[#333333]">
-                <BellIcon className="w-7 h-7 text-white" />
-              </Button>
               <div className="relative">
                 <Button 
                   variant="ghost" 
