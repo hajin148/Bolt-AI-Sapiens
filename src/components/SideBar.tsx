@@ -392,7 +392,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         {section === 'prompt' && sessionId && (
           <button
             onClick={(e) => handleDeletePrompt(sessionId, e)}
-            className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 p-1 hover:bg-red-600/20 hover:text-red-400 text-gray-500 rounded"
+            className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 p-1 hover:bg-red-600/20 hover:text-red-400 text-[#d5d5d5] rounded"
           >
             <Trash2 className="h-3 w-3" />
           </button>
