@@ -100,19 +100,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
             <ArrowLeft size={24} />
           </button>
         )}
-
-        {/* Header */}
-        <div className="px-8 pt-16 pb-8 text-center">
-          {/* Logo */}
-          <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg overflow-hidden">
-            <img
-              src="/logo.png"
-              alt="AI Sapiens Logo"
-              className="w-full h-full object-contain"
-              onError={(e) => {
-              }}
-            />
-          </div>
           
           {/* Title and Description */}
           <div className="space-y-3">
