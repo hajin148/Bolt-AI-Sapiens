@@ -146,7 +146,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                   </div>
                 )}
 
-                <div className="space-y-2">
+                <div className="space-y-2 mt-20">
                   <label className="block text-sm font-semibold text-gray-700 mb-3">Email Address</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
