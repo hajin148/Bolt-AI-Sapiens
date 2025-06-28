@@ -47,7 +47,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
     }
   };
   return (
-    <header className="bg-[#202020] fixed top-0 left-0 right-0 z-50 relative">
+    <header className="bg-[#202020] fixed top-0 left-0 right-0 z-50">
       <div className="w-full px-4 h-[72px] flex items-center justify-between">
         {/* Logo and Brand */}
         <div className="flex items-center">
