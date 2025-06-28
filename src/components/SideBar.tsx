@@ -11,7 +11,8 @@ import {
   ExternalLink,
   BookOpen,
   Loader2,
-  Trash2
+  Trash2,
+  User
 } from 'lucide-react';
 import { Avatar } from './ui/avatar';
 import { Button } from './ui/button';
@@ -444,13 +445,15 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
   }));
 
   // 모바일에서 햄버거 메뉴만 표시
-  if (isMobile) {
+  if (isMobile || !currentUser) {
     return (
       <>
-        {/* 햄버거 메뉴 버튼 - NavBar 아래에 위치 */}
+        {/* 햄버거 메뉴 버튼 - NavBar 아래에 위치 (모바일 또는 비로그인 사용자) */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="fixed top-20 left-4 z-40 w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors lg:hidden shadow-lg"
+          className={`fixed top-20 left-4 z-40 w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors shadow-lg ${
+            isMobile ? 'lg:hidden' : ''
+          }`}
         >
           {isExpanded ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -464,8 +467,10 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           />
         )}
 
-        {/* 모바일 사이드바 - NavBar 아래에 위치 */}
-        <div className={`fixed left-0 w-[280px] bg-[#3c3c3d] z-30 transform transition-transform duration-300 lg:hidden shadow-2xl ${
+        {/* 사이드바 - NavBar 아래에 위치 (모바일 또는 비로그인 사용자) */}
+        <div className={`fixed left-0 w-[280px] bg-[#3c3c3d] z-30 transform transition-transform duration-300 shadow-2xl ${
+          isMobile ? 'lg:hidden' : ''
+        } ${
           isExpanded ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ 
@@ -475,17 +480,19 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           <div className="h-full flex flex-col">
             <div className="flex-1 overflow-y-auto">
               <div className="flex flex-col w-full items-start pt-[20px]">
-                {/* New Prompt Button */}
-                <Button
-                  variant="ghost"
-                  className="relative self-stretch w-full h-11 justify-start px-[18px] text-white hover:bg-[#4c4c4d]"
-                  onClick={handleCreateNewPrompt}
-                >
-                  <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
-                  <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
-                    New Prompt
-                  </span>
-                </Button>
+                {/* New Prompt Button - 로그인한 사용자만 */}
+                {currentUser && (
+                  <Button
+                    variant="ghost"
+                    className="relative self-stretch w-full h-11 justify-start px-[18px] text-white hover:bg-[#4c4c4d]"
+                    onClick={handleCreateNewPrompt}
+                  >
+                    <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
+                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
+                      New Prompt
+                    </span>
+                  </Button>
+                )}
 
                 {/* Favorites Section */}
                 <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
@@ -518,108 +525,125 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                   </div>
                 </div>
 
-                {/* LearnSpace Section */}
-                <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
-                  <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
-                    <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
-                      LearnSpace
-                    </h3>
-                    <button
-                      onClick={handleLearningSpaceClick}
-                      className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
-                    >
-                      +
-                    </button>
+                {/* LearnSpace Section - 로그인한 사용자만 */}
+                {currentUser && (
+                  <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
+                    <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
+                      <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                        LearnSpace
+                      </h3>
+                      <button
+                        onClick={handleLearningSpaceClick}
+                        className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <div className="flex flex-col w-full items-start">
+                      {loadingClassrooms ? (
+                        <div className="px-[18px] py-2 flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
+                          <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                            Loading...
+                          </span>
+                        </div>
+                      ) : learnSpaceItems.length > 0 ? (
+                        <>
+                          {learnSpaceItems.map((item, index) => (
+                            <MenuItem 
+                              key={`learn-${index}`} 
+                              name={item.name} 
+                              section="learn" 
+                              classroomId={item.id}
+                              color={item.color}
+                              moduleCount={item.moduleCount}
+                            />
+                          ))}
+                          {learnSpaceItems.length >= 5 && (
+                            <ViewAllButton onClick={handleAllLearningClick} text="classrooms" />
+                          )}
+                        </>
+                      ) : (
+                        <div className="px-[18px] py-2">
+                          <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                            No classrooms yet
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-col w-full items-start">
-                    {loadingClassrooms ? (
-                      <div className="px-[18px] py-2 flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
-                        <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
-                          Loading...
-                        </span>
-                      </div>
-                    ) : learnSpaceItems.length > 0 ? (
-                      <>
-                        {learnSpaceItems.map((item, index) => (
-                          <MenuItem 
-                            key={`learn-${index}`} 
-                            name={item.name} 
-                            section="learn" 
-                            classroomId={item.id}
-                            color={item.color}
-                            moduleCount={item.moduleCount}
-                          />
-                        ))}
-                        {learnSpaceItems.length >= 5 && (
-                          <ViewAllButton onClick={handleAllLearningClick} text="classrooms" />
-                        )}
-                      </>
-                    ) : (
-                      <div className="px-[18px] py-2">
-                        <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
-                          No classrooms yet
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                )}
 
-                {/* Prompt History Section */}
-                <div className="relative self-stretch w-full pb-4">
-                  <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
-                    <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
-                      Prompt History
-                    </h3>
+                {/* Prompt History Section - 로그인한 사용자만 */}
+                {currentUser && (
+                  <div className="relative self-stretch w-full pb-4">
+                    <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
+                      <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                        Prompt History
+                      </h3>
+                    </div>
+                    <div className="flex flex-col w-full items-start">
+                      {loadingPrompts ? (
+                        <div className="px-[18px] py-2 flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
+                          <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                            Loading...
+                          </span>
+                        </div>
+                      ) : promptSessions.length > 0 ? (
+                        <>
+                          {promptSessions.map((session) => (
+                            <MenuItem 
+                              key={`prompt-${session.id}`} 
+                              name={session.title} 
+                              section="prompt" 
+                              sessionId={session.id}
+                            />
+                          ))}
+                          {promptSessions.length >= 5 && (
+                            <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
+                          )}
+                        </>
+                      ) : (
+                        <div className="px-[18px] py-2">
+                          <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                            No conversations yet
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-col w-full items-start">
-                    {loadingPrompts ? (
-                      <div className="px-[18px] py-2 flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
-                        <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
-                          Loading...
-                        </span>
-                      </div>
-                    ) : promptSessions.length > 0 ? (
-                      <>
-                        {promptSessions.map((session) => (
-                          <MenuItem 
-                            key={`prompt-${session.id}`} 
-                            name={session.title} 
-                            section="prompt" 
-                            sessionId={session.id}
-                          />
-                        ))}
-                        {promptSessions.length >= 5 && (
-                          <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
-                        )}
-                      </>
-                    ) : (
-                      <div className="px-[18px] py-2">
-                        <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
-                          No conversations yet
-                        </span>
-                      </div>
-                    )}
+                )}
+
+                {/* 비로그인 사용자를 위한 안내 메시지 */}
+                {!currentUser && (
+                  <div className="px-[18px] py-8 text-center">
+                    <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <User className="h-8 w-8 text-blue-400" />
+                    </div>
+                    <h3 className="text-white font-medium mb-2">Welcome to AI Sapiens</h3>
+                    <p className="text-gray-400 text-sm mb-4">
+                      Sign in to access personalized features like AI prompts and learning spaces.
+                    </p>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 
-            {/* Points Display - Fixed at bottom */}
-            <div className="p-2.5 pb-[46px]">
-              <div 
-                className={`w-full h-[38px] bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors ${
-                  currentUser ? 'cursor-pointer hover:from-yellow-600/30 hover:to-orange-600/30' : 'cursor-default'
-                }`}
-                onClick={currentUser ? onUpgradeClick : undefined}
-              >
-                <Wallet className="w-5 h-5 text-yellow-400 flex-shrink-0" />
-                <span className="font-['Pretendard-Medium',Helvetica] font-medium text-yellow-300 text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
-                  {userTokens.toLocaleString()}pt
-                </span>
+            {/* Points Display - Fixed at bottom (로그인한 사용자만) */}
+            {currentUser && (
+              <div className="p-2.5 pb-[46px]">
+                <div 
+                  className="w-full h-[38px] bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors cursor-pointer hover:from-yellow-600/30 hover:to-orange-600/30"
+                  onClick={onUpgradeClick}
+                >
+                  <Wallet className="w-5 h-5 text-yellow-400 flex-shrink-0" />
+                  <span className="font-['Pretendard-Medium',Helvetica] font-medium text-yellow-300 text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
+                    {userTokens.toLocaleString()}pt
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Copyright - Fixed at bottom */}
             <div className="px-[18px] pb-[17px] font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[10px] tracking-[-0.15px] leading-[normal]">
@@ -631,7 +655,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     );
   }
 
-  // 데스크톱 사이드바 (항상 고정, 더 넓은 너비)
+  // 데스크톱 사이드바 (로그인한 사용자만 항상 고정)
   return (
     <div className="fixed top-16 left-0 w-[280px] h-[calc(100vh-4rem)] bg-[#3c3c3d] z-30 hidden lg:block">
       <div className="h-full flex flex-col">
@@ -773,10 +797,8 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         {/* Points Display - Fixed at bottom */}
         <div className="p-2.5 pb-[46px]">
           <div 
-            className={`w-full h-[38px] bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors ${
-              currentUser ? 'cursor-pointer hover:from-yellow-600/30 hover:to-orange-600/30' : 'cursor-default'
-            }`}
-            onClick={currentUser ? onUpgradeClick : undefined}
+            className="w-full h-[38px] bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors cursor-pointer hover:from-yellow-600/30 hover:to-orange-600/30"
+            onClick={onUpgradeClick}
           >
             <Wallet className="w-5 h-5 text-yellow-400 flex-shrink-0" />
             <span className="font-['Pretendard-Medium',Helvetica] font-medium text-yellow-300 text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
