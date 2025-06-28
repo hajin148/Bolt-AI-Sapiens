@@ -46,7 +46,10 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                 if (fallback) fallback.style.display = 'block';
               }}
             />
-            <div className="hidden text-white text-lg font-bold">
+            <div 
+              className="hidden text-white text-lg font-bold cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => navigate('/')}
+            >
               AI Sapiens
             </div>
           </div>
