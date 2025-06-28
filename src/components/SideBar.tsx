@@ -10,7 +10,8 @@ import {
   X,
   ExternalLink,
   BookOpen,
-  Loader2
+  Loader2,
+  Trash2
 } from 'lucide-react';
 import { Avatar } from './ui/avatar';
 import { Button } from './ui/button';
@@ -301,6 +302,30 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     if (isMobile) setIsExpanded(false);
   };
 
+  const handleDeletePrompt = async (sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this conversation?')) {
+      try {
+        const { error } = await supabase
+          .from('prompt_sessions')
+          .delete()
+          .eq('id', sessionId);
+
+        if (error) throw error;
+        
+        // Remove from local state immediately
+        setPromptSessions(prev => prev.filter(session => session.id !== sessionId));
+        
+        // If currently viewing this session, navigate away
+        if (location.pathname.includes(sessionId)) {
+          navigate('/prompts');
+        }
+      } catch (error) {
+        console.error('Error deleting prompt session:', error);
+      }
+    }
+  };
+
   // Reusable menu item component
   const MenuItem = ({ 
     name, 
@@ -362,6 +387,16 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
             {name}
           </span>
         </div>
+        
+        {/* Delete button for prompt sessions */}
+        {section === 'prompt' && sessionId && (
+          <button
+            onClick={(e) => handleDeletePrompt(sessionId, e)}
+            className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 p-1 hover:bg-red-600/20 hover:text-red-400 text-gray-500 rounded"
+          >
+            <Trash2 className="h-3 w-3" />
+          </button>
+        )}
       </div>
     );
   };
@@ -549,12 +584,14 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                     ) : promptSessions.length > 0 ? (
                       <>
                         {promptSessions.map((session) => (
-                          <MenuItem 
-                            key={`prompt-${session.id}`} 
-                            name={session.title} 
-                            section="prompt" 
-                            sessionId={session.id}
-                          />
+                          <div key={`prompt-${session.id}`} className="group">
+                            <MenuItem 
+                              name={session.title} 
+                              section="prompt" 
+                              sessionId={session.id}
+                            />
+                          </div>
+                          </div>
                         ))}
                         {promptSessions.length >= 5 && (
                           <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
