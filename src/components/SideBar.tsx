@@ -591,7 +591,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                               sessionId={session.id}
                             />
                           </div>
-                          </div>
                         ))}
                         {promptSessions.length >= 5 && (
                           <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
