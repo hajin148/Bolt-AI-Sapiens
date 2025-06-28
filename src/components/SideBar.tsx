@@ -324,15 +324,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           </>
         )}
         
-        {section === 'learn' && (
-          <div 
-            className="w-6 h-6 rounded flex-shrink-0 flex items-center justify-center"
-            style={{ backgroundColor: color || '#6B7280' }}
-          >
-            <span className="text-white text-xs font-bold">{name.charAt(0)}</span>
-          </div>
-        )}
-        
         <div className="flex-1 min-w-0">
           <span 
             className="font-['Pretendard-Regular',Helvetica] font-normal text-[#d5d5d5] text-[13px] tracking-[-0.20px] leading-[22px] truncate block"
@@ -340,11 +331,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           >
             {name}
           </span>
-          {section === 'learn' && moduleCount !== undefined && (
-            <span className="text-[11px] text-gray-500">
-              {moduleCount} modules
-            </span>
-          )}
         </div>
       </div>
     );
