@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 import { DigestCardData } from '../../types/News';
 import DigestCard from './DigestCard';
-import { Loader2, RefreshCw, Search, Filter, Calendar, TrendingUp } from 'lucide-react';
+import { Loader2, RefreshCw, Search, Filter, Calendar, TrendingUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -232,11 +232,28 @@ const NewsList: React.FC = () => {
         </div>
       </div>
 
-      {/* News Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {digests.map((digest, index) => (
-          <DigestCard key={`${digest.video_id}-${index}`} digest={digest} />
-        ))}
+      {/* Timeline Layout */}
+      <div className="relative max-w-4xl mx-auto">
+        {/* Vertical Line */}
+        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
+        
+        {/* News Items */}
+        <div className="space-y-8">
+          {digests.map((digest, index) => (
+            <div key={`${digest.video_id}-${index}`} className="relative">
+              {/* Timeline Dot */}
+              <div className="absolute left-6 w-4 h-4 bg-white border-4 border-blue-500 rounded-full shadow-lg z-10"></div>
+              
+              {/* Arrow */}
+              <div className="absolute left-20 top-4 w-0 h-0 border-l-8 border-l-blue-500 border-t-8 border-t-transparent border-b-8 border-b-transparent"></div>
+              
+              {/* Content */}
+              <div className="ml-32">
+                <DigestCard digest={digest} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Load More */}
@@ -255,7 +272,10 @@ const NewsList: React.FC = () => {
                 Loading more...
               </>
             ) : (
-              'Load More Articles'
+              <>
+                <ChevronDown className="h-5 w-5 mr-2" />
+                Load More Articles
+              </>
             )}
           </Button>
         </div>
