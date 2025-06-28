@@ -13,7 +13,6 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   toggleFavorite: (toolId: string) => Promise<void>;
-  updateSubscription: (isPaid: boolean) => Promise<void>;
   updateTokens: (newTokens: number) => Promise<void>;
   refreshTokens: () => Promise<void>;
 }
@@ -235,22 +234,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUserProfile({ ...userProfile, favorites: newFavorites });
   };
 
-  const updateSubscription = async (isPaid: boolean) => {
-    if (!currentUser || !userProfile) return;
-
-    const { error } = await supabase
-      .from('user_profiles')
-      .update({ is_paid: isPaid })
-      .eq('user_id', currentUser.id);
-
-    if (error) {
-      console.error('Error updating subscription:', error);
-      throw error;
-    }
-
-    setUserProfile({ ...userProfile, isPaid });
-  };
-
   const value = {
     currentUser,
     userProfile,
@@ -261,7 +244,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     logout,
     toggleFavorite,
-    updateSubscription,
     updateTokens,
     refreshTokens,
   };

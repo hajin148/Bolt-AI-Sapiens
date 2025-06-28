@@ -609,13 +609,13 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
             {/* Points Display - Fixed at bottom */}
             <div className="p-2.5 pb-[46px]">
               <div 
-                className={`w-full h-[38px] bg-[#222222] rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors ${
-                  currentUser ? 'cursor-pointer hover:bg-[#333333]' : 'cursor-default'
+                className={`w-full h-[38px] bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors ${
+                  currentUser ? 'cursor-pointer hover:from-yellow-600/30 hover:to-orange-600/30' : 'cursor-default'
                 }`}
                 onClick={currentUser ? onUpgradeClick : undefined}
               >
-                <Wallet className="w-5 h-5 text-white flex-shrink-0" />
-                <span className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
+                <Wallet className="w-5 h-5 text-yellow-400 flex-shrink-0" />
+                <span className="font-['Pretendard-Medium',Helvetica] font-medium text-yellow-300 text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
                   {userTokens.toLocaleString()}pt
                 </span>
               </div>
@@ -773,13 +773,13 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         {/* Points Display - Fixed at bottom */}
         <div className="p-2.5 pb-[46px]">
           <div 
-            className={`w-full h-[38px] bg-[#222222] rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors ${
-              currentUser ? 'cursor-pointer hover:bg-[#333333]' : 'cursor-default'
+            className={`w-full h-[38px] bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors ${
+              currentUser ? 'cursor-pointer hover:from-yellow-600/30 hover:to-orange-600/30' : 'cursor-default'
             }`}
             onClick={currentUser ? onUpgradeClick : undefined}
           >
-            <Wallet className="w-5 h-5 text-white flex-shrink-0" />
-            <span className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
+            <Wallet className="w-5 h-5 text-yellow-400 flex-shrink-0" />
+            <span className="font-['Pretendard-Medium',Helvetica] font-medium text-yellow-300 text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
               {userTokens.toLocaleString()}pt
             </span>
           </div>
