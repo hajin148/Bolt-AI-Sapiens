@@ -12,8 +12,8 @@ const VideoDigestList: React.FC<VideoDigestListProps> = ({ digests }) => {
     return (
       <div className="text-center py-8">
         <Youtube className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-        <p className="text-gray-500">No recommended videos available.</p>
-        <p className="text-gray-400 text-sm mt-2">Related videos will be available in AI-generated modules.</p>
+        <p className="text-gray-400">No recommended videos available.</p>
+        <p className="text-gray-500 text-sm mt-2">Related videos will be available in AI-generated modules.</p>
       </div>
     );
   }
@@ -21,9 +21,9 @@ const VideoDigestList: React.FC<VideoDigestListProps> = ({ digests }) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <Youtube className="h-5 w-5 text-red-600" />
-        <h3 className="text-xl font-semibold text-gray-900">Recommended YouTube Videos</h3>
-        <span className="text-sm text-gray-500">({digests.length} videos)</span>
+        <Youtube className="h-5 w-5 text-red-400" />
+        <h3 className="text-xl font-semibold text-white">Recommended YouTube Videos</h3>
+        <span className="text-sm text-gray-400">({digests.length} videos)</span>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

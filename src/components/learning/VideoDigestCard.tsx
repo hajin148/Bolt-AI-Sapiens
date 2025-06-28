@@ -53,20 +53,20 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
 
   return (
     <Card 
-      className="group cursor-pointer hover:shadow-lg transition-all duration-300 hover:border-red-300 overflow-hidden"
+      className="group cursor-pointer hover:shadow-lg transition-all duration-300 hover:border-red-500/50 overflow-hidden bg-gray-800/50 border-gray-700"
       onClick={handleVideoClick}
     >
       <CardContent className="p-0">
         <div className="relative">
           {/* Thumbnail */}
-          <div className="relative w-full h-40 bg-gray-200 overflow-hidden">
+          <div className="relative w-full h-40 bg-gray-700 overflow-hidden">
             <img
               src={getThumbnailUrl()}
               alt={digest.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = 'https://via.placeholder.com/320x180/f3f4f6/9ca3af?text=Video';
+                target.src = 'https://via.placeholder.com/320x180/374151/9ca3af?text=Video';
               }}
             />
             
@@ -87,18 +87,18 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
 
           {/* Content */}
           <div className="p-4">
-            <h4 className="font-semibold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 mb-3 leading-snug">
+            <h4 className="font-semibold text-white group-hover:text-red-400 transition-colors line-clamp-2 mb-3 leading-snug">
               {digest.title}
             </h4>
             
             {/* Summary if available */}
             {digest.summary && (
-              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+              <p className="text-sm text-gray-400 line-clamp-2 mb-3">
                 {digest.summary}
               </p>
             )}
             
-            <div className="flex items-center justify-between text-sm text-gray-500">
+            <div className="flex items-center justify-between text-sm text-gray-400">
               <div className="flex items-center gap-3">
                 {digest.duration && (
                   <div className="flex items-center gap-1">
