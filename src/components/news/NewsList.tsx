@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 import { DigestCardData } from '../../types/News';
 import DigestCard from './DigestCard';
-import { Loader2, RefreshCw, Search, Filter, Calendar, TrendingUp } from 'lucide-react';
+import { Loader2, RefreshCw, Search, Filter, Calendar, TrendingUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -108,8 +108,8 @@ const NewsList: React.FC = () => {
       <div className="flex items-center justify-center py-20">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Loading AI News</h3>
-          <p className="text-gray-600">Fetching the latest updates...</p>
+          <h3 className="text-lg font-medium text-white mb-2">Loading AI News</h3>
+          <p className="text-gray-400">Fetching the latest updates...</p>
         </div>
       </div>
     );
@@ -121,8 +121,8 @@ const NewsList: React.FC = () => {
         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <RefreshCw className="h-8 w-8 text-red-600" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Something went wrong</h3>
-        <p className="text-gray-600 mb-6">{error}</p>
+        <h3 className="text-lg font-medium text-white mb-2">Something went wrong</h3>
+        <p className="text-gray-400 mb-6">{error}</p>
         <Button onClick={handleRefresh} className="bg-blue-600 hover:bg-blue-700">
           <RefreshCw className="h-4 w-4 mr-2" />
           Try Again
@@ -134,17 +134,17 @@ const NewsList: React.FC = () => {
   if (digests.length === 0) {
     return (
       <div className="text-center py-20">
-        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
           <TrendingUp className="h-8 w-8 text-gray-400" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No articles found</h3>
-        <p className="text-gray-600 mb-6">
+        <h3 className="text-lg font-medium text-white mb-2">No articles found</h3>
+        <p className="text-gray-400 mb-6">
           {searchQuery || selectedLanguage !== 'all' 
             ? 'Try adjusting your search or filters.' 
             : 'Run the fetch_digests function to populate with YouTube content.'
           }
         </p>
-        <Button onClick={handleRefresh} variant="outline">
+        <Button onClick={handleRefresh} variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800">
           <RefreshCw className="h-4 w-4 mr-2" />
           Refresh
         </Button>
@@ -156,18 +156,18 @@ const NewsList: React.FC = () => {
     <div className="space-y-8">
       {/* Header Section */}
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full text-blue-700 text-sm font-medium">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 rounded-full text-blue-400 text-sm font-medium">
           <TrendingUp className="h-4 w-4" />
           Latest AI Updates
         </div>
-        <h1 className="text-4xl font-bold text-gray-900">AI News & Insights</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <h1 className="text-4xl font-bold text-white">AI News & Insights</h1>
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
           Stay updated with the latest developments in artificial intelligence through curated content from top YouTube channels
         </p>
       </div>
 
       {/* Search and Filter Section */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+      <div className="bg-gray-800/50 rounded-2xl border border-gray-700 p-6 shadow-sm">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <form onSubmit={handleSearch} className="flex-1">
@@ -178,7 +178,7 @@ const NewsList: React.FC = () => {
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-12 text-base border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                className="pl-10 h-12 text-base bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </form>
@@ -189,7 +189,7 @@ const NewsList: React.FC = () => {
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="h-12 px-4 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 bg-white text-base"
+              className="h-12 px-4 border border-gray-600 rounded-lg focus:border-blue-500 focus:ring-blue-500 bg-gray-700 text-white text-base"
             >
               {languages.map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -203,7 +203,7 @@ const NewsList: React.FC = () => {
           <Button 
             onClick={handleRefresh} 
             variant="outline" 
-            className="h-12 px-6 border-gray-300 hover:border-blue-500 hover:text-blue-600"
+            className="h-12 px-6 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-gray-800"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
@@ -211,8 +211,8 @@ const NewsList: React.FC = () => {
         </div>
 
         {/* Stats */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-6 text-sm text-gray-600">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+          <div className="flex items-center gap-6 text-sm text-gray-400">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               <span>{digests.length} articles found</span>
@@ -223,7 +223,7 @@ const NewsList: React.FC = () => {
                   setSearchQuery('');
                   setSelectedLanguage('all');
                 }}
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="text-blue-400 hover:text-blue-300 font-medium"
               >
                 Clear filters
               </button>
@@ -232,11 +232,25 @@ const NewsList: React.FC = () => {
         </div>
       </div>
 
-      {/* News Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {digests.map((digest, index) => (
-          <DigestCard key={`${digest.video_id}-${index}`} digest={digest} />
-        ))}
+      {/* Timeline Layout */}
+      <div className="relative max-w-4xl mx-auto">
+        {/* Vertical Line - Blue to Green Gradient */}
+        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 to-green-500"></div>
+        
+        {/* News Items */}
+        <div className="space-y-8">
+          {digests.map((digest, index) => (
+            <div key={`${digest.video_id}-${index}`} className="relative">
+              {/* Timeline Dot */}
+              <div className="absolute left-6 w-4 h-4 bg-[#121212] border-4 border-blue-500 rounded-full shadow-lg z-10"></div>
+              
+              {/* Content */}
+              <div className="ml-20">
+                <DigestCard digest={digest} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Load More */}
@@ -247,7 +261,7 @@ const NewsList: React.FC = () => {
             disabled={loadingMore}
             variant="outline"
             size="lg"
-            className="px-8 py-3 border-gray-300 hover:border-blue-500 hover:text-blue-600"
+            className="px-8 py-3 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-gray-800"
           >
             {loadingMore ? (
               <>
@@ -255,7 +269,10 @@ const NewsList: React.FC = () => {
                 Loading more...
               </>
             ) : (
-              'Load More Articles'
+              <>
+                <ChevronDown className="h-5 w-5 mr-2" />
+                Load More Articles
+              </>
             )}
           </Button>
         </div>
@@ -263,7 +280,7 @@ const NewsList: React.FC = () => {
 
       {!hasMore && digests.length > 0 && (
         <div className="text-center py-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full text-gray-600 text-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full text-gray-400 text-sm">
             <span>You've reached the end</span>
           </div>
         </div>

@@ -5,7 +5,8 @@ import ClassroomCard from '../components/learning/ClassroomCard';
 import AddClassroomCard from '../components/learning/AddClassroomCard';
 import ClassroomModal from '../components/learning/ClassroomModal';
 import { Button } from '@/components/ui/button';
-import { GraduationCap, Loader2, AlertCircle } from 'lucide-react';
+import { GraduationCap, Loader2, AlertCircle, Plus, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Classroom, CreateClassroomData } from '../types/Learning';
 
 const LearningSpacePage: React.FC = () => {
@@ -14,6 +15,7 @@ const LearningSpacePage: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingClassroom, setEditingClassroom] = useState<Classroom | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleCreateClassroom = async (data: CreateClassroomData) => {
     setSubmitting(true);
@@ -67,13 +69,18 @@ const LearningSpacePage: React.FC = () => {
     setEditingClassroom(null);
   };
 
+  const filteredClassrooms = classrooms.filter(classroom =>
+    classroom.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    classroom.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
-          <p className="text-gray-600">Please log in to access your learning space.</p>
+          <h2 className="text-xl font-semibold text-white mb-2">Authentication Required</h2>
+          <p className="text-gray-400">Please log in to access your learning space.</p>
         </div>
       </div>
     );
@@ -81,10 +88,10 @@ const LearningSpacePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600 mb-4" />
-          <p className="text-gray-600">Loading your learning space...</p>
+          <p className="text-gray-400">Loading your learning space...</p>
         </div>
       </div>
     );
@@ -92,11 +99,11 @@ const LearningSpacePage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Classrooms</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h2 className="text-xl font-semibold text-white mb-2">Error Loading Classrooms</h2>
+          <p className="text-gray-400 mb-4">{error}</p>
           <Button onClick={() => window.location.reload()}>Try Again</Button>
         </div>
       </div>
@@ -104,41 +111,46 @@ const LearningSpacePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#121212]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
+        {/* Header - Following Figma Design */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <GraduationCap className="h-6 w-6 text-blue-600" />
-            </div>
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Learning Space</h1>
-              <p className="text-gray-600">Manage your virtual classrooms and learning modules</p>
+              <h1 className="text-3xl font-bold text-white mb-2">Learning Space</h1>
+              <p className="text-gray-400">Manage your virtual classrooms and learning modules</p>
             </div>
+            
+            <Button 
+              onClick={handleAddNew} 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
+            >
+              <Plus className="h-5 w-5" />
+              New Classroom
+            </Button>
           </div>
-          
-          {classrooms.length > 0 && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">
-                {classrooms.length} classroom{classrooms.length !== 1 ? 's' : ''} created
-              </p>
-              <Button onClick={handleAddNew} className="bg-blue-600 hover:bg-blue-700">
-                <GraduationCap className="h-4 w-4 mr-2" />
-                New Classroom
-              </Button>
-            </div>
-          )}
+
+          {/* Search Bar - Following Figma */}
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search classrooms..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-gray-800/50 border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
         </div>
 
-        {/* Classrooms Grid */}
-        {classrooms.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <GraduationCap className="h-12 w-12 text-blue-600" />
+        {/* Classrooms Grid - Following Figma Layout */}
+        {filteredClassrooms.length === 0 && searchQuery === '' ? (
+          <div className="text-center py-20">
+            <div className="w-24 h-24 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <GraduationCap className="h-12 w-12 text-blue-400" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Welcome to Your Learning Space</h2>
-            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+            <h2 className="text-2xl font-semibold text-white mb-4">Welcome to Your Learning Space</h2>
+            <p className="text-gray-400 mb-8 max-w-md mx-auto">
               Create your first classroom to start organizing your learning content into structured modules and lessons.
             </p>
             <Button onClick={handleAddNew} size="lg" className="bg-blue-600 hover:bg-blue-700">
@@ -147,17 +159,49 @@ const LearningSpacePage: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {classrooms.map((classroom) => (
-              <ClassroomCard
-                key={classroom.id}
-                classroom={classroom}
-                onEdit={handleEditClassroom}
-                onDelete={handleDeleteClassroom}
-              />
-            ))}
-            <AddClassroomCard onClick={handleAddNew} />
-          </div>
+          <>
+            {/* Stats */}
+            <div className="mb-6">
+              <p className="text-sm text-gray-400">
+                {filteredClassrooms.length} classroom{filteredClassrooms.length !== 1 ? 's' : ''} 
+                {searchQuery && ` found for "${searchQuery}"`}
+              </p>
+            </div>
+
+            {/* Grid Layout - Following Figma */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {/* Add New Card - First Position */}
+              <AddClassroomCard onClick={handleAddNew} />
+              
+              {/* Classroom Cards */}
+              {filteredClassrooms.map((classroom) => (
+                <ClassroomCard
+                  key={classroom.id}
+                  classroom={classroom}
+                  onEdit={handleEditClassroom}
+                  onDelete={handleDeleteClassroom}
+                />
+              ))}
+            </div>
+
+            {/* No Results */}
+            {filteredClassrooms.length === 0 && searchQuery && (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="h-8 w-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium text-white mb-2">No classrooms found</h3>
+                <p className="text-gray-400 mb-4">Try searching with different keywords.</p>
+                <Button
+                  variant="outline"
+                  onClick={() => setSearchQuery('')}
+                  className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                >
+                  Clear search
+                </Button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Modal */}

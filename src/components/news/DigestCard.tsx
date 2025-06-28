@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, User, Clock, ExternalLink, Play } from 'lucide-react';
+import { Calendar, User, ExternalLink, Play } from 'lucide-react';
 import { DigestCardData } from '../../types/News';
 
 interface DigestCardProps {
@@ -17,17 +16,10 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+      year: 'numeric'
     });
   };
 
@@ -45,25 +37,25 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
 
   const getLanguageColor = (lang: string) => {
     const colors = {
-      'en': 'bg-blue-100 text-blue-700',
-      'ko': 'bg-red-100 text-red-700',
-      'es': 'bg-yellow-100 text-yellow-700',
-      'ja': 'bg-pink-100 text-pink-700',
-      'zh': 'bg-red-100 text-red-700',
-      'others': 'bg-gray-100 text-gray-700'
+      'en': 'bg-blue-600/20 text-blue-400 border-blue-500/30',
+      'ko': 'bg-red-600/20 text-red-400 border-red-500/30',
+      'es': 'bg-yellow-600/20 text-yellow-400 border-yellow-500/30',
+      'ja': 'bg-pink-600/20 text-pink-400 border-pink-500/30',
+      'zh': 'bg-red-600/20 text-red-400 border-red-500/30',
+      'others': 'bg-gray-600/20 text-gray-400 border-gray-500/30'
     };
-    return colors[lang as keyof typeof colors] || 'bg-gray-100 text-gray-700';
+    return colors[lang as keyof typeof colors] || 'bg-gray-600/20 text-gray-400 border-gray-500/30';
   };
 
   return (
-    <Card 
-      className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-0 shadow-md overflow-hidden bg-white"
+    <div 
+      className="group cursor-pointer hover:bg-gray-800/30 transition-all duration-300 rounded-lg p-4 max-w-2xl"
       onClick={handleClick}
     >
-      <CardContent className="p-0">
-        {/* Thumbnail Section */}
-        <div className="relative overflow-hidden">
-          <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 relative">
+      <div className="flex gap-4">
+        {/* Thumbnail Section - Matching Figma proportions */}
+        <div className="relative w-40 h-24 flex-shrink-0 overflow-hidden rounded-lg">
+          <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-800 relative">
             {digest.thumbnail ? (
               <img
                 src={digest.thumbnail}
@@ -71,25 +63,25 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = 'https://via.placeholder.com/640x360/f3f4f6/9ca3af?text=AI+News';
+                  target.src = 'https://via.placeholder.com/160x96/374151/9ca3af?text=AI+News';
                 }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <div className="text-6xl opacity-20">🤖</div>
+                <div className="text-3xl opacity-20">🤖</div>
               </div>
             )}
             
             {/* Play Overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-              <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100">
-                <Play className="h-6 w-6 text-gray-800 ml-1" fill="currentColor" />
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+              <div className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100">
+                <Play className="h-4 w-4 text-gray-800 ml-0.5" fill="currentColor" />
               </div>
             </div>
 
             {/* Language Badge */}
-            <div className="absolute top-3 right-3">
-              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getLanguageColor(digest.lang)}`}>
+            <div className="absolute top-1.5 right-1.5">
+              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium border ${getLanguageColor(digest.lang)}`}>
                 {getLanguageFlag(digest.lang)}
                 {digest.lang.toUpperCase()}
               </span>
@@ -97,43 +89,45 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
           </div>
         </div>
 
-        {/* Content Section */}
-        <div className="p-6">
+        {/* Content Section - Matching Figma layout */}
+        <div className="flex-1 flex flex-col">
+          {/* Date - Prominent at top like Figma */}
+          <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-2">
+            <Calendar className="h-3 w-3" />
+            <span className="font-medium">{formatDate(digest.published_at)}</span>
+          </div>
+
           {/* Title */}
-          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2 mb-3 leading-tight">
+          <h3 className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors duration-200 line-clamp-2 mb-2 leading-tight">
             {digest.title}
           </h3>
 
           {/* Summary */}
           {digest.summary && (
-            <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">
+            <p className="text-gray-400 text-xs line-clamp-2 mb-3 leading-relaxed flex-1">
               {digest.summary}
             </p>
           )}
 
-          {/* Meta Information */}
+          {/* Bottom section with YouTuber name and read more */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {digest.channel_name && (
-                <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                  <User className="h-3.5 w-3.5" />
-                  <span className="font-medium">{digest.channel_name}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                <Calendar className="h-3.5 w-3.5" />
-                <span>{formatDate(digest.published_at)}</span>
+            {/* YouTuber Name - Prominent like Figma */}
+            {digest.channel_name && (
+              <div className="flex items-center gap-1.5 text-xs text-gray-300">
+                <User className="h-3 w-3" />
+                <span className="font-medium">{digest.channel_name}</span>
               </div>
-            </div>
+            )}
             
-            <div className="flex items-center gap-1 text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <span className="font-medium">Read more</span>
-              <ExternalLink className="h-3.5 w-3.5" />
+            {/* Read more indicator */}
+            <div className="flex items-center gap-1 text-xs text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <span className="font-medium">Read</span>
+              <ExternalLink className="h-3 w-3" />
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

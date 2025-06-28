@@ -14,8 +14,11 @@ import {
   Trash2, 
   ChevronRight,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Search,
+  Play
 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Classroom, Module, CreateModuleData } from '../types/Learning';
 
 const ClassroomDetailPage: React.FC = () => {
@@ -30,6 +33,7 @@ const ClassroomDetailPage: React.FC = () => {
   const [showModuleModal, setShowModuleModal] = useState(false);
   const [editingModule, setEditingModule] = useState<Module | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchClassroom = async () => {
@@ -86,13 +90,13 @@ const ClassroomDetailPage: React.FC = () => {
   };
 
   const handleEditModule = (module: Module, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent navigation when editing
+    e.stopPropagation();
     setEditingModule(module);
     setShowModuleModal(true);
   };
 
   const handleDeleteModule = async (moduleId: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent navigation when deleting
+    e.stopPropagation();
     if (window.confirm('Are you sure you want to delete this module?')) {
       try {
         await deleteModule(moduleId);
@@ -120,13 +124,18 @@ const ClassroomDetailPage: React.FC = () => {
     return modules.length > 0 ? Math.max(...modules.map(m => m.step_number)) + 1 : 1;
   };
 
+  const filteredModules = modules.filter(module =>
+    module.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    module.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
-          <p className="text-gray-600">Please log in to access this classroom.</p>
+          <h2 className="text-xl font-semibold text-white mb-2">Authentication Required</h2>
+          <p className="text-gray-400">Please log in to access this classroom.</p>
         </div>
       </div>
     );
@@ -134,10 +143,10 @@ const ClassroomDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600 mb-4" />
-          <p className="text-gray-600">Loading classroom...</p>
+          <p className="text-gray-400">Loading classroom...</p>
         </div>
       </div>
     );
@@ -145,12 +154,12 @@ const ClassroomDetailPage: React.FC = () => {
 
   if (error || !classroom) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Classroom Not Found</h2>
-          <p className="text-gray-600 mb-4">{error || 'The classroom you\'re looking for doesn\'t exist.'}</p>
-          <Button onClick={() => navigate('/learning')} variant="outline">
+          <h2 className="text-xl font-semibold text-white mb-2">Classroom Not Found</h2>
+          <p className="text-gray-400 mb-4">{error || 'The classroom you\'re looking for doesn\'t exist.'}</p>
+          <Button onClick={() => navigate('/learning')} variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800">
             Back to Learning Space
           </Button>
         </div>
@@ -159,51 +168,63 @@ const ClassroomDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#121212]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
+        {/* Header - Following Figma Design */}
         <div className="mb-8">
           <Button
             variant="ghost"
             onClick={() => navigate('/learning')}
-            className="mb-4 hover:bg-gray-100"
+            className="mb-6 text-gray-300 hover:text-white hover:bg-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Learning Space
           </Button>
 
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between mb-6">
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-4 mb-4">
                 <div 
-                  className="w-12 h-12 rounded-lg flex items-center justify-center"
+                  className="w-16 h-16 rounded-xl flex items-center justify-center"
                   style={{ backgroundColor: `${classroom.color}20` }}
                 >
-                  <BookOpen className="h-6 w-6" style={{ color: classroom.color }} />
+                  <BookOpen className="h-8 w-8" style={{ color: classroom.color }} />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900">{classroom.name}</h1>
-                  <p className="text-gray-600">{modules.length} module{modules.length !== 1 ? 's' : ''}</p>
+                  <h1 className="text-3xl font-bold text-white">{classroom.name}</h1>
+                  <p className="text-gray-400">{filteredModules.length} module{filteredModules.length !== 1 ? 's' : ''}</p>
                 </div>
               </div>
             </div>
             
             <Button 
               onClick={handleAddModule}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-blue-600 hover:bg-blue-700 px-6 py-3"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Module
             </Button>
           </div>
+
+          {/* Search Bar */}
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search modules..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-gray-800/50 border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
         </div>
 
         {/* Syllabus */}
-        <Card className="mb-8">
+        <Card className="mb-8 bg-gray-800/50 border-gray-700">
           <CardContent className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Syllabus</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Syllabus</h2>
             {classroom.description ? (
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                 {classroom.description}
               </p>
             ) : (
@@ -212,44 +233,56 @@ const ClassroomDetailPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Modules */}
+        {/* Modules - Following Figma List Design */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">Learning Modules</h2>
+            <h2 className="text-xl font-semibold text-white">Learning Modules</h2>
+            {searchQuery && (
+              <p className="text-sm text-gray-400">
+                {filteredModules.length} module{filteredModules.length !== 1 ? 's' : ''} found
+              </p>
+            )}
           </div>
 
           {modulesLoading ? (
             <div className="text-center py-8">
               <Loader2 className="mx-auto h-6 w-6 animate-spin text-blue-600 mb-2" />
-              <p className="text-gray-600">Loading modules...</p>
+              <p className="text-gray-400">Loading modules...</p>
             </div>
-          ) : modules.length === 0 ? (
-            <Card>
+          ) : filteredModules.length === 0 ? (
+            <Card className="bg-gray-800/50 border-gray-700">
               <CardContent className="p-8 text-center">
                 <BookOpen className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No modules yet</h3>
-                <p className="text-gray-600 mb-4">
-                  Start building your curriculum by adding your first learning module.
+                <h3 className="text-lg font-medium text-white mb-2">
+                  {searchQuery ? 'No modules found' : 'No modules yet'}
+                </h3>
+                <p className="text-gray-400 mb-4">
+                  {searchQuery 
+                    ? 'Try searching with different keywords.'
+                    : 'Start building your curriculum by adding your first learning module.'
+                  }
                 </p>
-                <Button onClick={handleAddModule} className="bg-blue-600 hover:bg-blue-700">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add First Module
-                </Button>
+                {!searchQuery && (
+                  <Button onClick={handleAddModule} className="bg-blue-600 hover:bg-blue-700">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add First Module
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-3">
-              {modules.map((module, index) => (
+              {filteredModules.map((module, index) => (
                 <Card 
                   key={module.id} 
-                  className="group hover:shadow-md transition-all duration-200 cursor-pointer hover:border-blue-300"
+                  className="group hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-blue-500/50 bg-gray-800/50 border-gray-700"
                   onClick={() => handleModuleClick(module)}
                 >
-                  <CardContent className="p-4">
+                  <CardContent className="p-6">
                     <div className="flex items-center gap-4">
                       <div className="flex-shrink-0">
                         <div 
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
                           style={{ backgroundColor: classroom.color }}
                         >
                           {module.step_number}
@@ -257,9 +290,27 @@ const ClassroomDetailPage: React.FC = () => {
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors mb-1">
                           {module.title}
                         </h3>
+                        <p className="text-gray-400 text-sm line-clamp-2">
+                          {module.description}
+                        </p>
+                        
+                        {/* Content indicators */}
+                        <div className="flex items-center gap-3 mt-2">
+                          {module.content && module.content.length > 0 && (
+                            <span className="text-xs bg-green-600/20 text-green-400 px-2 py-1 rounded border border-green-500/30">
+                              {module.content.length} Content Items
+                            </span>
+                          )}
+                          {module.digests && module.digests.length > 0 && (
+                            <span className="text-xs bg-red-600/20 text-red-400 px-2 py-1 rounded border border-red-500/30 flex items-center gap-1">
+                              <Play className="h-3 w-3" />
+                              {module.digests.length} Videos
+                            </span>
+                          )}
+                        </div>
                       </div>
                       
                       <div className="flex items-center gap-2">
@@ -268,7 +319,7 @@ const ClassroomDetailPage: React.FC = () => {
                             variant="ghost"
                             size="sm"
                             onClick={(e) => handleEditModule(module, e)}
-                            className="h-8 w-8 p-0 hover:bg-gray-100"
+                            className="h-8 w-8 p-0 hover:bg-gray-700 text-gray-400 hover:text-white"
                           >
                             <Edit size={14} />
                           </Button>
@@ -276,12 +327,12 @@ const ClassroomDetailPage: React.FC = () => {
                             variant="ghost"
                             size="sm"
                             onClick={(e) => handleDeleteModule(module.id, e)}
-                            className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
+                            className="h-8 w-8 p-0 hover:bg-red-600/20 hover:text-red-400 text-gray-400"
                           >
                             <Trash2 size={14} />
                           </Button>
                         </div>
-                        <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                        <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
                       </div>
                     </div>
                   </CardContent>
