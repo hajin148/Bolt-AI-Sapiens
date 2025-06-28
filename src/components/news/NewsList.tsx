@@ -234,15 +234,15 @@ const NewsList: React.FC = () => {
 
       {/* Timeline Layout */}
       <div className="relative max-w-4xl mx-auto">
-        {/* Vertical Line */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
+        {/* Vertical Line - Blue to Green Gradient */}
+        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 to-green-500"></div>
         
         {/* News Items */}
         <div className="space-y-8">
           {digests.map((digest, index) => (
             <div key={`${digest.video_id}-${index}`} className="relative">
               {/* Timeline Dot */}
-              <div className="absolute left-6 w-4 h-4 bg-gray-900 border-4 border-blue-500 rounded-full shadow-lg z-10"></div>
+              <div className="absolute left-6 w-4 h-4 bg-[#121212] border-4 border-blue-500 rounded-full shadow-lg z-10"></div>
               
               {/* Content */}
               <div className="ml-20">
