@@ -510,8 +510,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
               currentUser ? 'cursor-pointer hover:bg-[#333333]' : 'cursor-default'
             }`}
             onClick={currentUser ? onUpgradeClick : undefined}
-            }`}
-            onClick={currentUser ? onUpgradeClick : undefined}
           >
             <Wallet className="w-5 h-5 text-white flex-shrink-0" />
             <span className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
