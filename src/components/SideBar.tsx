@@ -46,6 +46,45 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Real-time subscription for learning modules
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const subscription = supabase
+      .channel('learning_modules_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'modules',
+          filter: `classrooms.user_id=eq.${currentUser.id}`
+        },
+        () => {
+          // Refetch learning modules when changes occur
+          fetchLearningModules();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'classrooms',
+          filter: `user_id=eq.${currentUser.id}`
+        },
+        () => {
+          // Refetch learning modules when classrooms change
+          fetchLearningModules();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [currentUser]);
+
   // 화면 크기 감지
   useEffect(() => {
     const checkScreenSize = () => {
@@ -61,53 +100,54 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
+  // 사용자의 Learning Space 모듈들 가져오기 함수
+  const fetchLearningModules = async () => {
+    if (!currentUser) {
+      setLearningModules([]);
+      return;
+    }
+
+    setLoadingModules(true);
+    try {
+      const { data, error } = await supabase
+        .from('modules')
+        .select(`
+          id,
+          title,
+          classroom_id,
+          step_number,
+          classrooms!inner(
+            id,
+            name,
+            user_id
+          )
+        `)
+        .eq('classrooms.user_id', currentUser.id)
+        .order('created_at', { foreignTable: 'classrooms', ascending: false })
+        .order('step_number', { ascending: true })
+        .limit(5);
+
+      if (error) throw error;
+
+      const modules: LearningModule[] = (data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        classroom_id: item.classroom_id,
+        classroom_name: item.classrooms.name,
+        step_number: item.step_number
+      }));
+
+      setLearningModules(modules);
+    } catch (error) {
+      console.error('Error fetching learning modules:', error);
+      setLearningModules([]);
+    } finally {
+      setLoadingModules(false);
+    }
+  };
+
   // 사용자의 Learning Space 모듈들 가져오기
   useEffect(() => {
-    const fetchLearningModules = async () => {
-      if (!currentUser) {
-        setLearningModules([]);
-        return;
-      }
-
-      setLoadingModules(true);
-      try {
-        const { data, error } = await supabase
-          .from('modules')
-          .select(`
-            id,
-            title,
-            classroom_id,
-            step_number,
-            classrooms!inner(
-              id,
-              name,
-              user_id
-            )
-          `)
-          .eq('classrooms.user_id', currentUser.id)
-          .order('created_at', { foreignTable: 'classrooms', ascending: false })
-          .order('step_number', { ascending: true })
-          .limit(5);
-
-        if (error) throw error;
-
-        const modules: LearningModule[] = (data || []).map(item => ({
-          id: item.id,
-          title: item.title,
-          classroom_id: item.classroom_id,
-          classroom_name: item.classrooms.name,
-          step_number: item.step_number
-        }));
-
-        setLearningModules(modules);
-      } catch (error) {
-        console.error('Error fetching learning modules:', error);
-        setLearningModules([]);
-      } finally {
-        setLoadingModules(false);
-      }
-    };
-
     fetchLearningModules();
   }, [currentUser]);
 
@@ -137,9 +177,32 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     }
   };
 
-  // 사용자의 Prompt Sessions 가져오기
+  // Real-time subscription for prompt sessions
   useEffect(() => {
+    if (!currentUser) return;
+
     fetchPromptSessions();
+
+    const subscription = supabase
+      .channel('prompt_sessions_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'prompt_sessions',
+          filter: `user_id=eq.${currentUser.id}`
+        },
+        () => {
+          // Refetch prompt sessions when changes occur
+          fetchPromptSessions();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [currentUser]);
 
   const getFavoriteTools = () => {

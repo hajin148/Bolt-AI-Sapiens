@@ -246,6 +246,9 @@ const PromptChatPage: React.FC = () => {
           classroom_id: classroom.id
         });
 
+      // Show success message
+      setError(null);
+      
       // Navigate to the created classroom
       navigate(`/classroom/${classroom.id}`);
 
