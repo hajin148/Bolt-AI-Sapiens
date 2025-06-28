@@ -13,6 +13,7 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeClick }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [hasNewContent, setHasNewContent] = useState(true); // TODO: Connect to actual news update logic
   const { currentUser, userProfile, logout, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,6 +40,12 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
     action();
   };
 
+  const handleGlobeClick = () => {
+    navigate('/news');
+    if (hasNewContent) {
+      setHasNewContent(false); // Mark as read when user visits news
+    }
+  };
   return (
     <header className="bg-[#202020] fixed top-0 left-0 right-0 z-50 relative">
       <div className="w-full px-4 h-[72px] flex items-center justify-between">
@@ -67,17 +74,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
 
         {/* Right side content */}
         <div className="flex items-center gap-4">
-          {/* AI News - always visible */}
-          <button
-            onClick={() => navigate('/news')}
-            className={`hidden md:block text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] transition-colors ${
-              isNewsPage 
-                ? 'text-blue-400' 
-                : 'text-white hover:text-blue-400'
-            }`}
-          >
-            AI News
-          </button>
 
           {/* AI Prompts - only when logged in */}
           {currentUser && (
@@ -110,9 +106,24 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               <Button variant="ghost" size="icon" className="w-7 h-7 p-0 hover:bg-[#333333]">
                 <BellIcon className="w-7 h-7 text-white" />
               </Button>
-              <Button variant="ghost" size="icon" className="w-7 h-7 p-0 hover:bg-[#333333]">
-                <GlobeIcon className="w-7 h-7 text-white" />
-              </Button>
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className={`w-7 h-7 p-0 hover:bg-[#333333] ${
+                    isNewsPage ? 'bg-[#333333]' : ''
+                  }`}
+                  onClick={handleGlobeClick}
+                >
+                  <GlobeIcon className={`w-7 h-7 ${
+                    isNewsPage ? 'text-blue-400' : 'text-white'
+                  }`} />
+                </Button>
+                {/* Red notification dot for new content */}
+                {hasNewContent && currentUser && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-[#202020]" />
+                )}
+              </div>
               <div className="relative">
                 <Button 
                   variant="ghost" 
@@ -156,6 +167,20 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
             </div>
           ) : (
             <div className="flex items-center gap-3 relative">
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className={`w-7 h-7 p-0 hover:bg-[#333333] ${
+                    isNewsPage ? 'bg-[#333333]' : ''
+                  }`}
+                  onClick={handleGlobeClick}
+                >
+                  <GlobeIcon className={`w-7 h-7 ${
+                    isNewsPage ? 'text-blue-400' : 'text-white'
+                  }`} />
+                </Button>
+              </div>
               <div className="relative">
                 <Button 
                   variant="ghost" 
@@ -215,19 +240,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
         {isMobileMenuOpen && (
           <div className="absolute top-[72px] left-0 right-0 bg-[#202020] border-t border-gray-700 md:hidden">
             <div className="flex flex-col p-3 space-y-3">
-              <button
-                onClick={() => {
-                  navigate('/news');
-                  setIsMobileMenuOpen(false);
-                }}
-                className={`text-left text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] transition-colors ${
-                  isNewsPage 
-                    ? 'text-blue-400' 
-                    : 'text-white hover:text-blue-400'
-                }`}
-              >
-                AI News
-              </button>
               {currentUser && (
                 <>
                   <button
