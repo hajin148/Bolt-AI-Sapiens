@@ -46,6 +46,71 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  // 사용자의 Learning Space 클래스룸들 가져오기 함수
+  const fetchLearningClassrooms = useCallback(async () => {
+    if (!currentUser) {
+      setLearningClassrooms([]);
+      return;
+    }
+
+    setLoadingClassrooms(true);
+    try {
+      const { data, error } = await supabase
+        .from('classrooms')
+        .select(`
+          id,
+          name,
+          color,
+          modules(count)
+        `)
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+
+      const classrooms: LearningClassroom[] = (data || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        color: item.color,
+        module_count: item.modules?.[0]?.count || 0
+      }));
+
+      setLearningClassrooms(classrooms);
+    } catch (error) {
+      console.error('Error fetching learning classrooms:', error);
+      setLearningClassrooms([]);
+    } finally {
+      setLoadingClassrooms(false);
+    }
+  }, [currentUser]);
+
+  const fetchPromptSessions = useCallback(async () => {
+    if (!currentUser) {
+      setPromptSessions([]);
+      return;
+    }
+
+    setLoadingPrompts(true);
+    try {
+      const { data, error } = await supabase
+        .from('prompt_sessions')
+        .select('id, title, updated_at')
+        .eq('user_id', currentUser.id)
+        .order('updated_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+
+      setPromptSessions(data || []);
+    } catch (error) {
+      console.error('Error fetching prompt sessions:', error);
+      setPromptSessions([]);
+    } finally {
+      setLoadingPrompts(false);
+    }
+  }, [currentUser]);
+
   // Real-time subscription for learning classrooms
   useEffect(() => {
     if (!currentUser) return;
@@ -103,75 +168,10 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // 사용자의 Learning Space 클래스룸들 가져오기 함수
-  const fetchLearningClassrooms = async () => {
-    if (!currentUser) {
-      setLearningClassrooms([]);
-      return;
-    }
-
-    setLoadingClassrooms(true);
-    try {
-      const { data, error } = await supabase
-        .from('classrooms')
-        .select(`
-          id,
-          name,
-          color,
-          modules(count)
-        `)
-        .eq('user_id', currentUser.id)
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      if (error) throw error;
-
-      const classrooms: LearningClassroom[] = (data || []).map(item => ({
-        id: item.id,
-        name: item.name,
-        color: item.color,
-        module_count: item.modules?.[0]?.count || 0
-      }));
-
-      setLearningClassrooms(classrooms);
-    } catch (error) {
-      console.error('Error fetching learning classrooms:', error);
-      setLearningClassrooms([]);
-    } finally {
-      setLoadingClassrooms(false);
-    }
-  };
-
   // 사용자의 Learning Space 클래스룸들 가져오기
   useEffect(() => {
     fetchLearningClassrooms();
-  }, [currentUser]);
-
-  const fetchPromptSessions = async () => {
-    if (!currentUser) {
-      setPromptSessions([]);
-      return;
-    }
-
-    setLoadingPrompts(true);
-    try {
-      const { data, error } = await supabase
-        .from('prompt_sessions')
-        .select('id, title, updated_at')
-        .eq('user_id', currentUser.id)
-        .order('updated_at', { ascending: false })
-        .limit(5);
-
-      if (error) throw error;
-
-      setPromptSessions(data || []);
-    } catch (error) {
-      console.error('Error fetching prompt sessions:', error);
-      setPromptSessions([]);
-    } finally {
-      setLoadingPrompts(false);
-    }
-  };
+  }, [fetchLearningClassrooms]);
 
   // Real-time subscription for prompt sessions
   useEffect(() => {
