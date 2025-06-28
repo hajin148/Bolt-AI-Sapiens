@@ -200,7 +200,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                         disabled={loading}
                       >
                         <LogIn className="h-4 w-4" />
-                        로그인
+                        Log in
                       </button>
                       <button
                         onClick={() => handleDropdownItemClick(onSignupClick)}
@@ -208,7 +208,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                         disabled={loading}
                       >
                         <UserPlus className="h-4 w-4" />
-                        회원가입
+                        Register
                       </button>
                     </div>
                   </>
