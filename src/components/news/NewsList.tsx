@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 import { DigestCardData } from '../../types/News';
 import DigestCard from './DigestCard';
-import { Loader2, RefreshCw, Search, Filter, Calendar, TrendingUp } from 'lucide-react';
+import { Loader2, RefreshCw, Search, Filter, Calendar, TrendingUp, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -155,99 +155,106 @@ const NewsList: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-6">
+        <div className="space-y-4">
+          <h1 className="text-5xl font-bold text-gray-900 tracking-tight">AI News</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Stay updated with the latest developments in artificial intelligence through curated content from top YouTube channels
+          </p>
+        </div>
+        
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full text-blue-700 text-sm font-medium">
-          <TrendingUp className="h-4 w-4" />
+          <Globe className="h-4 w-4" />
           Latest AI Updates
         </div>
-        <h1 className="text-4xl font-bold text-gray-900">AI News & Insights</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Stay updated with the latest developments in artificial intelligence through curated content from top YouTube channels
-        </p>
       </div>
 
       {/* Search and Filter Section */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <form onSubmit={handleSearch} className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-12 text-base border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-          </form>
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Search */}
+            <form onSubmit={handleSearch} className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 h-14 text-base border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl"
+                />
+              </div>
+            </form>
 
-          {/* Language Filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-gray-400" />
-            <select
-              value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="h-12 px-4 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 bg-white text-base"
+            {/* Language Filter */}
+            <div className="flex items-center gap-3">
+              <Filter className="h-5 w-5 text-gray-400" />
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                className="h-14 px-4 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 bg-white text-base min-w-[160px]"
+              >
+                {languages.map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.flag} {lang.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Refresh Button */}
+            <Button 
+              onClick={handleRefresh} 
+              variant="outline" 
+              className="h-14 px-6 border-gray-300 hover:border-blue-500 hover:text-blue-600 rounded-xl"
             >
-              {languages.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.flag} {lang.label}
-                </option>
-              ))}
-            </select>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
           </div>
 
-          {/* Refresh Button */}
-          <Button 
-            onClick={handleRefresh} 
-            variant="outline" 
-            className="h-12 px-6 border-gray-300 hover:border-blue-500 hover:text-blue-600"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
-
-        {/* Stats */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-6 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>{digests.length} articles found</span>
+          {/* Stats */}
+          <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+            <div className="flex items-center gap-6 text-sm text-gray-600">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span>{digests.length} articles found</span>
+              </div>
+              {(searchQuery || selectedLanguage !== 'all') && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedLanguage('all');
+                  }}
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
-            {(searchQuery || selectedLanguage !== 'all') && (
-              <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedLanguage('all');
-                }}
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Clear filters
-              </button>
-            )}
           </div>
         </div>
       </div>
 
       {/* News Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {digests.map((digest, index) => (
-          <DigestCard key={`${digest.video_id}-${index}`} digest={digest} />
-        ))}
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {digests.map((digest, index) => (
+            <DigestCard key={`${digest.video_id}-${index}`} digest={digest} />
+          ))}
+        </div>
       </div>
 
       {/* Load More */}
       {hasMore && (
-        <div className="text-center py-8">
+        <div className="text-center py-12">
           <Button
             onClick={handleLoadMore}
             disabled={loadingMore}
             variant="outline"
             size="lg"
-            className="px-8 py-3 border-gray-300 hover:border-blue-500 hover:text-blue-600"
+            className="px-8 py-4 border-gray-300 hover:border-blue-500 hover:text-blue-600 rounded-xl text-base"
           >
             {loadingMore ? (
               <>
@@ -262,8 +269,8 @@ const NewsList: React.FC = () => {
       )}
 
       {!hasMore && digests.length > 0 && (
-        <div className="text-center py-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full text-gray-600 text-sm">
+        <div className="text-center py-12">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-full text-gray-600 text-sm">
             <span>You've reached the end</span>
           </div>
         </div>
