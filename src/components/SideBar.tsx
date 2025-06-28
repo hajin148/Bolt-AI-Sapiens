@@ -165,8 +165,35 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
   };
 
   const handleNewPrompt = () => {
-    navigate('/prompts');
+    handleCreateNewPrompt();
     if (isMobile) setIsExpanded(false);
+  };
+
+  const handleCreateNewPrompt = async () => {
+    if (!currentUser) {
+      navigate('/prompts');
+      return;
+    }
+    
+    try {
+      const { data: newSession, error } = await supabase
+        .from('prompt_sessions')
+        .insert({
+          title: 'New Conversation',
+          tags: [],
+          user_id: currentUser.id
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      navigate(`/prompts/${newSession.id}`);
+    } catch (error) {
+      console.error('Error creating new prompt session:', error);
+      // Fallback to prompts page if creation fails
+      navigate('/prompts');
+    }
   };
 
   const handleToolClick = (toolName: string) => {
@@ -404,7 +431,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
             <Button
               variant="ghost"
               className="relative self-stretch w-full h-11 justify-start px-[18px] text-white hover:bg-[#4c4c4d]"
-              onClick={handleNewPrompt}
+              onClick={handleCreateNewPrompt}
             >
               <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
               <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
