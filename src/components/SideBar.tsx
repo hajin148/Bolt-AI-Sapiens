@@ -111,34 +111,34 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     fetchLearningModules();
   }, [currentUser]);
 
+  const fetchPromptSessions = async () => {
+    if (!currentUser) {
+      setPromptSessions([]);
+      return;
+    }
+
+    setLoadingPrompts(true);
+    try {
+      const { data, error } = await supabase
+        .from('prompt_sessions')
+        .select('id, title, updated_at')
+        .eq('user_id', currentUser.id)
+        .order('updated_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+
+      setPromptSessions(data || []);
+    } catch (error) {
+      console.error('Error fetching prompt sessions:', error);
+      setPromptSessions([]);
+    } finally {
+      setLoadingPrompts(false);
+    }
+  };
+
   // 사용자의 Prompt Sessions 가져오기
   useEffect(() => {
-    const fetchPromptSessions = async () => {
-      if (!currentUser) {
-        setPromptSessions([]);
-        return;
-      }
-
-      setLoadingPrompts(true);
-      try {
-        const { data, error } = await supabase
-          .from('prompt_sessions')
-          .select('id, title, updated_at')
-          .eq('user_id', currentUser.id)
-          .order('updated_at', { ascending: false })
-          .limit(5);
-
-        if (error) throw error;
-
-        setPromptSessions(data || []);
-      } catch (error) {
-        console.error('Error fetching prompt sessions:', error);
-        setPromptSessions([]);
-      } finally {
-        setLoadingPrompts(false);
-      }
-    };
-
     fetchPromptSessions();
   }, [currentUser]);
 
@@ -187,6 +187,9 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         .single();
 
       if (error) throw error;
+      
+      // Refresh prompt sessions to update sidebar
+      await fetchPromptSessions();
       
       navigate(`/prompts/${newSession.id}`);
     } catch (error) {
