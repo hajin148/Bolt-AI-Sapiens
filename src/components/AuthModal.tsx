@@ -104,8 +104,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         {/* Header */}
         <div className="px-8 pt-16 pb-8 text-center">
           {/* Logo */}
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg">
-            <span className="text-white text-2xl font-bold">AS</span>
+          <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg overflow-hidden">
+            <img
+              src="/logo.png"
+              alt="AI Sapiens Logo"
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                // Fallback to gradient logo if image fails to load
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                const fallback = target.parentElement?.querySelector('.fallback-logo') as HTMLElement;
+                if (fallback) fallback.style.display = 'flex';
+              }}
+            />
+            <div className="fallback-logo hidden w-full h-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center">
+              <span className="text-white text-2xl font-bold">AS</span>
+            </div>
           </div>
           
           {/* Title and Description */}
