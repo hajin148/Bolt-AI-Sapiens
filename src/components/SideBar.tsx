@@ -60,15 +60,40 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           table: 'classrooms',
           filter: `user_id=eq.${currentUser.id}`
         },
-        () => {
+        (payload) => {
+          console.log('Classroom change detected:', payload);
+          if (payload.eventType === 'DELETE') {
+            // Remove from local state immediately
+            setLearningClassrooms(prev => prev.filter(classroom => classroom.id !== payload.old.id));
+          } else {
+            // For INSERT/UPDATE, refetch all data
+            fetchLearningClassrooms();
+          }
+        }
+      )
+      .subscribe();
+
+    // Additional subscription to catch all classroom deletions
+    const deleteSubscription = supabase
+      .channel('classroom_deletions')
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'classrooms'
+        },
+        (payload) => {
+          console.log('Classroom deleted:', payload);
           // Refetch learning classrooms when changes occur
-          fetchLearningClassrooms();
+          setLearningClassrooms(prev => prev.filter(classroom => classroom.id !== payload.old.id));
         }
       )
       .subscribe();
 
     return () => {
       subscription.unsubscribe();
+      deleteSubscription.unsubscribe();
     };
   }, [currentUser]);
 

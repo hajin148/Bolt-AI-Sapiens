@@ -18,6 +18,16 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({ classroom, onEdit, onDele
     navigate(`/classroom/${classroom.id}`);
   };
 
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete(classroom.id);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit(classroom);
+  };
+
   const truncateDescription = (text: string, maxLength: number = 100) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength).trim() + '...';
@@ -44,10 +54,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({ classroom, onEdit, onDele
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEdit(classroom);
-                }}
+                onClick={handleEdit}
                 className="h-8 w-8 p-0 hover:bg-gray-700 text-gray-400 hover:text-white"
               >
                 <Edit size={14} />
@@ -55,10 +62,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({ classroom, onEdit, onDele
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(classroom.id);
-                }}
+                onClick={handleDelete}
                 className="h-8 w-8 p-0 hover:bg-red-600/20 hover:text-red-400 text-gray-400"
               >
                 <Trash2 size={14} />

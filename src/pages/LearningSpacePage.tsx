@@ -53,6 +53,8 @@ const LearningSpacePage: React.FC = () => {
     if (window.confirm('Are you sure you want to delete this classroom? This will also delete all modules.')) {
       try {
         await deleteClassroom(id);
+        // Trigger sidebar refresh
+        window.dispatchEvent(new CustomEvent('refreshLearningClassrooms'));
       } catch (error) {
         console.error('Error deleting classroom:', error);
       }
