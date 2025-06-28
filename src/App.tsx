@@ -245,6 +245,7 @@ export default function AppWithRoutes() {
   const handleUpgradeClick = () => {
     setShowPricingModal(true);
   };
+
   return (
     <div className="min-h-screen bg-gray-900">
       <NavBar 
@@ -255,6 +256,7 @@ export default function AppWithRoutes() {
       
       <div className="flex">
         {showSidebar && <SideBar />}
+        {showSidebar && <SideBar onUpgradeClick={handleUpgradeClick} />}
 
         <div className={`flex-1 ${showSidebar ? 'lg:ml-[280px]' : ''} ${!isPromptChatRoute ? 'pt-16' : ''}`}>
           <Routes>

@@ -156,14 +156,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                   </>
                 )}
               </div>
-              {userProfile && !userProfile.isPaid && (
-                <Button
-                  onClick={onUpgradeClick}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 border-0 text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3"
-              >
-                  Upgrade to Pro
-                </Button>
-              )}
             </div>
           ) : (
             <div className="flex items-center gap-3 relative">
@@ -313,19 +305,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               )}
               
               {/* Upgrade button for mobile */}
-              {currentUser && userProfile && !userProfile.isPaid && (
-                <div className="pt-3 border-t border-gray-700">
-                  <Button
-                    onClick={() => {
-                      onUpgradeClick();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 border-0 text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px]"
-                  >
-                    Upgrade to Pro
-                  </Button>
-                </div>
-              )}
             </div>
           </div>
         )}
