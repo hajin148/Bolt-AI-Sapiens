@@ -594,6 +594,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                         {promptSessions.length >= 5 && (
                           <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
                         )}
+                      </>
                     ) : (
                       <div className="px-[18px] py-2">
                         <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
@@ -754,10 +755,10 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                         sessionId={session.id}
                       />
                     ))}
-                    ))}
                     {promptSessions.length >= 5 && (
                       <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
                     )}
+                  </>
                 ) : (
                   <div className="px-[18px] py-2">
                     <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
