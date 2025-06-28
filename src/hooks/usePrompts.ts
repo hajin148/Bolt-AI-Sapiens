@@ -44,6 +44,11 @@ export const usePrompts = () => {
     if (error) throw error;
     
     await fetchSessions();
+    
+    // Trigger sidebar refresh
+    console.log('Triggering sidebar refresh from createSession');
+    window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
+    
     return data;
   };
 
@@ -55,6 +60,9 @@ export const usePrompts = () => {
 
     if (error) throw error;
     await fetchSessions();
+    
+    // Trigger sidebar refresh
+    window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
   };
 
   const deleteSession = async (id: string) => {
@@ -65,6 +73,9 @@ export const usePrompts = () => {
 
     if (error) throw error;
     await fetchSessions();
+    
+    // Trigger sidebar refresh
+    window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
   };
 
   useEffect(() => {

@@ -50,8 +50,9 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
   useEffect(() => {
     if (!currentUser) return;
 
-    const subscription = supabase
-      .channel('learning_classrooms_changes')
+    // Subscribe to classroom changes for current user
+    const classroomSubscription = supabase
+      .channel(`classrooms_${currentUser.id}`)
       .on(
         'postgres_changes',
         {
@@ -62,44 +63,22 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         },
         (payload) => {
           console.log('Classroom change detected:', payload);
-          if (payload.eventType === 'DELETE') {
-            // Remove from local state immediately
-            setLearningClassrooms(prev => prev.filter(classroom => classroom.id !== payload.old.id));
-          } else {
-            // For INSERT/UPDATE, refetch all data
-            fetchLearningClassrooms();
-          }
+          // Always refetch to ensure we have the latest data
+          fetchLearningClassrooms();
         }
       )
       .subscribe();
 
-    // Additional subscription to catch all classroom deletions
-    const deleteSubscription = supabase
-      .channel('classroom_deletions')
-      .on(
-        'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'classrooms'
-        },
-        (payload) => {
-          console.log('Classroom deleted:', payload);
-          // Refetch learning classrooms when changes occur
-          setLearningClassrooms(prev => prev.filter(classroom => classroom.id !== payload.old.id));
-        }
-      )
-      .subscribe();
 
     return () => {
-      subscription.unsubscribe();
-      deleteSubscription.unsubscribe();
+      classroomSubscription.unsubscribe();
     };
   }, [currentUser]);
 
   // Listen for custom refresh events for learning classrooms
   useEffect(() => {
     const handleRefreshClassrooms = () => {
+      console.log('Custom refresh event triggered for classrooms');
       fetchLearningClassrooms();
     };
 
@@ -107,7 +86,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     return () => {
       window.removeEventListener('refreshLearningClassrooms', handleRefreshClassrooms);
     };
-  }, []);
+  }, [fetchLearningClassrooms]);
 
   // 화면 크기 감지
   useEffect(() => {
@@ -203,8 +182,8 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
     fetchPromptSessions();
 
-    const subscription = supabase
-      .channel('prompt_sessions_changes')
+    const promptSubscription = supabase
+      .channel(`prompt_sessions_${currentUser.id}`)
       .on(
         'postgres_changes',
         {
@@ -215,37 +194,20 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         },
         (payload) => {
           console.log('Prompt session change detected:', payload);
-          // Refetch prompt sessions when changes occur
           fetchPromptSessions();
         }
       )
       .subscribe();
 
-    // Also listen for any changes to ensure we catch all updates
-    const fallbackSubscription = supabase
-      .channel('prompt_sessions_fallback')
-      .on(
-        'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'prompt_sessions'
-        },
-        (payload) => {
-          console.log('Prompt session deleted:', payload);
-          // Remove from local state immediately
-          setPromptSessions(prev => prev.filter(session => session.id !== payload.old.id));
-        }
-      )
-      .subscribe();
     return () => {
-      subscription.unsubscribe();
-      fallbackSubscription.unsubscribe();
+      promptSubscription.unsubscribe();
     };
   }, [currentUser]);
+
   // Listen for custom refresh events
   useEffect(() => {
     const handleRefresh = () => {
+      console.log('Custom refresh event triggered for prompt sessions');
       fetchPromptSessions();
     };
 
@@ -253,7 +215,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     return () => {
       window.removeEventListener('refreshPromptSessions', handleRefresh);
     };
-  }, []);
+  }, [fetchPromptSessions]);
 
   const getFavoriteTools = () => {
     if (!currentUser || !userProfile?.favorites) return [];

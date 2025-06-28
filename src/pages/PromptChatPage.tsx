@@ -164,6 +164,10 @@ const PromptChatPage: React.FC = () => {
             ? aiResponse.main_prompt!.substring(0, 50) + '...'
             : aiResponse.main_prompt!
         } : null);
+        
+        // Trigger sidebar refresh when session is updated
+        console.log('Triggering sidebar refresh for updated session');
+        window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
       }
 
       // Show learning space button if suggested
@@ -268,6 +272,7 @@ const PromptChatPage: React.FC = () => {
       navigate(`/classroom/${classroom.id}`);
 
       // Trigger sidebar refresh for learning classrooms
+      console.log('Triggering sidebar refresh for new classroom');
       window.dispatchEvent(new CustomEvent('refreshLearningClassrooms'));
 
     } catch (error) {
