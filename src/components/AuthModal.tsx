@@ -109,6 +109,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
               src="/logo.png"
               alt="AI Sapiens Logo"
               className="w-full h-full object-contain"
+              onError={(e) => {
               }}
             />
           </div>
