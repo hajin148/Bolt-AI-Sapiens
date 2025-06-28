@@ -51,6 +51,8 @@ const PromptsPage: React.FC = () => {
     if (window.confirm('Are you sure you want to delete this conversation?')) {
       try {
         await deleteSession(sessionId);
+        // Trigger sidebar refresh
+        window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
       } catch (error) {
         console.error('Error deleting session:', error);
       }

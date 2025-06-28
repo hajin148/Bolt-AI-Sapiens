@@ -41,6 +41,11 @@ const PromptChatPage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Function to refresh sidebar prompt sessions
+  const refreshSidebarPrompts = () => {
+    // Trigger a custom event to refresh sidebar
+    window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
+  };
   useEffect(() => {
     const fetchSession = async () => {
       if (!sessionId || !currentUser) return;
@@ -62,6 +67,8 @@ const PromptChatPage: React.FC = () => {
         
         setSession(data);
       } catch (err) {
+        // If session not found, refresh sidebar to remove stale entries
+        refreshSidebarPrompts();
         setError(err instanceof Error ? err.message : 'Failed to fetch session');
       } finally {
         setLoading(false);

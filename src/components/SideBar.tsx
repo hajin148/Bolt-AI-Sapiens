@@ -175,17 +175,47 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           table: 'prompt_sessions',
           filter: `user_id=eq.${currentUser.id}`
         },
-        () => {
+        (payload) => {
+          console.log('Prompt session change detected:', payload);
           // Refetch prompt sessions when changes occur
           fetchPromptSessions();
         }
       )
       .subscribe();
 
+    // Also listen for any changes to ensure we catch all updates
+    const fallbackSubscription = supabase
+      .channel('prompt_sessions_fallback')
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'prompt_sessions'
+        },
+        (payload) => {
+          console.log('Prompt session deleted:', payload);
+          // Remove from local state immediately
+          setPromptSessions(prev => prev.filter(session => session.id !== payload.old.id));
+        }
+      )
+      .subscribe();
     return () => {
       subscription.unsubscribe();
+      fallbackSubscription.unsubscribe();
     };
   }, [currentUser]);
+  // Listen for custom refresh events
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchPromptSessions();
+    };
+
+    window.addEventListener('refreshPromptSessions', handleRefresh);
+    return () => {
+      window.removeEventListener('refreshPromptSessions', handleRefresh);
+    };
+  }, []);
 
   const getFavoriteTools = () => {
     if (!currentUser || !userProfile?.favorites) return [];
