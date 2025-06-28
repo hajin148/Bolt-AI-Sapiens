@@ -57,7 +57,7 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
 
   return (
     <Card 
-      className="group cursor-pointer hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] border-0 shadow-lg overflow-hidden bg-white rounded-2xl"
+      className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-0 shadow-md overflow-hidden bg-white"
       onClick={handleClick}
     >
       <CardContent className="p-0">
@@ -68,7 +68,7 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
               <img
                 src={digest.thumbnail}
                 alt={digest.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = 'https://via.placeholder.com/640x360/f3f4f6/9ca3af?text=AI+News';
@@ -81,15 +81,15 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
             )}
             
             {/* Play Overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-500 flex items-center justify-center">
-              <div className="w-20 h-20 bg-white bg-opacity-95 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform scale-75 group-hover:scale-100 shadow-2xl">
-                <Play className="h-8 w-8 text-gray-800 ml-1" fill="currentColor" />
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+              <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100">
+                <Play className="h-6 w-6 text-gray-800 ml-1" fill="currentColor" />
               </div>
             </div>
 
             {/* Language Badge */}
-            <div className="absolute top-4 right-4">
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium shadow-lg ${getLanguageColor(digest.lang)}`}>
+            <div className="absolute top-3 right-3">
+              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getLanguageColor(digest.lang)}`}>
                 {getLanguageFlag(digest.lang)}
                 {digest.lang.toUpperCase()}
               </span>
@@ -100,13 +100,13 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
         {/* Content Section */}
         <div className="p-6">
           {/* Title */}
-          <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2 mb-4 leading-tight">
+          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2 mb-3 leading-tight">
             {digest.title}
           </h3>
 
           {/* Summary */}
           {digest.summary && (
-            <p className="text-gray-600 text-sm line-clamp-3 mb-6 leading-relaxed">
+            <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">
               {digest.summary}
             </p>
           )}
@@ -115,20 +115,20 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {digest.channel_name && (
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <User className="h-4 w-4" />
+                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <User className="h-3.5 w-3.5" />
                   <span className="font-medium">{digest.channel_name}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <Calendar className="h-4 w-4" />
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Calendar className="h-3.5 w-3.5" />
                 <span>{formatDate(digest.published_at)}</span>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="flex items-center gap-1 text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <span className="font-medium">Read more</span>
-              <ExternalLink className="h-4 w-4" />
+              <ExternalLink className="h-3.5 w-3.5" />
             </div>
           </div>
         </div>
