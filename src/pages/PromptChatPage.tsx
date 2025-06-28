@@ -16,7 +16,10 @@ import {
   AlertCircle,
   Sparkles,
   Heart,
-  Tag
+  Tag,
+  MoreHorizontal,
+  Share,
+  Bookmark
 } from 'lucide-react';
 import { PromptSession, PromptMessage, GeminiResponse, LearningSpaceData, EnhancedVideoDigest } from '../types/Prompt';
 import { VideoDigest, ContentItem } from '../types/Learning';
@@ -263,11 +266,11 @@ const PromptChatPage: React.FC = () => {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
-          <p className="text-gray-600">Please log in to access the AI Prompts feature.</p>
+          <h2 className="text-xl font-semibold text-white mb-2">Authentication Required</h2>
+          <p className="text-gray-400">Please log in to access the AI Prompts feature.</p>
         </div>
       </div>
     );
@@ -275,10 +278,10 @@ const PromptChatPage: React.FC = () => {
 
   if (loading || messagesLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-purple-600 mb-4" />
-          <p className="text-gray-600">Loading conversation...</p>
+          <p className="text-gray-400">Loading conversation...</p>
         </div>
       </div>
     );
@@ -286,12 +289,12 @@ const PromptChatPage: React.FC = () => {
 
   if (error && !session) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-400 mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Conversation Not Found</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={() => navigate('/prompts')} variant="outline">
+          <h2 className="text-xl font-semibold text-white mb-2">Conversation Not Found</h2>
+          <p className="text-gray-400 mb-4">{error}</p>
+          <Button onClick={() => navigate('/prompts')} variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800">
             Back to Conversations
           </Button>
         </div>
@@ -300,84 +303,78 @@ const PromptChatPage: React.FC = () => {
   }
 
   return (
-    <div className="h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-200">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/prompts')}
-            className="mb-4 hover:bg-gray-100"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            All Conversations
-          </Button>
-          
-          {session && (
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                {session.title}
-              </h2>
-              {session.main_prompt && (
-                <div className="mb-4">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">Main Topic</h3>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600">{session.main_prompt}</p>
-                  </div>
-                </div>
-              )}
-              
-              {session.tags.length > 0 && (
-                <div className="mb-4">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
-                    <Tag className="h-3 w-3" />
-                    Tags
-                  </h3>
-                  <div className="flex flex-wrap gap-1">
-                    {session.tags.map((tag, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={session.is_favorited ? 'text-red-500' : 'text-gray-400'}
-                >
-                  <Heart className={`h-4 w-4 ${session.is_favorited ? 'fill-current' : ''}`} />
-                </Button>
-                <span className="text-xs text-gray-500">Favorite</span>
+    <div className="h-screen bg-[#121212] flex flex-col">
+      {/* Header */}
+      <div className="border-b border-gray-800 bg-[#121212] px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/prompts')}
+              className="text-gray-300 hover:text-white hover:bg-gray-800"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+            
+            {session && (
+              <div>
+                <h1 className="text-lg font-semibold text-white">
+                  {session.title}
+                </h1>
+                {session.main_prompt && (
+                  <p className="text-sm text-gray-400 line-clamp-1">
+                    {session.main_prompt}
+                  </p>
+                )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-400 hover:text-white hover:bg-gray-800"
+            >
+              <Share className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-400 hover:text-white hover:bg-gray-800"
+            >
+              <Bookmark className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-400 hover:text-white hover:bg-gray-800"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
           {messages.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bot className="h-8 w-8 text-purple-600" />
+            <div className="text-center py-20">
+              <div className="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Bot className="h-8 w-8 text-purple-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Start a conversation with AI</h3>
-              <p className="text-gray-600">Ask about any topic you'd like to learn about.</p>
+              <h3 className="text-lg font-medium text-white mb-2">Start a conversation with AI</h3>
+              <p className="text-gray-400">Ask about any topic you'd like to learn about.</p>
             </div>
           ) : (
             messages.map((message, index) => (
               <div key={message.id || index} className="flex gap-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                   message.sender === 'user' 
-                    ? 'bg-blue-100 text-blue-600' 
-                    : 'bg-purple-100 text-purple-600'
+                    ? 'bg-blue-600/20 text-blue-400' 
+                    : 'bg-purple-600/20 text-purple-400'
                 }`}>
                   {message.sender === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                 </div>
@@ -386,7 +383,7 @@ const PromptChatPage: React.FC = () => {
                   <div className={`inline-block p-4 rounded-lg max-w-3xl ${
                     message.sender === 'user'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white border border-gray-200'
+                      : 'bg-gray-800/50 border border-gray-700 text-white'
                   }`}>
                     <p className="whitespace-pre-wrap">{message.content}</p>
                   </div>
@@ -421,14 +418,14 @@ const PromptChatPage: React.FC = () => {
           
           {sending && (
             <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center flex-shrink-0">
                 <Bot className="h-4 w-4" />
               </div>
               <div className="flex-1">
-                <div className="inline-block p-4 rounded-lg bg-white border border-gray-200">
+                <div className="inline-block p-4 rounded-lg bg-gray-800/50 border border-gray-700">
                   <div className="flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="text-gray-600">AI is generating a response...</span>
+                    <Loader2 className="h-4 w-4 animate-spin text-purple-400" />
+                    <span className="text-gray-300">AI is generating a response...</span>
                   </div>
                 </div>
               </div>
@@ -437,23 +434,25 @@ const PromptChatPage: React.FC = () => {
           
           <div ref={messagesEndRef} />
         </div>
+      </div>
 
-        {/* Input Area */}
-        <div className="border-t border-gray-200 bg-white p-4">
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600">{error}</p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setError(null)}
-                className="mt-2 text-red-600 hover:text-red-700"
-              >
-                Dismiss
-              </Button>
-            </div>
-          )}
-          
+      {/* Input Area */}
+      <div className="border-t border-gray-800 bg-[#121212] p-6">
+        {error && (
+          <div className="mb-4 p-3 bg-red-600/20 border border-red-500/30 rounded-lg">
+            <p className="text-sm text-red-400">{error}</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setError(null)}
+              className="mt-2 text-red-400 hover:text-red-300"
+            >
+              Dismiss
+            </Button>
+          </div>
+        )}
+        
+        <div className="max-w-4xl mx-auto">
           <div className="flex gap-3">
             <Input
               ref={inputRef}
@@ -462,12 +461,12 @@ const PromptChatPage: React.FC = () => {
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
               disabled={sending}
-              className="flex-1"
+              className="flex-1 bg-gray-800/50 border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500"
             />
             <Button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || sending}
-              className="bg-purple-600 hover:bg-purple-700"
+              className="bg-purple-600 hover:bg-purple-700 px-6"
             >
               {sending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
