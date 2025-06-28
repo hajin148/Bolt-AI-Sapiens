@@ -323,7 +323,7 @@ const PromptChatPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#121212] flex flex-col">
       {/* Header */}
-      <div className="border-b border-gray-800 bg-[#121212] px-6 py-4 sticky top-0 z-10">
+      <div className="border-b border-gray-800 bg-[#121212] px-6 py-4 sticky top-0 z-10 hidden">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {session && (
@@ -367,7 +367,7 @@ const PromptChatPage: React.FC = () => {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 min-h-[calc(100vh-200px)]">
+      <div className="flex-1 min-h-[calc(100vh-120px)]">
         <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
           {messages.length === 0 ? (
             <div className="text-center py-20">
