@@ -49,7 +49,7 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
 
   return (
     <div 
-      className="group cursor-pointer hover:bg-gray-800/30 transition-all duration-300 rounded-lg p-4 -m-4 max-w-2xl"
+      className="group cursor-pointer bg-[#1a1a1a] hover:bg-[#222222] transition-all duration-300 rounded-lg p-4 border border-gray-800 hover:border-gray-700 max-w-2xl"
       onClick={handleClick}
     >
       <div className="flex gap-4">
