@@ -371,11 +371,6 @@ const PromptChatPage: React.FC = () => {
         <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
           {messages.length === 0 ? (
             <div className="text-center py-20">
-              <div className="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bot className="h-8 w-8 text-purple-400" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">Start a conversation with AI</h3>
-              <p className="text-gray-400">Ask about any topic you'd like to learn about.</p>
             </div>
           ) : (
             messages.map((message, index) => (
