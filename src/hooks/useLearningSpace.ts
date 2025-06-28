@@ -53,10 +53,6 @@ export const useLearningSpace = () => {
     if (error) throw error;
     
     await fetchClassrooms();
-    
-    // Trigger sidebar refresh
-    window.dispatchEvent(new CustomEvent('refreshClassrooms'));
-    
     return data;
   };
 
@@ -68,9 +64,6 @@ export const useLearningSpace = () => {
 
     if (error) throw error;
     await fetchClassrooms();
-    
-    // Trigger sidebar refresh
-    window.dispatchEvent(new CustomEvent('refreshClassrooms'));
   };
 
   const deleteClassroom = async (id: string) => {
@@ -81,9 +74,6 @@ export const useLearningSpace = () => {
 
     if (error) throw error;
     await fetchClassrooms();
-    
-    // Trigger sidebar refresh
-    window.dispatchEvent(new CustomEvent('refreshClassrooms'));
   };
 
   useEffect(() => {
