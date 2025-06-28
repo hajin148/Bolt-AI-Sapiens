@@ -16,6 +16,10 @@ import { Avatar } from './ui/avatar';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 
+interface SideBarProps {
+  onUpgradeClick: () => void;
+}
+
 interface LearningModule {
   id: string;
   title: string;
@@ -30,7 +34,7 @@ interface PromptSession {
   updated_at: string;
 }
 
-const SideBar: React.FC = () => {
+const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, userProfile, userTokens } = useAuth();
