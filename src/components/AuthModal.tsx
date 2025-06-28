@@ -109,12 +109,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
               src="/logo.png"
               alt="AI Sapiens Logo"
               className="w-full h-full object-contain"
-              onError={(e) => {
-                // Fallback to gradient logo if image fails to load
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                const fallback = target.parentElement?.querySelector('.fallback-logo') as HTMLElement;
-                if (fallback) fallback.style.display = 'flex';
               }}
             />
           </div>
