@@ -100,7 +100,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
             <ArrowLeft size={24} />
           </button>
         )}
-          
           {/* Title and Description */}
           <div className="space-y-3">
             <h1 className="text-3xl font-bold text-gray-900">
