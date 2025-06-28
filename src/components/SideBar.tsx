@@ -60,7 +60,8 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           table: 'classrooms',
           filter: `user_id=eq.${currentUser.id}`
         },
-        () => {
+        (payload) => {
+          console.log('Classroom change detected:', payload);
           // Refetch learning classrooms when changes occur
           fetchLearningClassrooms();
         }
@@ -71,6 +72,18 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
       subscription.unsubscribe();
     };
   }, [currentUser]);
+
+  // Listen for custom refresh events for classrooms
+  useEffect(() => {
+    const handleRefreshClassrooms = () => {
+      fetchLearningClassrooms();
+    };
+
+    window.addEventListener('refreshClassrooms', handleRefreshClassrooms);
+    return () => {
+      window.removeEventListener('refreshClassrooms', handleRefreshClassrooms);
+    };
+  }, []);
 
   // 화면 크기 감지
   useEffect(() => {
@@ -282,6 +295,30 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     if (isMobile) setIsExpanded(false);
   };
 
+  const handleDeleteClassroom = async (classroomId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this classroom? This will also delete all modules.')) {
+      try {
+        const { error } = await supabase
+          .from('classrooms')
+          .delete()
+          .eq('id', classroomId);
+
+        if (error) throw error;
+        
+        // Remove from local state immediately
+        setLearningClassrooms(prev => prev.filter(classroom => classroom.id !== classroomId));
+        
+        // If currently viewing this classroom, navigate away
+        if (location.pathname.includes(classroomId)) {
+          navigate('/learning');
+        }
+      } catch (error) {
+        console.error('Error deleting classroom:', error);
+      }
+    }
+  };
+
   const handleLearningSpaceClick = () => {
     navigate('/learning');
     if (isMobile) setIsExpanded(false);
@@ -379,6 +416,14 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           </>
         )}
         
+        {/* Color indicator for learning classrooms */}
+        {section === 'learn' && color && (
+          <div 
+            className="w-3 h-3 rounded-full flex-shrink-0"
+            style={{ backgroundColor: color }}
+          />
+        )}
+        
         <div className="flex-1 min-w-0">
           <span 
             className="font-['Pretendard-Regular',Helvetica] font-normal text-[#d5d5d5] text-[13px] tracking-[-0.20px] leading-[22px] truncate block"
@@ -386,12 +431,28 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
           >
             {name}
           </span>
+          {/* Module count for classrooms */}
+          {section === 'learn' && moduleCount !== undefined && (
+            <span className="text-[10px] text-gray-500">
+              {moduleCount} module{moduleCount !== 1 ? 's' : ''}
+            </span>
+          )}
         </div>
         
         {/* Delete button for prompt sessions */}
         {section === 'prompt' && sessionId && (
           <button
             onClick={(e) => handleDeletePrompt(sessionId, e)}
+            className="opacity-0 group-hover:opacity-100 transition-all duration-200 ml-2 p-1 hover:bg-red-600/20 hover:text-red-400 text-[#d5d5d5] rounded flex-shrink-0"
+          >
+            <Trash2 className="h-3 w-3" />
+          </button>
+        )}
+        
+        {/* Delete button for classrooms */}
+        {section === 'learn' && classroomId && (
+          <button
+            onClick={(e) => handleDeleteClassroom(classroomId, e)}
             className="opacity-0 group-hover:opacity-100 transition-all duration-200 ml-2 p-1 hover:bg-red-600/20 hover:text-red-400 text-[#d5d5d5] rounded flex-shrink-0"
           >
             <Trash2 className="h-3 w-3" />
