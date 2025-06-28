@@ -227,10 +227,9 @@ export default function AppWithRoutes() {
   const isNewsRoute = location.pathname.startsWith('/news');
   const isLearningRoute = location.pathname.startsWith('/learning') || location.pathname.startsWith('/classroom');
   const isPromptRoute = location.pathname.startsWith('/prompts');
-  const isPromptChatRoute = location.pathname.match(/^\/prompts\/[^\/]+$/);
   const isHomePage = location.pathname === '/';
 
-  const showSidebar = !isPromptChatRoute;
+  const showSidebar = true; // Always show sidebar
 
   const handleLoginClick = () => {
     setAuthMode('login');
@@ -256,9 +255,9 @@ export default function AppWithRoutes() {
       
       <div className="flex">
         {showSidebar && <SideBar />}
-        {showSidebar && <SideBar onUpgradeClick={handleUpgradeClick} />}
+        <SideBar onUpgradeClick={handleUpgradeClick} />
 
-        <div className={`flex-1 ${showSidebar ? 'lg:ml-[280px]' : ''} ${!isPromptChatRoute ? 'pt-16' : ''}`}>
+        <div className="flex-1 lg:ml-[280px] pt-16">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/news" element={<NewsPage />} />
