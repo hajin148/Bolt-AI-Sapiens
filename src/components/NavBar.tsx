@@ -110,7 +110,12 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               <Button variant="ghost" size="icon" className="w-7 h-7 p-0 hover:bg-[#333333]">
                 <BellIcon className="w-7 h-7 text-white" />
               </Button>
-              <Button variant="ghost" size="icon" className="w-7 h-7 p-0 hover:bg-[#333333]">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="w-7 h-7 p-0 hover:bg-[#333333]"
+                onClick={() => navigate('/news')}
+              >
                 <GlobeIcon className="w-7 h-7 text-white" />
               </Button>
               <div className="relative">
