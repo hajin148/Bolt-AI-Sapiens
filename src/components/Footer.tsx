@@ -22,7 +22,6 @@ const Footer: React.FC = () => {
                 }}
               />
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg items-center justify-center hidden">
-                <span className="text-white text-sm font-bold">AS</span>
               </div>
             </div>
             <p className="text-gray-400 text-sm">
