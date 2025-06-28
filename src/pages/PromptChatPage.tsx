@@ -313,7 +313,7 @@ const PromptChatPage: React.FC = () => {
           <h2 className="text-xl font-semibold text-white mb-2">Conversation Not Found</h2>
           <p className="text-gray-400 mb-4">The conversation you're looking for doesn't exist or has been deleted.</p>
           <Button onClick={() => navigate('/')} variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800">
-            Go to Home
+            Go to AI Tools
           </Button>
         </div>
       </div>

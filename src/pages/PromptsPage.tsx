@@ -53,6 +53,11 @@ const PromptsPage: React.FC = () => {
         await deleteSession(sessionId);
         // Trigger sidebar refresh
         window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
+        
+        // If we're currently viewing this session, redirect to home
+        if (window.location.pathname.includes(sessionId)) {
+          navigate('/');
+        }
       } catch (error) {
         console.error('Error deleting session:', error);
       }

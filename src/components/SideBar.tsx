@@ -318,7 +318,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         
         // If currently viewing this session, navigate away
         if (location.pathname.includes(sessionId)) {
-          navigate('/prompts');
+          navigate('/');
         }
       } catch (error) {
         console.error('Error deleting prompt session:', error);
