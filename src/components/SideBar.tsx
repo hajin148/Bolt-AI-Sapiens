@@ -16,10 +16,6 @@ import { Avatar } from './ui/avatar';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 
-interface SideBarProps {
-  onUpgradeClick: () => void;
-}
-
 interface LearningModule {
   id: string;
   title: string;
@@ -34,7 +30,7 @@ interface PromptSession {
   updated_at: string;
 }
 
-const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
+const SideBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, userProfile, userTokens } = useAuth();
@@ -505,9 +501,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
 
         {/* Points Display - Fixed at bottom */}
         <div className="p-2.5 pb-[46px]">
-          <div 
-            className="w-full h-[38px] bg-[#222222] rounded-[40px] overflow-hidden flex items-center justify-between px-3 cursor-pointer hover:bg-[#333333] transition-colors"
-            onClick={onUpgradeClick}
           <div 
             className="w-full h-[38px] bg-[#222222] rounded-[40px] overflow-hidden flex items-center justify-between px-3 cursor-pointer hover:bg-[#333333] transition-colors"
             onClick={onUpgradeClick}
