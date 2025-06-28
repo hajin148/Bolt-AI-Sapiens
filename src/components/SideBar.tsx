@@ -72,6 +72,18 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     };
   }, [currentUser]);
 
+  // Listen for custom refresh events for learning classrooms
+  useEffect(() => {
+    const handleRefreshClassrooms = () => {
+      fetchLearningClassrooms();
+    };
+
+    window.addEventListener('refreshLearningClassrooms', handleRefreshClassrooms);
+    return () => {
+      window.removeEventListener('refreshLearningClassrooms', handleRefreshClassrooms);
+    };
+  }, []);
+
   // 화면 크기 감지
   useEffect(() => {
     const checkScreenSize = () => {

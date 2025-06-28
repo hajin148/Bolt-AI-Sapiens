@@ -267,6 +267,9 @@ const PromptChatPage: React.FC = () => {
       // Navigate to the created classroom
       navigate(`/classroom/${classroom.id}`);
 
+      // Trigger sidebar refresh for learning classrooms
+      window.dispatchEvent(new CustomEvent('refreshLearningClassrooms'));
+
     } catch (error) {
       console.error('Error creating learning space:', error);
       setError('Failed to create learning space. Please try again.');
