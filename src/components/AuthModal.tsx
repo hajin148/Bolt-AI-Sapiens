@@ -117,9 +117,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                 if (fallback) fallback.style.display = 'flex';
               }}
             />
-            <div className="fallback-logo hidden w-full h-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center">
-              <span className="text-white text-2xl font-bold">AS</span>
-            </div>
           </div>
           
           {/* Title and Description */}
