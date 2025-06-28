@@ -506,8 +506,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         {/* Points Display - Fixed at bottom */}
         <div className="p-2.5 pb-[46px]">
           <div 
-            className="w-full h-[38px] bg-[#222222] rounded-[40px] overflow-hidden flex items-center justify-between px-3 cursor-pointer hover:bg-[#333333] transition-colors"
-            onClick={onUpgradeClick}
+            className={`w-full h-[38px] bg-[#222222] rounded-[40px] overflow-hidden flex items-center justify-between px-3 transition-colors ${
+              currentUser ? 'cursor-pointer hover:bg-[#333333]' : 'cursor-default'
+            }`}
+            onClick={currentUser ? onUpgradeClick : undefined}
+            }`}
+            onClick={currentUser ? onUpgradeClick : undefined}
           >
             <Wallet className="w-5 h-5 text-white flex-shrink-0" />
             <span className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
