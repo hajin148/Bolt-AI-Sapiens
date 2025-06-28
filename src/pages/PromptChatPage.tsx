@@ -62,14 +62,17 @@ const PromptChatPage: React.FC = () => {
         if (error) throw error;
         
         if (!data) {
-          throw new Error('Session not found or you do not have permission to access it');
+          // Session not found, redirect to home
+          navigate('/');
+          return;
         }
         
         setSession(data);
       } catch (err) {
         // If session not found, refresh sidebar to remove stale entries
         refreshSidebarPrompts();
-        setError(err instanceof Error ? err.message : 'Failed to fetch session');
+        // Redirect to home instead of showing error
+        navigate('/');
       } finally {
         setLoading(false);
       }
@@ -308,9 +311,9 @@ const PromptChatPage: React.FC = () => {
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-400 mb-4" />
           <h2 className="text-xl font-semibold text-white mb-2">Conversation Not Found</h2>
-          <p className="text-gray-400 mb-4">{error}</p>
-          <Button onClick={() => navigate('/prompts')} variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800">
-            Back to Conversations
+          <p className="text-gray-400 mb-4">The conversation you're looking for doesn't exist or has been deleted.</p>
+          <Button onClick={() => navigate('/')} variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+            Go to Home
           </Button>
         </div>
       </div>
@@ -323,15 +326,6 @@ const PromptChatPage: React.FC = () => {
       <div className="border-b border-gray-800 bg-[#121212] px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/prompts')}
-              className="text-gray-300 hover:text-white hover:bg-gray-800"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-            
             {session && (
               <div>
                 <h1 className="text-lg font-semibold text-white">
