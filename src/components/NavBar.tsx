@@ -28,7 +28,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
 
   const isNewsPage = location.pathname.startsWith('/news');
   const isLearningPage = location.pathname.startsWith('/learning') || location.pathname.startsWith('/classroom');
-  const isPromptPage = location.pathname.startsWith('/prompts');
   const isHomePage = location.pathname === '/';
 
   const handleUserIconClick = () => {
@@ -74,20 +73,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
 
         {/* Right side content */}
         <div className="flex items-center gap-4">
-
-          {/* AI Prompts - only when logged in */}
-          {currentUser && (
-            <button
-              onClick={() => navigate('/prompts')}
-              className={`hidden md:block text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] transition-colors ${
-                isPromptPage 
-                  ? 'text-purple-400' 
-                  : 'text-white hover:text-purple-400'
-              }`}
-            >
-              AI Prompts
-            </button>
-          )}
 
           {/* Learn Space button - only when logged in */}
           {currentUser && (
@@ -247,19 +232,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                   >
                     Learning Space
                   </button>
-                  <button
-                    onClick={() => {
-                      navigate('/prompts');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`text-left text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] transition-colors ${
-                      isPromptPage 
-                        ? 'text-purple-400' 
-                        : 'text-white hover:text-purple-400'
-                    }`}
-                  >
-                    AI Prompts
-                  </button>
                 </>
               )}
               
@@ -274,7 +246,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                     className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 flex items-center gap-2"
                   >
                     <LogOut className="h-4 w-4" />
-                    로그아웃
+                    Logout
                   </button>
                 </div>
               ) : (
@@ -288,7 +260,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                     disabled={loading}
                   >
                     <LogIn className="h-4 w-4" />
-                    로그인
+                    Login
                   </button>
                   <button
                     onClick={() => {
@@ -299,7 +271,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                     disabled={loading}
                   >
                     <UserPlus className="h-4 w-4" />
-                    회원가입
+                    Register
                   </button>
                 </div>
               )}
