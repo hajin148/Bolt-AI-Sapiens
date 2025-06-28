@@ -346,7 +346,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
     
     return (
       <div 
-        className="flex items-center gap-2 px-[18px] py-2 w-full cursor-pointer hover:bg-[#4c4c4d] transition-colors rounded-md"
+        className="group flex items-center gap-2 px-[18px] py-2 w-full cursor-pointer hover:bg-[#4c4c4d] transition-colors rounded-md"
         onClick={() => {
           if (section === 'favorite') {
             handleToolClick(name);
@@ -392,7 +392,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
         {section === 'prompt' && sessionId && (
           <button
             onClick={(e) => handleDeletePrompt(sessionId, e)}
-            className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 p-1 hover:bg-red-600/20 hover:text-red-400 text-[#d5d5d5] rounded"
+            className="opacity-0 group-hover:opacity-100 transition-all duration-200 ml-2 p-1 hover:bg-red-600/20 hover:text-red-400 text-[#d5d5d5] rounded flex-shrink-0"
           >
             <Trash2 className="h-3 w-3" />
           </button>
@@ -584,14 +584,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                     ) : promptSessions.length > 0 ? (
                       <>
                         {promptSessions.map((session) => (
-                          <div key={`prompt-${session.id}`} className="group">
-                            <MenuItem 
-                              name={session.title} 
-                              section="prompt" 
-                              sessionId={session.id}
-                            />
-                          </div>
-                        ))}
+                          <MenuItem 
+                            key={`prompt-${session.id}`} 
+                            name={session.title} 
+                            section="prompt" 
+                            sessionId={session.id}
+                          />
                         {promptSessions.length >= 5 && (
                           <ViewAllButton onClick={handleAllPromptsClick} text="conversations" />
                         )}
