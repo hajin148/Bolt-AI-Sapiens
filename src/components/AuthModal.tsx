@@ -107,7 +107,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
               <div className={`w-3 h-3 rounded-full transition-all ${signupStep === 2 ? 'bg-blue-500' : 'bg-gray-200'}`} />
             </div>
           )}
-        </div>
 
         {/* Form */}
         <div className="px-8 pb-8">
