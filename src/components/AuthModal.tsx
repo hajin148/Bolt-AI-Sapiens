@@ -101,6 +101,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
           </button>
         )}
           {/* Title and Description */}
+        {/* Header */}
+        <div className="px-8 pt-8">
           <div className="space-y-3">
             <h1 className="text-3xl font-bold text-gray-900">
               {mode === 'login' 
