@@ -272,7 +272,7 @@ export default function AppWithRoutes() {
       </div>
       
       {isHomePage && (
-        <div className="w-full xl:ml-[140px] lg:ml-[280px] overflow-x-hidden">
+        <div className="w-full xl:ml-[120px] lg:ml-[280px] overflow-x-hidden">
           <Footer />
         </div>
       )}
