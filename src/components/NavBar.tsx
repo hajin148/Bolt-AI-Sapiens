@@ -88,7 +88,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               <Button
                 onClick={() => navigate('/learning')}
                 variant="ghost"
-                className="relative h-[42px] bg-transparent rounded-md border-none text-white text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3 hover:bg-transparent"
+                className="relative h-[42px] bg-transparent rounded-md border-none text-white text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3 hover:bg-transparent hover:text-white"
               >
                 Learn Space
               </Button>
