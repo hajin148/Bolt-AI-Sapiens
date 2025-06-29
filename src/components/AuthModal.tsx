@@ -287,16 +287,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
               </div>
             )}
 
-            {/* Submit Button - Updated to white background */}
+            {/* Submit Button - Updated to #440D97 */}
             <div className="mt-8">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 px-6 bg-white hover:bg-gray-100 text-black font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
+                className="w-full py-4 px-6 bg-[#440D97] hover:bg-[#3A0B7F] text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
-                    <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin mr-3"></div>
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
                     Processing...
                   </div>
                 ) : mode === 'login' ? (
