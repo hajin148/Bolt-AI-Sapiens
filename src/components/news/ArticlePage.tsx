@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { ArticleData } from '../../types/News';
-import { ArrowLeft, Calendar, User, Globe, Loader2, Share2, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Globe, Loader2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const ArticlePage: React.FC = () => {
@@ -118,21 +118,6 @@ const ArticlePage: React.FC = () => {
       });
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: article?.title,
-          url: window.location.href,
-        });
-      } catch (error) {
-        console.log('Error sharing:', error);
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-    }
-  };
-
   const getYouTubeUrl = () => {
     return `https://www.youtube.com/watch?v=${videoId}`;
   };
@@ -229,14 +214,6 @@ const ArticlePage: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-3">
-              <Button
-                onClick={handleShare}
-                variant="outline"
-                className="flex items-center gap-2 border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800"
-              >
-                <Share2 className="h-4 w-4" />
-                Share
-              </Button>
               <Button
                 onClick={() => window.open(getYouTubeUrl(), '_blank')}
                 className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white"
