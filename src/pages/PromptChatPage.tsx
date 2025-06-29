@@ -46,66 +46,6 @@ const PromptChatPage: React.FC = () => {
     // Trigger a custom event to refresh sidebar
     window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
   };
-
-  // Function to check and delete empty session
-  const checkAndDeleteEmptySession = async () => {
-    if (!sessionId || !currentUser) return;
-
-    try {
-      // Check if session has any messages
-      const { data: messagesData, error: messagesError } = await supabase
-        .from('prompt_messages')
-        .select('id')
-        .eq('session_id', sessionId)
-        .limit(1);
-
-      if (messagesError) throw messagesError;
-
-      // If no messages exist, delete the session
-      if (!messagesData || messagesData.length === 0) {
-        const { error: deleteError } = await supabase
-          .from('prompt_sessions')
-          .delete()
-          .eq('id', sessionId)
-          .eq('user_id', currentUser.id);
-
-        if (deleteError) throw deleteError;
-        
-        // Refresh sidebar to remove the deleted session
-        refreshSidebarPrompts();
-        console.log('Empty session deleted:', sessionId);
-      }
-    } catch (error) {
-      console.error('Error checking/deleting empty session:', error);
-    }
-  };
-
-  // Set up beforeunload and navigation cleanup
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      checkAndDeleteEmptySession();
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') {
-        checkAndDeleteEmptySession();
-      }
-    };
-
-    // Add event listeners
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // Cleanup function that runs when component unmounts
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      
-      // Check and delete empty session when leaving the page
-      checkAndDeleteEmptySession();
-    };
-  }, [sessionId, currentUser]);
-
   useEffect(() => {
     const fetchSession = async () => {
       if (!sessionId || !currentUser) return;
