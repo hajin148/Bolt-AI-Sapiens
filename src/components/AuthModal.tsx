@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { JOB_OPTIONS, INTEREST_OPTIONS, JobType, InterestType } from '../types/Tool';
-import { X, Eye, EyeOff, Mail, Lock, User, Phone, Briefcase, Heart, ArrowLeft } from 'lucide-react';
+import { X, Eye, EyeOff, Mail, Lock, User, Phone, Briefcase, Heart } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -115,16 +115,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         >
           <X size={24} />
         </button>
-
-        {/* Back Button for Step 2 */}
-        {mode === 'signup' && signupStep === 2 && (
-          <button
-            onClick={handleBackToStep1}
-            className="absolute top-6 left-16 text-gray-400 hover:text-white transition-colors z-10"
-          >
-            <ArrowLeft size={24} />
-          </button>
-        )}
 
         {/* Form Content - Updated to pt-24 */}
         <div className="px-8 pt-24 pb-0 h-full flex flex-col bg-[#121212]">
@@ -337,6 +327,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                     ) : (
                       'Create Account'
                     )}
+                  </button>
+                </div>
+
+                {/* Back to Step 1 Button */}
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={handleBackToStep1}
+                    className="text-gray-400 hover:text-white transition-colors text-sm"
+                  >
+                    ← Back to previous step
                   </button>
                 </div>
 
