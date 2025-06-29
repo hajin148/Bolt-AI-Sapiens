@@ -142,10 +142,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Step 1: Basic Information */}
             {(mode === 'login' || (mode === 'signup' && signupStep === 1)) && (
-              <div className="flex-1 space-y-6">
+              <>
                 {mode === 'signup' && (
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-300">Username</label>
@@ -205,12 +205,49 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                     </p>
                   )}
                 </div>
-              </div>
+
+                {/* Submit Button - Moved here to be right after password */}
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-4 px-6 bg-[#440D97] hover:bg-[#3A0B7F] text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
+                  >
+                    {loading ? (
+                      <div className="flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                        Processing...
+                      </div>
+                    ) : mode === 'login' ? (
+                      'Login'
+                    ) : signupStep === 1 ? (
+                      'Continue'
+                    ) : (
+                      'Create Account'
+                    )}
+                  </button>
+                </div>
+
+                {/* Switch Mode - Updated to inline layout */}
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-gray-400 text-sm">
+                      {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
+                    </span>
+                    <button
+                      onClick={() => onSwitchMode(mode === 'login' ? 'signup' : 'login')}
+                      className="text-white font-semibold transition-colors hover:text-gray-300"
+                    >
+                      {mode === 'login' ? 'Sign up' : 'Sign in instead'}
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
 
             {/* Step 2: Additional Information */}
             {mode === 'signup' && signupStep === 2 && (
-              <div className="flex-1 space-y-6">
+              <>
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-300">Phone Number (Optional)</label>
                   <div className="relative">
@@ -284,60 +321,37 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                     ))}
                   </div>
                 </div>
-              </div>
+
+                {/* Submit Button for Step 2 */}
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-4 px-6 bg-[#440D97] hover:bg-[#3A0B7F] text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
+                  >
+                    {loading ? (
+                      <div className="flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                        Processing...
+                      </div>
+                    ) : (
+                      'Create Account'
+                    )}
+                  </button>
+                </div>
+
+                {/* Terms and Privacy */}
+                <div className="text-center">
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    By creating an account, you agree to our{' '}
+                    <a href="#" className="text-blue-400 hover:text-blue-300 font-medium">Terms of Service</a>
+                    {' '}and{' '}
+                    <a href="#" className="text-blue-400 hover:text-blue-300 font-medium">Privacy Policy</a>
+                  </p>
+                </div>
+              </>
             )}
-
-            {/* Submit Button - Updated to #440D97 */}
-            <div className="mt-8">
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-4 px-6 bg-[#440D97] hover:bg-[#3A0B7F] text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
-                    Processing...
-                  </div>
-                ) : mode === 'login' ? (
-                  'Login'
-                ) : signupStep === 1 ? (
-                  'Continue'
-                ) : (
-                  'Create Account'
-                )}
-              </button>
-            </div>
           </form>
-
-          {/* Switch Mode - Updated to inline layout */}
-          {(mode === 'login' || (mode === 'signup' && signupStep === 1)) && (
-            <div className="mt-6 text-center">
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-gray-400 text-sm">
-                  {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
-                </span>
-                <button
-                  onClick={() => onSwitchMode(mode === 'login' ? 'signup' : 'login')}
-                  className="text-white font-semibold transition-colors hover:text-gray-300"
-                >
-                  {mode === 'login' ? 'Sign up' : 'Sign in instead'}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Terms and Privacy */}
-          {mode === 'signup' && signupStep === 2 && (
-            <div className="mt-6 text-center">
-              <p className="text-xs text-gray-500 leading-relaxed">
-                By creating an account, you agree to our{' '}
-                <a href="#" className="text-blue-400 hover:text-blue-300 font-medium">Terms of Service</a>
-                {' '}and{' '}
-                <a href="#" className="text-blue-400 hover:text-blue-300 font-medium">Privacy Policy</a>
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
