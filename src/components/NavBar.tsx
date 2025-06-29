@@ -79,13 +79,20 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
 
           {/* Learn Space button - only when logged in */}
           {currentUser && (
-            <Button
-              onClick={() => navigate('/learning')}
-              variant="outline"
-              className="hidden md:block h-[42px] bg-[#111111] rounded-md border-none text-white text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3"
-            >
-              Learn Space
-            </Button>
+            <div className="relative hidden md:block">
+              {/* Gradient border container */}
+              <div className="absolute inset-0 rounded-md bg-gradient-to-r from-[#FF0000] via-[#693CB1] to-[#C22CD2] p-[2px]">
+                <div className="h-full w-full bg-[#111111] rounded-[calc(0.375rem-2px)]"></div>
+              </div>
+              {/* Button content */}
+              <Button
+                onClick={() => navigate('/learning')}
+                variant="ghost"
+                className="relative h-[42px] bg-transparent rounded-md border-none text-white text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3 hover:bg-transparent"
+              >
+                Learn Space
+              </Button>
+            </div>
           )}
 
           {/* Action icons and auth */}
