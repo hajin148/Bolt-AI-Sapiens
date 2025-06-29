@@ -38,6 +38,8 @@ export interface Module {
   created_at: string;
   content?: ContentItem[];
   digests?: VideoDigest[];
+  is_completed?: boolean;
+  completed_at?: string;
 }
 
 export interface CreateClassroomData {
@@ -53,4 +55,14 @@ export interface CreateModuleData {
   step_number: number;
   content?: ContentItem[];
   digests?: VideoDigest[];
+}
+
+export interface ModuleProgress {
+  id: string;
+  user_id: string;
+  module_id: string;
+  is_completed: boolean;
+  completed_at?: string;
+  created_at: string;
+  updated_at: string;
 }

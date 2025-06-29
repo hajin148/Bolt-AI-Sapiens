@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useModuleProgress } from '../hooks/useLearningSpace';
 import { supabase } from '../lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,7 +16,8 @@ import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
-  List
+  List,
+  Circle
 } from 'lucide-react';
 import { Module, Classroom } from '../types/Learning';
 
@@ -23,6 +25,7 @@ const ModuleDetailPage: React.FC = () => {
   const { classroomId, moduleId } = useParams<{ classroomId: string; moduleId: string }>();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const { progress, loading: progressLoading, toggleCompletion, isCompleted } = useModuleProgress(moduleId || '');
   
   const [module, setModule] = useState<Module | null>(null);
   const [classroom, setClassroom] = useState<Classroom | null>(null);
@@ -30,6 +33,7 @@ const ModuleDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModuleList, setShowModuleList] = useState(false);
+  const [completionLoading, setCompletionLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,6 +102,17 @@ const ModuleDetailPage: React.FC = () => {
     navigate(`/classroom/${classroomId}/module/${targetModule.id}`);
   };
 
+  const handleToggleCompletion = async () => {
+    setCompletionLoading(true);
+    try {
+      await toggleCompletion();
+    } catch (error) {
+      console.error('Error toggling completion:', error);
+    } finally {
+      setCompletionLoading(false);
+    }
+  };
+
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-[#121212] flex items-center justify-center">
@@ -158,6 +173,12 @@ const ModuleDetailPage: React.FC = () => {
               
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <span>Module {module.step_number} of {allModules.length}</span>
+                {isCompleted && (
+                  <div className="flex items-center gap-1 text-green-400">
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Completed</span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -271,10 +292,22 @@ const ModuleDetailPage: React.FC = () => {
                       <span>Estimated learning time: 15-30 minutes</span>
                     </div>
                     <Button
-                      className="bg-green-600 hover:bg-green-700 text-white"
+                      onClick={handleToggleCompletion}
+                      disabled={completionLoading || progressLoading}
+                      className={`${
+                        isCompleted 
+                          ? 'bg-gray-600 hover:bg-gray-700 text-white' 
+                          : 'bg-green-600 hover:bg-green-700 text-white'
+                      }`}
                     >
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Mark as Complete
+                      {completionLoading ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : isCompleted ? (
+                        <Circle className="h-4 w-4 mr-2" />
+                      ) : (
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                      )}
+                      {isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}
                     </Button>
                   </div>
                 </CardContent>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { Classroom, Module, CreateClassroomData, CreateModuleData } from '../types/Learning';
+import { Classroom, Module, CreateClassroomData, CreateModuleData, ModuleProgress } from '../types/Learning';
 
 export const useLearningSpace = () => {
   const { currentUser } = useAuth();
@@ -103,12 +103,13 @@ export const useLearningSpace = () => {
 };
 
 export const useClassroomModules = (classroomId: string) => {
+  const { currentUser } = useAuth();
   const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchModules = async () => {
-    if (!classroomId) return;
+    if (!classroomId || !currentUser) return;
 
     try {
       setLoading(true);
@@ -180,7 +181,7 @@ export const useClassroomModules = (classroomId: string) => {
 
   useEffect(() => {
     fetchModules();
-  }, [classroomId]);
+  }, [classroomId, currentUser]);
 
   return {
     modules,
@@ -191,5 +192,80 @@ export const useClassroomModules = (classroomId: string) => {
     deleteModule,
     reorderModules,
     refetch: fetchModules
+  };
+};
+
+export const useModuleProgress = (moduleId: string) => {
+  const { currentUser } = useAuth();
+  const [progress, setProgress] = useState<ModuleProgress | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchProgress = async () => {
+    if (!moduleId || !currentUser) return;
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('module_progress')
+        .select('*')
+        .eq('module_id', moduleId)
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      setProgress(data);
+    } catch (err) {
+      console.error('Error fetching module progress:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleCompletion = async () => {
+    if (!currentUser || !moduleId) return;
+
+    try {
+      if (progress) {
+        // Update existing progress
+        const { error } = await supabase
+          .from('module_progress')
+          .update({
+            is_completed: !progress.is_completed,
+            completed_at: !progress.is_completed ? new Date().toISOString() : null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', progress.id);
+
+        if (error) throw error;
+      } else {
+        // Create new progress record
+        const { error } = await supabase
+          .from('module_progress')
+          .insert({
+            user_id: currentUser.id,
+            module_id: moduleId,
+            is_completed: true,
+            completed_at: new Date().toISOString()
+          });
+
+        if (error) throw error;
+      }
+
+      await fetchProgress();
+    } catch (err) {
+      console.error('Error toggling module completion:', err);
+      throw err;
+    }
+  };
+
+  useEffect(() => {
+    fetchProgress();
+  }, [moduleId, currentUser]);
+
+  return {
+    progress,
+    loading,
+    toggleCompletion,
+    isCompleted: progress?.is_completed || false
   };
 };
