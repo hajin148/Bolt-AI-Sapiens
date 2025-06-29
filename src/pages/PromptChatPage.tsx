@@ -478,7 +478,7 @@ const PromptChatPage: React.FC = () => {
             <button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || sending}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-gray-600 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-r from-[#7C3AED] to-[#A855F7] hover:from-[#6D28D9] hover:to-[#9333EA] disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-purple-500/25"
             >
               {sending ? (
                 <Loader2 className="h-5 w-5 text-white animate-spin" />
