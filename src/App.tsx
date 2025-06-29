@@ -246,7 +246,7 @@ export default function AppWithRoutes() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-900 overflow-x-hidden">
       <NavBar 
         onLoginClick={handleLoginClick}
         onSignupClick={handleSignupClick}
@@ -257,7 +257,7 @@ export default function AppWithRoutes() {
         {showSidebar && <SideBar />}
         <SideBar onUpgradeClick={handleUpgradeClick} onLoginClick={handleLoginClick} />
 
-        <div className="flex-1 lg:ml-[280px] pt-16">
+        <div className="flex-1 lg:ml-[280px] pt-16 min-w-0">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/news" element={<NewsPage />} />
@@ -272,7 +272,7 @@ export default function AppWithRoutes() {
       </div>
       
       {isHomePage && (
-        <div className="lg:ml-[280px]">
+        <div className="w-full lg:ml-[280px] overflow-x-hidden">
           <Footer />
         </div>
       )}
