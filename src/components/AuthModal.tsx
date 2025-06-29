@@ -81,8 +81,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl w-full max-w-md max-h-[95vh] overflow-y-auto relative shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Background with image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/background.png)',
+        }}
+      >
+        {/* Dark overlay for better readability */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      </div>
+
+      {/* Modal content */}
+      <div className="relative bg-white rounded-3xl w-full max-w-md max-h-[95vh] overflow-y-auto shadow-2xl">
         {/* Close Button */}
         <button
           onClick={onClose}
