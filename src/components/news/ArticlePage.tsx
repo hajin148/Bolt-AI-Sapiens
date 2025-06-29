@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { ArticleData } from '../../types/News';
-import { ArrowLeft, Calendar, User, Globe, Loader2, Share2, ExternalLink, Play } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Globe, Loader2, Share2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const ArticlePage: React.FC = () => {
@@ -189,30 +189,15 @@ const ArticlePage: React.FC = () => {
           Back to News
         </Button>
 
-        {/* Article Header - Following Figma Design */}
+        {/* Article Header */}
         <div className="mb-8">
-          {/* Thumbnail without Play Button - Large and Prominent */}
-          {article.thumbnail && (
-            <div className="relative aspect-video rounded-2xl overflow-hidden mb-8 shadow-2xl group cursor-pointer" onClick={() => window.open(getYouTubeUrl(), '_blank')}>
-              <img
-                src={article.thumbnail}
-                alt={article.title}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                }}
-              />
-            </div>
-          )}
-
           {/* Title and Meta Information */}
           <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
               {article.title}
             </h1>
             
-            {/* Summary - Prominent like Figma */}
+            {/* Summary */}
             {article.summary && (
               <div className="bg-blue-600/10 border-l-4 border-blue-500 p-6 rounded-r-lg">
                 <p className="text-lg text-blue-200 leading-relaxed font-medium">
