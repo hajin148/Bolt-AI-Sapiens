@@ -131,9 +131,6 @@ const NewsList: React.FC = () => {
           Latest AI Updates
         </div>
         <h1 className="text-4xl font-bold text-white">AI News & Insights</h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-          Stay updated with the latest developments in artificial intelligence through curated content from top YouTube channels
-        </p>
       </div>
 
       {/* Timeline Layout */}
