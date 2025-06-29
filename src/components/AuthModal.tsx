@@ -126,14 +126,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
           </button>
         )}
 
-        {/* Progress Indicator for Signup */}
-        {mode === 'signup' && (
-          <div className="flex justify-center mt-20 space-x-2">
-            <div className={`w-2 h-2 rounded-full transition-all ${signupStep === 1 ? 'bg-blue-500' : 'bg-gray-600'}`} />
-            <div className={`w-2 h-2 rounded-full transition-all ${signupStep === 2 ? 'bg-blue-500' : 'bg-gray-600'}`} />
-          </div>
-        )}
-
         {/* Form Content - Updated to pt-24 */}
         <div className="px-8 pt-24 pb-0 h-full flex flex-col bg-[#121212]">
           {error && (
@@ -205,6 +197,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                     </p>
                   )}
                 </div>
+
+                {/* Progress Indicator for Signup - Moved here after password */}
+                {mode === 'signup' && (
+                  <div className="flex justify-center space-x-2 pt-4">
+                    <div className={`w-2 h-2 rounded-full transition-all ${signupStep === 1 ? 'bg-blue-500' : 'bg-gray-600'}`} />
+                    <div className={`w-2 h-2 rounded-full transition-all ${signupStep === 2 ? 'bg-blue-500' : 'bg-gray-600'}`} />
+                  </div>
+                )}
 
                 {/* Submit Button - Moved here to be right after password */}
                 <div className="pt-4">
