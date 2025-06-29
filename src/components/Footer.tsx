@@ -24,7 +24,6 @@ const Footer: React.FC = () => {
                   if (fallback) fallback.style.display = 'flex';
                 }}
               />
-              <span className="text-white font-semibold text-lg">AI SAPIENCE</span>
             </div>
             <p className="text-gray-400 text-sm text-left pl-2">
               Enhance your productivity with AI tools.
