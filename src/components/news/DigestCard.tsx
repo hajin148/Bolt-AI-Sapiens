@@ -30,30 +30,6 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
     });
   };
 
-  const getLanguageFlag = (lang: string) => {
-    const flags = {
-      'en': '🇺🇸',
-      'ko': '🇰🇷',
-      'es': '🇪🇸',
-      'ja': '🇯🇵',
-      'zh': '🇨🇳',
-      'others': '🌐'
-    };
-    return flags[lang as keyof typeof flags] || '🌐';
-  };
-
-  const getLanguageColor = (lang: string) => {
-    const colors = {
-      'en': 'bg-blue-600/20 text-blue-400 border-blue-500/30',
-      'ko': 'bg-red-600/20 text-red-400 border-red-500/30',
-      'es': 'bg-yellow-600/20 text-yellow-400 border-yellow-500/30',
-      'ja': 'bg-pink-600/20 text-pink-400 border-pink-500/30',
-      'zh': 'bg-red-600/20 text-red-400 border-red-500/30',
-      'others': 'bg-gray-600/20 text-gray-400 border-gray-500/30'
-    };
-    return colors[lang as keyof typeof colors] || 'bg-gray-600/20 text-gray-400 border-gray-500/30';
-  };
-
   // Decode HTML entities in title and summary
   const decodedTitle = decodeHtmlEntities(digest.title);
   const decodedSummary = digest.summary ? decodeHtmlEntities(digest.summary) : null;
@@ -88,14 +64,6 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
               <div className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100">
                 <Play className="h-4 w-4 text-gray-800 ml-0.5" fill="currentColor" />
               </div>
-            </div>
-
-            {/* Language Badge */}
-            <div className="absolute top-1.5 right-1.5">
-              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium border ${getLanguageColor(digest.lang)}`}>
-                {getLanguageFlag(digest.lang)}
-                {digest.lang.toUpperCase()}
-              </span>
             </div>
           </div>
         </div>
