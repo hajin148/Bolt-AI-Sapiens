@@ -191,9 +191,9 @@ const ArticlePage: React.FC = () => {
 
         {/* Article Header - Following Figma Design */}
         <div className="mb-8">
-          {/* Thumbnail with Play Button - Large and Prominent */}
+          {/* Thumbnail without Play Button - Large and Prominent */}
           {article.thumbnail && (
-            <div className="relative aspect-video rounded-2xl overflow-hidden mb-8 shadow-2xl group">
+            <div className="relative aspect-video rounded-2xl overflow-hidden mb-8 shadow-2xl group cursor-pointer" onClick={() => window.open(getYouTubeUrl(), '_blank')}>
               <img
                 src={article.thumbnail}
                 alt={article.title}
@@ -203,15 +203,6 @@ const ArticlePage: React.FC = () => {
                   target.style.display = 'none';
                 }}
               />
-              {/* Large Play Button Overlay */}
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                <button
-                  onClick={() => window.open(getYouTubeUrl(), '_blank')}
-                  className="w-20 h-20 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center shadow-2xl transform hover:scale-110 transition-all duration-300"
-                >
-                  <Play className="h-10 w-10 text-white ml-1" fill="currentColor" />
-                </button>
-              </div>
             </div>
           )}
 
