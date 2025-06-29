@@ -448,8 +448,8 @@ const PromptChatPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Input Area */}
-      <div className="border-t border-gray-800 bg-[#121212] p-6 sticky bottom-0">
+      {/* Input Area - Updated to match Figma design */}
+      <div className="bg-[#121212] p-6 sticky bottom-0">
         {error && (
           <div className="mb-4 p-3 bg-red-600/20 border border-red-500/30 rounded-lg">
             <p className="text-sm text-red-400">{error}</p>
@@ -465,27 +465,27 @@ const PromptChatPage: React.FC = () => {
         )}
         
         <div className="max-w-4xl mx-auto">
-          <div className="flex gap-3">
-            <Input
+          <div className="relative">
+            <input
               ref={inputRef}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
               disabled={sending}
-              className="flex-1 bg-gray-800/50 border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500"
+              className="w-full h-14 pl-6 pr-16 bg-[#2A2A2A] border border-[#404040] rounded-[28px] text-white placeholder-gray-400 focus:outline-none focus:border-[#7C3AED] transition-colors text-base"
             />
-            <Button
+            <button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || sending}
-              className="bg-purple-600 hover:bg-purple-700 px-6"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-gray-600 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors"
             >
               {sending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-5 w-5 text-white animate-spin" />
               ) : (
-                <Send className="h-4 w-4" />
+                <Send className="h-5 w-5 text-white" />
               )}
-            </Button>
+            </button>
           </div>
         </div>
       </div>
