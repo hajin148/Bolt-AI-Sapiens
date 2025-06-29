@@ -93,8 +93,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       </div>
 
-      {/* Modal content - Figma design */}
-      <div className="relative w-full max-w-[400px] h-[600px] bg-black rounded-[32px] overflow-hidden shadow-2xl">
+      {/* Modal content - Updated background to #121212 */}
+      <div className="relative w-full max-w-[400px] h-[600px] bg-[#121212] rounded-[32px] overflow-hidden shadow-2xl">
         {/* Logo - Top left */}
         <div className="absolute top-6 left-6 z-10">
           <img
@@ -134,8 +134,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
           </div>
         )}
 
-        {/* Form Content */}
-        <div className="px-8 pt-24 pb-8 h-full flex flex-col">
+        {/* Form Content - Updated background to #121212 */}
+        <div className="px-8 pt-24 pb-8 h-full flex flex-col bg-[#121212]">
           {error && (
             <div className="bg-red-600/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
               {error}
