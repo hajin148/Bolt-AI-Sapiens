@@ -16,10 +16,12 @@ import {
   Loader2,
   AlertCircle,
   Search,
-  Play
+  Play,
+  CheckCircle,
+  Circle
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Classroom, Module, CreateModuleData } from '../types/Learning';
+import { Classroom, Module, CreateModuleData, ModuleProgress } from '../types/Learning';
 
 const ClassroomDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +36,8 @@ const ClassroomDetailPage: React.FC = () => {
   const [editingModule, setEditingModule] = useState<Module | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [moduleProgress, setModuleProgress] = useState<Record<string, ModuleProgress>>({});
+  const [progressLoading, setProgressLoading] = useState(true);
 
   useEffect(() => {
     const fetchClassroom = async () => {
@@ -61,6 +65,39 @@ const ClassroomDetailPage: React.FC = () => {
 
     fetchClassroom();
   }, [id, currentUser]);
+
+  // Fetch module progress for all modules
+  useEffect(() => {
+    const fetchModuleProgress = async () => {
+      if (!currentUser || modules.length === 0) return;
+
+      try {
+        setProgressLoading(true);
+        const moduleIds = modules.map(m => m.id);
+        
+        const { data, error } = await supabase
+          .from('module_progress')
+          .select('*')
+          .eq('user_id', currentUser.id)
+          .in('module_id', moduleIds);
+
+        if (error) throw error;
+
+        const progressMap: Record<string, ModuleProgress> = {};
+        data?.forEach(progress => {
+          progressMap[progress.module_id] = progress;
+        });
+        
+        setModuleProgress(progressMap);
+      } catch (err) {
+        console.error('Error fetching module progress:', err);
+      } finally {
+        setProgressLoading(false);
+      }
+    };
+
+    fetchModuleProgress();
+  }, [currentUser, modules]);
 
   const handleCreateModule = async (data: Omit<CreateModuleData, 'classroom_id'>) => {
     setSubmitting(true);
@@ -129,6 +166,14 @@ const ClassroomDetailPage: React.FC = () => {
     module.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const isModuleCompleted = (moduleId: string) => {
+    return moduleProgress[moduleId]?.is_completed || false;
+  };
+
+  const getCompletedModulesCount = () => {
+    return filteredModules.filter(module => isModuleCompleted(module.id)).length;
+  };
+
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-[#121212] flex items-center justify-center">
@@ -192,7 +237,14 @@ const ClassroomDetailPage: React.FC = () => {
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold text-white">{classroom.name}</h1>
-                  <p className="text-gray-400">{filteredModules.length} module{filteredModules.length !== 1 ? 's' : ''}</p>
+                  <div className="flex items-center gap-4 text-gray-400">
+                    <span>{filteredModules.length} module{filteredModules.length !== 1 ? 's' : ''}</span>
+                    {!progressLoading && (
+                      <span className="text-green-400">
+                        {getCompletedModulesCount()} completed
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -272,72 +324,95 @@ const ClassroomDetailPage: React.FC = () => {
             </Card>
           ) : (
             <div className="space-y-3">
-              {filteredModules.map((module, index) => (
-                <Card 
-                  key={module.id} 
-                  className="group hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-blue-500/50 bg-gray-800/50 border-gray-700"
-                  onClick={() => handleModuleClick(module)}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <div className="flex-shrink-0">
-                        <div 
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
-                          style={{ backgroundColor: classroom.color }}
-                        >
-                          {module.step_number}
+              {filteredModules.map((module, index) => {
+                const isCompleted = isModuleCompleted(module.id);
+                
+                return (
+                  <Card 
+                    key={module.id} 
+                    className={`group hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-blue-500/50 bg-gray-800/50 border-gray-700 ${
+                      isCompleted ? 'ring-2 ring-green-500/30' : ''
+                    }`}
+                    onClick={() => handleModuleClick(module)}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="flex-shrink-0 relative">
+                          <div 
+                            className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
+                            style={{ backgroundColor: classroom.color }}
+                          >
+                            {module.step_number}
+                          </div>
+                          {/* Completion indicator */}
+                          {isCompleted && (
+                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                              <CheckCircle className="h-4 w-4 text-white" />
+                            </div>
+                          )}
                         </div>
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors mb-1">
-                          {module.title}
-                        </h3>
-                        <p className="text-gray-400 text-sm line-clamp-2">
-                          {module.description}
-                        </p>
                         
-                        {/* Content indicators */}
-                        <div className="flex items-center gap-3 mt-2">
-                          {module.content && module.content.length > 0 && (
-                            <span className="text-xs bg-green-600/20 text-green-400 px-2 py-1 rounded border border-green-500/30">
-                              {module.content.length} Content Items
-                            </span>
-                          )}
-                          {module.digests && module.digests.length > 0 && (
-                            <span className="text-xs bg-red-600/20 text-red-400 px-2 py-1 rounded border border-red-500/30 flex items-center gap-1">
-                              <Play className="h-3 w-3" />
-                              {module.digests.length} Videos
-                            </span>
-                          )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className={`text-lg font-semibold group-hover:text-blue-400 transition-colors ${
+                              isCompleted ? 'text-green-400' : 'text-white'
+                            }`}>
+                              {module.title}
+                            </h3>
+                            {isCompleted && (
+                              <span className="text-xs bg-green-600/20 text-green-400 px-2 py-1 rounded border border-green-500/30">
+                                Completed
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-gray-400 text-sm line-clamp-2">
+                            {module.description}
+                          </p>
+                          
+                          {/* Content indicators */}
+                          <div className="flex items-center gap-3 mt-2">
+                            {module.content && module.content.length > 0 && (
+                              <span className="text-xs bg-green-600/20 text-green-400 px-2 py-1 rounded border border-green-500/30">
+                                {module.content.length} Content Items
+                              </span>
+                            )}
+                            {module.digests && module.digests.length > 0 && (
+                              <span className="text-xs bg-red-600/20 text-red-400 px-2 py-1 rounded border border-red-500/30 flex items-center gap-1">
+                                <Play className="h-3 w-3" />
+                                {module.digests.length} Videos
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => handleEditModule(module, e)}
+                              className="h-8 w-8 p-0 hover:bg-gray-700 text-gray-400 hover:text-white"
+                            >
+                              <Edit size={14} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => handleDeleteModule(module.id, e)}
+                              className="h-8 w-8 p-0 hover:bg-red-600/20 hover:text-red-400 text-gray-400"
+                            >
+                              <Trash2 size={14} />
+                            </Button>
+                          </div>
+                          <ChevronRight className={`h-5 w-5 group-hover:text-blue-400 transition-colors ${
+                            isCompleted ? 'text-green-400' : 'text-gray-400'
+                          }`} />
                         </div>
                       </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => handleEditModule(module, e)}
-                            className="h-8 w-8 p-0 hover:bg-gray-700 text-gray-400 hover:text-white"
-                          >
-                            <Edit size={14} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => handleDeleteModule(module.id, e)}
-                            className="h-8 w-8 p-0 hover:bg-red-600/20 hover:text-red-400 text-gray-400"
-                          >
-                            <Trash2 size={14} />
-                          </Button>
-                        </div>
-                        <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
