@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { BellIcon, GlobeIcon, UserIcon, Menu, X, LogOut, LogIn, UserPlus } from 'lucide-react';
+import { BellIcon, UserIcon, Menu, X, LogOut, LogIn, UserPlus } from 'lucide-react';
 
 interface NavBarProps {
   onLoginClick: () => void;
@@ -107,9 +107,13 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                   }`}
                   onClick={handleGlobeClick}
                 >
-                  <GlobeIcon className={`w-7 h-7 ${
-                    isNewsPage ? 'text-blue-400' : 'text-white'
-                  }`} />
+                  <img 
+                    src="/ainews.png" 
+                    alt="AI News" 
+                    className={`w-7 h-7 ${
+                      isNewsPage ? 'opacity-100' : 'opacity-80 hover:opacity-100'
+                    } transition-opacity`}
+                  />
                 </Button>
                 {/* Red notification dot for new content */}
                 {hasNewContent && currentUser && (
@@ -160,9 +164,13 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                   }`}
                   onClick={handleGlobeClick}
                 >
-                  <GlobeIcon className={`w-7 h-7 ${
-                    isNewsPage ? 'text-blue-400' : 'text-white'
-                  }`} />
+                  <img 
+                    src="/ainews.png" 
+                    alt="AI News" 
+                    className={`w-7 h-7 ${
+                      isNewsPage ? 'opacity-100' : 'opacity-80 hover:opacity-100'
+                    } transition-opacity`}
+                  />
                 </Button>
               </div>
               <div className="relative">
