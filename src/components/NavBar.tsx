@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { BellIcon, UserIcon, Menu, X, LogOut, LogIn, UserPlus } from 'lucide-react';
+import { BellIcon, UserIcon, LogOut, LogIn, UserPlus } from 'lucide-react';
 
 interface NavBarProps {
   onLoginClick: () => void;
@@ -11,7 +11,6 @@ interface NavBarProps {
 }
 
 const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeClick }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [hasNewContent, setHasNewContent] = useState(true); // TODO: Connect to actual news update logic
   const { currentUser, userProfile, logout, loading } = useAuth();
@@ -74,12 +73,10 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
           </div>
         </div>
 
-        {/* Right side content */}
-        <div className="flex items-center gap-4">
-
-          {/* Learning Space button - only when logged in */}
+        {/* Center - Learning Space button (desktop only) */}
+        <div className="hidden md:flex items-center">
           {currentUser && (
-            <div className="relative hidden md:block">
+            <div className="relative">
               {/* Gradient border container */}
               <div className="absolute inset-0 rounded-md bg-gradient-to-r from-[#FF0000] via-[#693CB1] to-[#C22CD2] p-[2px]">
                 <div className="h-full w-full bg-[#111111] rounded-[calc(0.375rem-2px)]"></div>
@@ -91,6 +88,27 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                 className="relative h-[42px] bg-transparent rounded-md border-none text-white text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3 hover:bg-transparent hover:text-white"
               >
                 Learning Space
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Right side content */}
+        <div className="flex items-center gap-3">
+          {/* Learning Space button (mobile only) */}
+          {currentUser && (
+            <div className="md:hidden relative">
+              {/* Gradient border container */}
+              <div className="absolute inset-0 rounded-md bg-gradient-to-r from-[#FF0000] via-[#693CB1] to-[#C22CD2] p-[2px]">
+                <div className="h-full w-full bg-[#111111] rounded-[calc(0.375rem-2px)]"></div>
+              </div>
+              {/* Button content */}
+              <Button
+                onClick={() => navigate('/learning')}
+                variant="ghost"
+                className="relative h-[36px] bg-transparent rounded-md border-none text-white text-xs font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-2 hover:bg-transparent hover:text-white"
+              >
+                Learning
               </Button>
             </div>
           )}
@@ -217,84 +235,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
             </div>
           )}
         </div>
-
-        {/* Mobile menu button */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-white hover:text-blue-400 p-1"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="absolute top-[72px] left-0 right-0 bg-[#202020] border-t border-gray-700 md:hidden">
-            <div className="flex flex-col p-3 space-y-3">
-              {currentUser && (
-                <>
-                  <button
-                    onClick={() => {
-                      navigate('/learning');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`text-left text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] transition-colors ${
-                      isLearningPage 
-                        ? 'text-blue-400' 
-                        : 'text-white hover:text-blue-400'
-                    }`}
-                  >
-                    Learning Space
-                  </button>
-                </>
-              )}
-              
-              {/* Mobile auth buttons */}
-              {currentUser ? (
-                <div className="pt-3 border-t border-gray-700">
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 flex items-center gap-2"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <button
-                    onClick={() => {
-                      onLoginClick();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 flex items-center gap-2"
-                    disabled={loading}
-                  >
-                    <LogIn className="h-4 w-4" />
-                    Login
-                  </button>
-                  <button
-                    onClick={() => {
-                      onSignupClick();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 flex items-center gap-2"
-                    disabled={loading}
-                  >
-                    <UserPlus className="h-4 w-4" />
-                    Register
-                  </button>
-                </div>
-              )}
-              
-              {/* Upgrade button for mobile */}
-            </div>
-          </div>
-        )}
       </div>
     </header>
   );
