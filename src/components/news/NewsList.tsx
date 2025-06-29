@@ -2,9 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 import { DigestCardData } from '../../types/News';
 import DigestCard from './DigestCard';
-import { Loader2, RefreshCw, Search, Filter, Calendar, TrendingUp, ChevronDown } from 'lucide-react';
+import { Loader2, RefreshCw, TrendingUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -14,8 +13,6 @@ const NewsList: React.FC = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
 
   const fetchDigests = useCallback(
     async (offset = 0, isRefresh = false) => {
@@ -35,16 +32,6 @@ const NewsList: React.FC = () => {
             youtube_channels(name)
           `)
           .order('published_at', { ascending: false });
-
-        // Apply language filter
-        if (selectedLanguage !== 'all') {
-          query = query.eq('lang', selectedLanguage);
-        }
-
-        // Apply search filter
-        if (searchQuery.trim()) {
-          query = query.ilike('title', `%${searchQuery.trim()}%`);
-        }
 
         const { data, error } = await query.range(offset, offset + ITEMS_PER_PAGE - 1);
 
@@ -72,7 +59,7 @@ const NewsList: React.FC = () => {
         setLoadingMore(false);
       }
     },
-    [searchQuery, selectedLanguage],
+    [],
   );
 
   useEffect(() => {
@@ -88,20 +75,6 @@ const NewsList: React.FC = () => {
   const handleRefresh = () => {
     fetchDigests(0, true);
   };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchDigests(0, true);
-  };
-
-  const languages = [
-    { code: 'all', label: 'All Languages', flag: '🌐' },
-    { code: 'en', label: 'English', flag: '🇺🇸' },
-    { code: 'ko', label: '한국어', flag: '🇰🇷' },
-    { code: 'ja', label: '日本語', flag: '🇯🇵' },
-    { code: 'zh', label: '中文', flag: '🇨🇳' },
-    { code: 'es', label: 'Español', flag: '🇪🇸' },
-  ];
 
   if (loading) {
     return (
@@ -139,10 +112,7 @@ const NewsList: React.FC = () => {
         </div>
         <h3 className="text-lg font-medium text-white mb-2">No articles found</h3>
         <p className="text-gray-400 mb-6">
-          {searchQuery || selectedLanguage !== 'all' 
-            ? 'Try adjusting your search or filters.' 
-            : 'Run the fetch_digests function to populate with YouTube content.'
-          }
+          Run the fetch_digests function to populate with YouTube content.
         </p>
         <Button onClick={handleRefresh} variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800">
           <RefreshCw className="h-4 w-4 mr-2" />
@@ -164,72 +134,6 @@ const NewsList: React.FC = () => {
         <p className="text-xl text-gray-400 max-w-2xl mx-auto">
           Stay updated with the latest developments in artificial intelligence through curated content from top YouTube channels
         </p>
-      </div>
-
-      {/* Search and Filter Section */}
-      <div className="bg-gray-800/50 rounded-2xl border border-gray-700 p-6 shadow-sm">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <form onSubmit={handleSearch} className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-12 text-base bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-          </form>
-
-          {/* Language Filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-gray-400" />
-            <select
-              value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="h-12 px-4 border border-gray-600 rounded-lg focus:border-blue-500 focus:ring-blue-500 bg-gray-700 text-white text-base"
-            >
-              {languages.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.flag} {lang.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Refresh Button */}
-          <Button 
-            onClick={handleRefresh} 
-            variant="outline" 
-            className="h-12 px-6 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-gray-800"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
-
-        {/* Stats */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
-          <div className="flex items-center gap-6 text-sm text-gray-400">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>{digests.length} articles found</span>
-            </div>
-            {(searchQuery || selectedLanguage !== 'all') && (
-              <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedLanguage('all');
-                }}
-                className="text-blue-400 hover:text-blue-300 font-medium"
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
-        </div>
       </div>
 
       {/* Timeline Layout */}
