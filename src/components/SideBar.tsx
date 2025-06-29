@@ -684,9 +684,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
                   </>
                 ) : (
                   <div className="px-[18px] py-2">
-                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                    <button
+                      onClick={onLoginClick}
+                      className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                    >
                       {currentUser ? 'No favorites yet' : 'Login to see favorites'}
-                    </span>
+                    </button>
                   </div>
                 )}
               </div>
