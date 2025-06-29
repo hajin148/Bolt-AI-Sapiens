@@ -621,7 +621,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
                 </span>
               </div>
             </div>
-
           </div>
         </div>
       </>
@@ -808,7 +807,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
             </span>
           </div>
         </div>
-
       </div>
     </div>
   );
