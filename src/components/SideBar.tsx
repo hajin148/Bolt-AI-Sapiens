@@ -629,9 +629,9 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
     );
   }
 
-  // 데스크톱 사이드바 (항상 고정, 더 넓은 너비)
+  // 데스크톱 사이드바 (반응형 너비 적용)
   return (
-    <div className="fixed top-16 left-0 w-[280px] h-[calc(100vh-4rem)] bg-[#3c3c3d] z-30 hidden lg:block">
+    <div className="fixed top-16 left-0 xl:w-[140px] lg:w-[280px] h-[calc(100vh-4rem)] bg-[#3c3c3d] z-30 hidden lg:block">
       <div className="h-full flex flex-col">
         <div className="flex-1 overflow-y-auto">
           <div className="flex flex-col w-full items-start pt-[20px]">
@@ -643,7 +643,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
                 onClick={handleCreateNewPrompt}
               >
                 <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
-                <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
+                <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px] xl:hidden lg:block">
                   New Prompt
                 </span>
               </Button>
@@ -652,7 +652,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
             {/* Favorites Section */}
             <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
               <div className="flex items-center justify-between px-[18px] pt-4 mb-3">
-                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px] xl:hidden lg:block">
                   Favorites
                 </h3>
               </div>
@@ -675,13 +675,13 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
                 ) : (
                   <div className="px-[18px] py-2">
                     {currentUser ? (
-                      <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                      <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px] xl:hidden lg:block">
                         No favorites yet
                       </span>
                     ) : (
                       <button
                         onClick={onLoginClick}
-                        className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                        className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer xl:hidden lg:block"
                       >
                         Login to see favorites
                       </button>
@@ -694,7 +694,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
             {/* Learning Space Section */}
             <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
               <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
-                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px] xl:hidden lg:block">
                   Learning Space
                 </h3>
                 <button
@@ -708,7 +708,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
                 {loadingClassrooms ? (
                   <div className="px-[18px] py-2 flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
-                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px] xl:hidden lg:block">
                       Loading...
                     </span>
                   </div>
@@ -731,13 +731,13 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
                 ) : (
                   <div className="px-[18px] py-2">
                     {currentUser ? (
-                      <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                      <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px] xl:hidden lg:block">
                         No classrooms yet
                       </span>
                     ) : (
                       <button
                         onClick={onLoginClick}
-                        className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                        className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer xl:hidden lg:block"
                       >
                         Login to see classrooms
                       </button>
@@ -750,7 +750,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
             {/* Prompt History Section */}
             <div className="relative self-stretch w-full pb-4">
               <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
-                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
+                <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px] xl:hidden lg:block">
                   Prompt History
                 </h3>
               </div>
@@ -758,7 +758,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
                 {loadingPrompts ? (
                   <div className="px-[18px] py-2 flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin text-[#999999] flex-shrink-0" />
-                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px] xl:hidden lg:block">
                       Loading...
                     </span>
                   </div>
@@ -779,13 +779,13 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
                 ) : (
                   <div className="px-[18px] py-2">
                     {currentUser ? (
-                      <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                      <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px] xl:hidden lg:block">
                         No conversations yet
                       </span>
                     ) : (
                       <button
                         onClick={onLoginClick}
-                        className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                        className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer xl:hidden lg:block"
                       >
                         Login to see conversations
                       </button>
@@ -806,7 +806,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
             onClick={currentUser ? onUpgradeClick : undefined}
           >
             <Wallet className="w-5 h-5 text-yellow-400 flex-shrink-0" />
-            <span className="font-['Pretendard-Medium',Helvetica] font-medium text-yellow-300 text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
+            <span className="font-['Pretendard-Medium',Helvetica] font-medium text-yellow-300 text-sm text-right tracking-[-0.21px] leading-[22px] truncate xl:hidden lg:block">
               {userTokens.toLocaleString()}pt
             </span>
           </div>
