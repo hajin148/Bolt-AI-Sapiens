@@ -809,10 +809,6 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
           </div>
         </div>
 
-        {/* Copyright - Fixed at bottom */}
-        <div className="px-[18px] pb-[17px] font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[10px] tracking-[-0.15px] leading-[normal]">
-          © 2025 AI Sapiens. All rights reserved.
-        </div>
       </div>
     </div>
   );
