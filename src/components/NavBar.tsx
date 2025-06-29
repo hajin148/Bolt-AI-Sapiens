@@ -73,8 +73,9 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
           </div>
         </div>
 
-        {/* Center - Learning Space button (desktop only) */}
-        <div className="hidden md:flex items-center">
+        {/* Right side content */}
+        <div className="flex items-center gap-3">
+          {/* Learning Space button - positioned before AI News */}
           {currentUser && (
             <div className="relative">
               {/* Gradient border container */}
@@ -88,27 +89,6 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                 className="relative h-[42px] bg-transparent rounded-md border-none text-white text-sm font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-3 hover:bg-transparent hover:text-white"
               >
                 Learning Space
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Right side content */}
-        <div className="flex items-center gap-3">
-          {/* Learning Space button (mobile only) */}
-          {currentUser && (
-            <div className="md:hidden relative">
-              {/* Gradient border container */}
-              <div className="absolute inset-0 rounded-md bg-gradient-to-r from-[#FF0000] via-[#693CB1] to-[#C22CD2] p-[2px]">
-                <div className="h-full w-full bg-[#111111] rounded-[calc(0.375rem-2px)]"></div>
-              </div>
-              {/* Button content */}
-              <Button
-                onClick={() => navigate('/learning')}
-                variant="ghost"
-                className="relative h-[36px] bg-transparent rounded-md border-none text-white text-xs font-normal font-['Pretendard-Regular',Helvetica] tracking-[-0.21px] px-2 hover:bg-transparent hover:text-white"
-              >
-                Learning
               </Button>
             </div>
           )}
