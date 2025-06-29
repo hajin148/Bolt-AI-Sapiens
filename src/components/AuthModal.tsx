@@ -287,16 +287,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
               </div>
             )}
 
-            {/* Submit Button - Updated to solid color #440D97 and changed text */}
+            {/* Submit Button - Updated to white background */}
             <div className="mt-8">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 px-6 bg-[#440D97] hover:bg-[#3A0B7F] text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
+                className="w-full py-4 px-6 bg-white hover:bg-gray-100 text-black font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                    <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin mr-3"></div>
                     Processing...
                   </div>
                 ) : mode === 'login' ? (
@@ -310,18 +310,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
             </div>
           </form>
 
-          {/* Switch Mode */}
+          {/* Switch Mode - Updated to inline layout */}
           {(mode === 'login' || (mode === 'signup' && signupStep === 1)) && (
             <div className="mt-6 text-center">
-              <p className="text-gray-400 text-sm">
-                {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
-              </p>
-              <button
-                onClick={() => onSwitchMode(mode === 'login' ? 'signup' : 'login')}
-                className="mt-2 text-blue-400 hover:text-blue-300 font-semibold transition-colors"
-              >
-                {mode === 'login' ? 'Create account' : 'Sign in instead'}
-              </button>
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-gray-400 text-sm">
+                  {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
+                </span>
+                <button
+                  onClick={() => onSwitchMode(mode === 'login' ? 'signup' : 'login')}
+                  className="text-white font-semibold transition-colors hover:text-gray-300"
+                >
+                  {mode === 'login' ? 'Sign up' : 'Sign in instead'}
+                </button>
+              </div>
             </div>
           )}
 
