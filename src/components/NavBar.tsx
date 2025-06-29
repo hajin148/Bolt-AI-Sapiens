@@ -45,17 +45,21 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
       setHasNewContent(false); // Mark as read when user visits news
     }
   };
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <header className="bg-[#202020] fixed top-0 left-0 right-0 z-50">
       <div className="w-full px-4 h-[72px] flex items-center justify-between">
         {/* Logo and Brand */}
         <div className="flex items-center">
-          <div className="flex items-center">
+          <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity" onClick={handleLogoClick}>
             <img
-              src="/logo.png"
+              src="/logo-new.png"
               alt="AI Sapiens Logo"
-              className="h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => navigate('/')}
+              className="h-10 w-auto"
               onError={({ currentTarget }) => {
                 currentTarget.style.display = 'none';
                 const fallback = currentTarget.nextElementSibling as HTMLElement;
@@ -63,8 +67,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
               }}
             />
             <div 
-              className="hidden text-white text-lg font-bold cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => navigate('/')}
+              className="hidden text-white text-lg font-bold ml-3"
             >
               AI Sapiens
             </div>
