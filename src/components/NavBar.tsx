@@ -57,7 +57,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
         <div className="flex items-center">
           <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity" onClick={handleLogoClick}>
             <img
-              src="/logo-new.png"
+              src="https://cdn.jsdelivr.net/gh/hajin148/Bolt-AI-Sapiens@5492ed01ad294aebffa564b566ca04d1d36a7cd1/public/logo.png"
               alt="AI Sapiens Logo"
               className="h-10 w-auto"
               onError={({ currentTarget }) => {
