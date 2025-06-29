@@ -134,8 +134,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
           </div>
         )}
 
-        {/* Form Content - Reduced to pt-4 */}
-        <div className="px-8 pt-4 pb-8 h-full flex flex-col bg-[#121212]">
+        {/* Form Content - Removed bottom padding (pb-0) */}
+        <div className="px-8 pt-4 pb-0 h-full flex flex-col bg-[#121212]">
           {error && (
             <div className="bg-red-600/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
               {error}
