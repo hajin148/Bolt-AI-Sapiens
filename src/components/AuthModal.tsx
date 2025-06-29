@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { JOB_OPTIONS, INTEREST_OPTIONS, JobType, InterestType } from '../types/Tool';
-import { X, Eye, EyeOff, Mail, Lock, User, Phone, Briefcase, Heart } from 'lucide-react';
+import { X, Mail, Lock, User, Phone, Briefcase, Heart } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -20,7 +20,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
   const [interests, setInterests] = useState<InterestType[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [signupStep, setSignupStep] = useState(1); // 1: Basic Info, 2: Additional Info
 
   useEffect(() => {
@@ -165,21 +164,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type="password"
                       required
                       minLength={8}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-12 pr-14 py-4 bg-[#2A2A2A] border border-[#404040] rounded-2xl focus:outline-none focus:border-blue-500 transition-colors text-white placeholder-gray-400"
+                      className="w-full pl-12 pr-4 py-4 bg-[#2A2A2A] border border-[#404040] rounded-2xl focus:outline-none focus:border-blue-500 transition-colors text-white placeholder-gray-400"
                       placeholder="Create a password"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
                   </div>
                   {mode === 'signup' && (
                     <p className="text-xs text-gray-500 mt-2">
