@@ -476,17 +476,19 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
           <div className="h-full flex flex-col">
             <div className="flex-1 overflow-y-auto">
               <div className="flex flex-col w-full items-start pt-[20px]">
-                {/* New Prompt Button */}
-                <Button
-                  variant="ghost"
-                  className="relative self-stretch w-full h-11 justify-start px-[18px] text-white hover:bg-[#4c4c4d]"
-                  onClick={handleCreateNewPrompt}
-                >
-                  <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
-                  <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
-                    New Prompt
-                  </span>
-                </Button>
+                {/* New Prompt Button - Only show when logged in */}
+                {currentUser && (
+                  <Button
+                    variant="ghost"
+                    className="relative self-stretch w-full h-11 justify-start px-[18px] text-white hover:bg-[#4c4c4d]"
+                    onClick={handleCreateNewPrompt}
+                  >
+                    <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
+                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
+                      New Prompt
+                    </span>
+                  </Button>
+                )}
 
                 {/* Favorites Section */}
                 <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
@@ -633,17 +635,19 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
       <div className="h-full flex flex-col">
         <div className="flex-1 overflow-y-auto">
           <div className="flex flex-col w-full items-start pt-[20px]">
-            {/* New Prompt Button */}
-            <Button
-              variant="ghost"
-              className="relative self-stretch w-full h-11 justify-start px-[18px] text-white hover:bg-[#4c4c4d]"
-              onClick={handleCreateNewPrompt}
-            >
-              <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
-              <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
-                New Prompt
-              </span>
-            </Button>
+            {/* New Prompt Button - Only show when logged in */}
+            {currentUser && (
+              <Button
+                variant="ghost"
+                className="relative self-stretch w-full h-11 justify-start px-[18px] text-white hover:bg-[#4c4c4d]"
+                onClick={handleCreateNewPrompt}
+              >
+                <PlusCircle className="w-5 h-5 mr-[23px] flex-shrink-0" />
+                <span className="font-['Pretendard-Regular',Helvetica] font-normal text-sm tracking-[-0.21px] leading-[22px]">
+                  New Prompt
+                </span>
+              </Button>
+            )}
 
             {/* Favorites Section */}
             <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
