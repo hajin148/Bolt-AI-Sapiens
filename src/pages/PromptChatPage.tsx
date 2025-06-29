@@ -471,7 +471,7 @@ const PromptChatPage: React.FC = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
+              placeholder="What do you need help with?"
               disabled={sending}
               className="w-full h-14 pl-6 pr-16 bg-[#2A2A2A] border border-[#404040] rounded-[28px] text-white placeholder-gray-400 focus:outline-none focus:border-[#7C3AED] transition-colors text-base"
             />
