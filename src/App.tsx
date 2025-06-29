@@ -272,7 +272,7 @@ export default function AppWithRoutes() {
       </div>
       
       {isHomePage && (
-        <div className={`${showSidebar ? 'lg:ml-[280px]' : ''}`}>
+        <div className="lg:ml-[280px]">
           <Footer />
         </div>
       )}
