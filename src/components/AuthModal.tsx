@@ -287,12 +287,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
               </div>
             )}
 
-            {/* Submit Button - Figma style */}
+            {/* Submit Button - Updated to solid color #440D97 and changed text */}
             <div className="mt-8">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 px-6 bg-gradient-to-r from-[#4F46E5] to-[#EC4899] hover:from-[#4338CA] hover:to-[#DB2777] text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
+                className="w-full py-4 px-6 bg-[#440D97] hover:bg-[#3A0B7F] text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
@@ -300,7 +300,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                     Processing...
                   </div>
                 ) : mode === 'login' ? (
-                  'Sign In'
+                  'Login'
                 ) : signupStep === 1 ? (
                   'Continue'
                 ) : (
