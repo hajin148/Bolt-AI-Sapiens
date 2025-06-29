@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
   
   return (
     <footer className="py-12 w-full overflow-x-hidden" style={{ backgroundColor: '#181818', borderTop: '1px solid #374151' }}>
-      <div className="max-w-6xl mx-auto px-4 w-full">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="w-full">
           <div className="text-left">
             <div className="flex items-center gap-3 justify-start mb-2">
