@@ -162,16 +162,16 @@ const NewsList: React.FC = () => {
             disabled={loadingMore}
             variant="outline"
             size="lg"
-            className="px-8 py-3 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-gray-800"
+            className="px-8 py-3 bg-white border-gray-400 text-black hover:bg-gray-100 hover:border-gray-500"
           >
             {loadingMore ? (
               <>
-                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                <Loader2 className="h-5 w-5 mr-2 animate-spin text-black" />
                 Loading more...
               </>
             ) : (
               <>
-                <ChevronDown className="h-5 w-5 mr-2" />
+                <ChevronDown className="h-5 w-5 mr-2 text-black" />
                 Load More Articles
               </>
             )}
