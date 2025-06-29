@@ -22,15 +22,6 @@ const Footer: React.FC = () => {
                 }}
               />
             </div>
-            <img 
-              src="https://cdn.jsdelivr.net/gh/hajin148/Bolt-AI-Sapiens@5492ed01ad294aebffa564b566ca04d1d36a7cd1/public/logo.png" 
-              alt="AI Sapiens Logo" 
-              className="h-6 w-auto mb-2"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-              }}
-            />
             <p className="text-gray-400 text-sm text-left">
               Enhance your productivity with AI tools.
             </p>
