@@ -93,12 +93,25 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       </div>
 
-      {/* Modal content */}
-      <div className="relative bg-white rounded-3xl w-full max-w-md max-h-[95vh] overflow-y-auto shadow-2xl">
+      {/* Modal content - Figma design */}
+      <div className="relative w-full max-w-[400px] h-[600px] bg-black rounded-[32px] overflow-hidden shadow-2xl">
+        {/* Logo - Top left */}
+        <div className="absolute top-6 left-6 z-10">
+          <img
+            src="https://cdn.jsdelivr.net/gh/hajin148/Bolt-AI-Sapiens@5492ed01ad294aebffa564b566ca04d1d36a7cd1/public/logo.png"
+            alt="AI Sapiens Logo"
+            className="h-8 w-auto"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+            }}
+          />
+        </div>
+
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors z-10"
+          className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-10"
         >
           <X size={24} />
         </button>
@@ -107,43 +120,35 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         {mode === 'signup' && signupStep === 2 && (
           <button
             onClick={handleBackToStep1}
-            className="absolute top-6 left-6 text-gray-400 hover:text-gray-600 transition-colors z-10"
+            className="absolute top-6 left-16 text-gray-400 hover:text-white transition-colors z-10"
           >
             <ArrowLeft size={24} />
           </button>
         )}
-          {/* Progress Indicator for Signup */}
-          {mode === 'signup' && (
-            <div className="flex justify-center mt-8 space-x-2">
-              <div className={`w-3 h-3 rounded-full transition-all ${signupStep === 1 ? 'bg-blue-500' : 'bg-blue-200'}`} />
-              <div className={`w-3 h-3 rounded-full transition-all ${signupStep === 2 ? 'bg-blue-500' : 'bg-gray-200'}`} />
-            </div>
-          )}
 
-        {/* Form */}
-        <div className="px-8 pb-8">
+        {/* Progress Indicator for Signup */}
+        {mode === 'signup' && (
+          <div className="flex justify-center mt-20 space-x-2">
+            <div className={`w-2 h-2 rounded-full transition-all ${signupStep === 1 ? 'bg-blue-500' : 'bg-gray-600'}`} />
+            <div className={`w-2 h-2 rounded-full transition-all ${signupStep === 2 ? 'bg-blue-500' : 'bg-gray-600'}`} />
+          </div>
+        )}
+
+        {/* Form Content */}
+        <div className="px-8 pt-24 pb-8 h-full flex flex-col">
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-400 text-red-700 px-6 py-4 rounded-r-xl mb-6 text-sm">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p>{error}</p>
-                </div>
-              </div>
+            <div className="bg-red-600/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
+              {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
             {/* Step 1: Basic Information */}
             {(mode === 'login' || (mode === 'signup' && signupStep === 1)) && (
-              <>
+              <div className="flex-1 space-y-6">
                 {mode === 'signup' && (
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Username</label>
+                    <label className="block text-sm font-medium text-gray-300">Username</label>
                     <div className="relative">
                       <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                       <input
@@ -151,15 +156,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                         required
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-lg placeholder-gray-400"
+                        className="w-full pl-12 pr-4 py-4 bg-[#2A2A2A] border border-[#404040] rounded-2xl focus:outline-none focus:border-blue-500 transition-colors text-white placeholder-gray-400"
                         placeholder="Choose a username"
                       />
                     </div>
                   </div>
                 )}
 
-                <div className="space-y-2 mt-20">
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Email Address</label>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-300">Email Address</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <input
@@ -167,29 +172,29 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-lg placeholder-gray-400"
+                      className="w-full pl-12 pr-4 py-4 bg-[#2A2A2A] border border-[#404040] rounded-2xl focus:outline-none focus:border-blue-500 transition-colors text-white placeholder-gray-400"
                       placeholder="Enter your email"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Password</label>
+                  <label className="block text-sm font-medium text-gray-300">Password</label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
-                     minLength={8}
+                      minLength={8}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-12 pr-14 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-lg placeholder-gray-400"
+                      className="w-full pl-12 pr-14 py-4 bg-[#2A2A2A] border border-[#404040] rounded-2xl focus:outline-none focus:border-blue-500 transition-colors text-white placeholder-gray-400"
                       placeholder="Create a password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -200,37 +205,37 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                     </p>
                   )}
                 </div>
-              </>
+              </div>
             )}
 
             {/* Step 2: Additional Information */}
             {mode === 'signup' && signupStep === 2 && (
-              <>
+              <div className="flex-1 space-y-6">
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Phone Number (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-300">Phone Number (Optional)</label>
                   <div className="relative">
                     <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <input
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-lg placeholder-gray-400"
+                      className="w-full pl-12 pr-4 py-4 bg-[#2A2A2A] border border-[#404040] rounded-2xl focus:outline-none focus:border-blue-500 transition-colors text-white placeholder-gray-400"
                       placeholder="Enter your phone number"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Job Field</label>
+                  <label className="block text-sm font-medium text-gray-300">Job Field</label>
                   <div className="relative">
                     <Briefcase className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <select
                       value={job}
                       onChange={(e) => setJob(e.target.value as JobType)}
-                      className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none bg-white text-lg"
+                      className="w-full pl-12 pr-4 py-4 bg-[#2A2A2A] border border-[#404040] rounded-2xl focus:outline-none focus:border-blue-500 transition-colors appearance-none text-white"
                     >
                       {JOB_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
+                        <option key={option} value={option} className="bg-[#2A2A2A] text-white">
                           {option}
                         </option>
                       ))}
@@ -239,33 +244,33 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                 </div>
 
                 <div className="space-y-4">
-                  <label className="block text-sm font-semibold text-gray-700">
+                  <label className="block text-sm font-medium text-gray-300">
                     <Heart className="inline h-4 w-4 mr-2 text-pink-500" />
                     What interests you? (Select multiple)
                   </label>
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
                     {INTEREST_OPTIONS.map((interest) => (
                       <label 
                         key={interest} 
-                        className={`flex items-center space-x-4 p-4 rounded-2xl border-2 cursor-pointer transition-all hover:shadow-md ${
+                        className={`flex items-center space-x-3 p-3 rounded-xl border cursor-pointer transition-all ${
                           interests.includes(interest)
-                            ? 'border-blue-500 bg-blue-50 shadow-md'
-                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                            ? 'border-blue-500 bg-blue-500/20'
+                            : 'border-[#404040] hover:border-gray-500 hover:bg-gray-800/50'
                         }`}
                       >
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                           interests.includes(interest)
                             ? 'border-blue-500 bg-blue-500'
-                            : 'border-gray-300'
+                            : 'border-gray-400'
                         }`}>
                           {interests.includes(interest) && (
-                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                           )}
                         </div>
-                        <span className={`text-base font-medium transition-colors ${
-                          interests.includes(interest) ? 'text-blue-700' : 'text-gray-700'
+                        <span className={`text-sm font-medium transition-colors ${
+                          interests.includes(interest) ? 'text-blue-300' : 'text-gray-300'
                         }`}>
                           {interest}
                         </span>
@@ -279,15 +284,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                     ))}
                   </div>
                 </div>
-              </>
+              </div>
             )}
 
-            {/* Submit Button */}
-            <div className="pt-4">
+            {/* Submit Button - Figma style */}
+            <div className="mt-8">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-lg"
+                className="w-full py-4 px-6 bg-gradient-to-r from-[#4F46E5] to-[#EC4899] hover:from-[#4338CA] hover:to-[#DB2777] text-white font-semibold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
@@ -307,13 +312,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
 
           {/* Switch Mode */}
           {(mode === 'login' || (mode === 'signup' && signupStep === 1)) && (
-            <div className="mt-8 text-center">
-              <p className="text-gray-600 text-base">
+            <div className="mt-6 text-center">
+              <p className="text-gray-400 text-sm">
                 {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
               </p>
               <button
                 onClick={() => onSwitchMode(mode === 'login' ? 'signup' : 'login')}
-                className="mt-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors text-lg"
+                className="mt-2 text-blue-400 hover:text-blue-300 font-semibold transition-colors"
               >
                 {mode === 'login' ? 'Create account' : 'Sign in instead'}
               </button>
@@ -322,16 +327,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
 
           {/* Terms and Privacy */}
           {mode === 'signup' && signupStep === 2 && (
-            <div className="mt-8 text-center">
-              <p className="text-sm text-gray-500 leading-relaxed">
+            <div className="mt-6 text-center">
+              <p className="text-xs text-gray-500 leading-relaxed">
                 By creating an account, you agree to our{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</a>
+                <a href="#" className="text-blue-400 hover:text-blue-300 font-medium">Terms of Service</a>
                 {' '}and{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
+                <a href="#" className="text-blue-400 hover:text-blue-300 font-medium">Privacy Policy</a>
               </p>
             </div>
           )}
-
         </div>
       </div>
     </div>
