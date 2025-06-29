@@ -7,6 +7,13 @@ interface DigestCardProps {
   digest: DigestCardData;
 }
 
+// Function to decode HTML entities
+const decodeHtmlEntities = (text: string): string => {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+};
+
 const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
   const navigate = useNavigate();
 
@@ -47,6 +54,10 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
     return colors[lang as keyof typeof colors] || 'bg-gray-600/20 text-gray-400 border-gray-500/30';
   };
 
+  // Decode HTML entities in title and summary
+  const decodedTitle = decodeHtmlEntities(digest.title);
+  const decodedSummary = digest.summary ? decodeHtmlEntities(digest.summary) : null;
+
   return (
     <div 
       className="group cursor-pointer hover:bg-gray-800/30 transition-all duration-300 rounded-lg p-4 max-w-2xl"
@@ -59,7 +70,7 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
             {digest.thumbnail ? (
               <img
                 src={digest.thumbnail}
-                alt={digest.title}
+                alt={decodedTitle}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -99,13 +110,13 @@ const DigestCard: React.FC<DigestCardProps> = ({ digest }) => {
 
           {/* Title */}
           <h3 className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors duration-200 line-clamp-2 mb-2 leading-tight">
-            {digest.title}
+            {decodedTitle}
           </h3>
 
           {/* Summary */}
-          {digest.summary && (
+          {decodedSummary && (
             <p className="text-gray-400 text-xs line-clamp-2 mb-3 leading-relaxed flex-1">
-              {digest.summary}
+              {decodedSummary}
             </p>
           )}
 

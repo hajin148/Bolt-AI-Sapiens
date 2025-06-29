@@ -5,6 +5,13 @@ import { ArticleData } from '../../types/News';
 import { ArrowLeft, Calendar, User, Globe, Loader2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+// Function to decode HTML entities
+const decodeHtmlEntities = (text: string): string => {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+};
+
 const ArticlePage: React.FC = () => {
   const { videoId } = useParams<{ videoId: string }>();
   const navigate = useNavigate();
@@ -88,24 +95,32 @@ const ArticlePage: React.FC = () => {
   };
 
   const renderMarkdown = (content: string) => {
-    return content
+    // Decode HTML entities first
+    const decodedContent = decodeHtmlEntities(content);
+    
+    return decodedContent
       .split('\n')
       .map((line, index) => {
         if (line.startsWith('### ')) {
-          return <h3 key={index} className="text-2xl font-bold mt-8 mb-4 text-white">{line.slice(4)}</h3>;
+          const decodedLine = decodeHtmlEntities(line.slice(4));
+          return <h3 key={index} className="text-2xl font-bold mt-8 mb-4 text-white">{decodedLine}</h3>;
         }
         if (line.startsWith('## ')) {
-          return <h2 key={index} className="text-3xl font-bold mt-10 mb-6 text-white">{line.slice(3)}</h2>;
+          const decodedLine = decodeHtmlEntities(line.slice(3));
+          return <h2 key={index} className="text-3xl font-bold mt-10 mb-6 text-white">{decodedLine}</h2>;
         }
         if (line.startsWith('# ')) {
-          return <h1 key={index} className="text-4xl font-bold mt-10 mb-6 text-white">{line.slice(2)}</h1>;
+          const decodedLine = decodeHtmlEntities(line.slice(2));
+          return <h1 key={index} className="text-4xl font-bold mt-10 mb-6 text-white">{decodedLine}</h1>;
         }
         
         if (line.trim() === '') {
           return <br key={index} />;
         }
         
-        const boldText = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        // Decode HTML entities in the line content
+        const decodedLine = decodeHtmlEntities(line);
+        const boldText = decodedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         const italicText = boldText.replace(/\*(.*?)\*/g, '<em>$1</em>');
         
         return (
@@ -161,6 +176,10 @@ const ArticlePage: React.FC = () => {
     );
   }
 
+  // Decode HTML entities in article data
+  const decodedTitle = decodeHtmlEntities(article.title);
+  const decodedSummary = article.summary ? decodeHtmlEntities(article.summary) : null;
+
   return (
     <div className="min-h-screen bg-[#121212]">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -179,14 +198,14 @@ const ArticlePage: React.FC = () => {
           {/* Title and Meta Information */}
           <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-              {article.title}
+              {decodedTitle}
             </h1>
             
             {/* Summary */}
-            {article.summary && (
+            {decodedSummary && (
               <div className="bg-blue-600/10 border-l-4 border-blue-500 p-6 rounded-r-lg">
                 <p className="text-lg text-blue-200 leading-relaxed font-medium">
-                  {article.summary}
+                  {decodedSummary}
                 </p>
               </div>
             )}
