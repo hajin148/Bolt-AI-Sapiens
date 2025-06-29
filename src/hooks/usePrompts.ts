@@ -78,6 +78,31 @@ export const usePrompts = () => {
     window.dispatchEvent(new CustomEvent('refreshPromptSessions'));
   };
 
+  // New function to delete empty sessions
+  const deleteEmptySession = async (sessionId: string) => {
+    try {
+      // Check if session has any messages
+      const { data: messages, error: messagesError } = await supabase
+        .from('prompt_messages')
+        .select('id')
+        .eq('session_id', sessionId)
+        .limit(1);
+
+      if (messagesError) throw messagesError;
+
+      // If no messages exist, delete the session
+      if (!messages || messages.length === 0) {
+        await deleteSession(sessionId);
+        return true; // Session was deleted
+      }
+      
+      return false; // Session was not deleted (has messages)
+    } catch (error) {
+      console.error('Error checking/deleting empty session:', error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     fetchSessions();
   }, [currentUser]);
@@ -89,6 +114,7 @@ export const usePrompts = () => {
     createSession,
     updateSession,
     deleteSession,
+    deleteEmptySession,
     refetch: fetchSessions
   };
 };
