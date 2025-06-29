@@ -19,6 +19,7 @@ import { ScrollArea } from './ui/scroll-area';
 
 interface SideBarProps {
   onUpgradeClick: () => void;
+  onLoginClick: () => void;
 }
 
 interface LearningClassroom {
@@ -34,7 +35,7 @@ interface PromptSession {
   updated_at: string;
 }
 
-const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
+const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, userProfile, userTokens } = useAuth();
@@ -510,9 +511,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                       </>
                     ) : (
                       <div className="px-[18px] py-2">
-                        <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                        <button
+                          onClick={onLoginClick}
+                          className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                        >
                           No favorites yet
-                        </span>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -557,9 +561,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                       </>
                     ) : (
                       <div className="px-[18px] py-2">
-                        <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                        <button
+                          onClick={onLoginClick}
+                          className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                        >
                           No classrooms yet
-                        </span>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -596,9 +603,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                       </>
                     ) : (
                       <div className="px-[18px] py-2">
-                        <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                        <button
+                          onClick={onLoginClick}
+                          className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                        >
                           No conversations yet
-                        </span>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -721,9 +731,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                   </>
                 ) : (
                   <div className="px-[18px] py-2">
-                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                    <button
+                      onClick={onLoginClick}
+                      className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                    >
                       {currentUser ? 'No classrooms yet' : 'Login to see classrooms'}
-                    </span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -760,9 +773,12 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick }) => {
                   </>
                 ) : (
                   <div className="px-[18px] py-2">
-                    <span className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] text-[13px] tracking-[-0.20px] leading-[22px]">
+                    <button
+                      onClick={onLoginClick}
+                      className="font-['Pretendard-Regular',Helvetica] font-normal text-[#999999] hover:text-blue-400 text-[13px] tracking-[-0.20px] leading-[22px] transition-colors cursor-pointer"
+                    >
                       No conversations yet
-                    </span>
+                    </button>
                   </div>
                 )}
               </div>

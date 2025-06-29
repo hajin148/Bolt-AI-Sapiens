@@ -255,7 +255,7 @@ export default function AppWithRoutes() {
       
       <div className="flex">
         {showSidebar && <SideBar />}
-        <SideBar onUpgradeClick={handleUpgradeClick} />
+        <SideBar onUpgradeClick={handleUpgradeClick} onLoginClick={handleLoginClick} />
 
         <div className="flex-1 lg:ml-[280px] pt-16">
           <Routes>
