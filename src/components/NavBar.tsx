@@ -108,7 +108,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                   <img 
                     src="/ainews copy.png" 
                     alt="AI News" 
-                    className={`w-7 h-7 ${
+                    className={`w-8 h-8 ${
                       isNewsPage ? 'opacity-100' : 'opacity-80 hover:opacity-100'
                     } transition-opacity`}
                   />
@@ -165,7 +165,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onSignupClick, onUpgradeC
                   <img 
                     src="/ainews copy.png" 
                     alt="AI News" 
-                    className={`w-7 h-7 ${
+                    className={`w-8 h-8 ${
                       isNewsPage ? 'opacity-100' : 'opacity-80 hover:opacity-100'
                     } transition-opacity`}
                   />
