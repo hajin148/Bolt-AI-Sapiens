@@ -158,7 +158,7 @@ const ModuleDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#121212]">
       {/* Fixed Header - Following Figma */}
-      <div className="sticky top-0 bg-[#121212]/95 backdrop-blur-sm border-b border-gray-800 z-40">
+      <div className="sticky top-0 bg-[#121212]/95 backdrop-blur-sm border-b border-gray-800 z-40 xl:ml-[280px] lg:ml-[280px]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
