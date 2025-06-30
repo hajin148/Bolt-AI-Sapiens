@@ -42,7 +42,8 @@ Frontend Architecture: Built with React and Next.js using TypeScript for type sa
 
 **Session Management**: Managing single sign-on across multiple session required complex OAuth 2.0 or JWT token implementations.
 
-**Git Version Control for collaboration**: Difficult to work as a team.
+**Git Version Control for Collaboration**
+Coordinating among team members was challenging due to merge conflicts and sync issues. At one point, our Git history was completely wiped out due to a misconfigured hard reset, causing significant setbacks. We recovered by rebuilding missing code and setting up stricter version control practices.
 
 ## Accomplishments that we're proud of
 **Comprehensive Tool Coverage**: Successfully integrated 50+ major AI platforms into a single, coherent interface.
