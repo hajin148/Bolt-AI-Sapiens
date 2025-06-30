@@ -523,16 +523,10 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
 
                 {/* Learning Space Section */}
                 <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
-                  <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
+                  <div className="px-[18px] pt-[15px] mb-3">
                     <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
                       Learning Space
                     </h3>
-                    <button
-                      onClick={handleLearningSpaceClick}
-                      className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
-                    >
-                      +
-                    </button>
                   </div>
                   <div className="flex flex-col w-full items-start">
                     {loadingClassrooms ? (
@@ -693,16 +687,10 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
 
             {/* Learning Space Section */}
             <div className="relative self-stretch w-full border-b border-[#575757] pb-4">
-              <div className="flex items-center justify-between px-[18px] pt-[15px] mb-3">
+              <div className="px-[18px] pt-[15px] mb-3">
                 <h3 className="font-['Pretendard-Medium',Helvetica] font-medium text-white text-sm tracking-[-0.21px] leading-[22px]">
                   Learning Space
                 </h3>
-                <button
-                  onClick={handleLearningSpaceClick}
-                  className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
-                >
-                  +
-                </button>
               </div>
               <div className="flex flex-col w-full items-start">
                 {loadingClassrooms ? (
