@@ -1,6 +1,6 @@
-AI Sapiens Webapp (aisapiens.app)
+## AI Sapiens Webapp (aisapiens.app)
 
-Built with Bolt.new
+**Built with Bolt.new**
 
 Vibers - Hajin Jeon, Teresa Park, Dowon Yang, Youhyun Jin
 
