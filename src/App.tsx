@@ -17,8 +17,6 @@ import ClassroomDetailPage from './pages/ClassroomDetailPage';
 import ModuleDetailPage from './pages/ModuleDetailPage';
 import PromptsPage from './pages/PromptsPage';
 import PromptChatPage from './pages/PromptChatPage';
-import SuccessPage from './pages/SuccessPage';
-import CancelPage from './pages/CancelPage';
 import { useAuth } from './contexts/AuthContext';
 import { Tool } from './types/Tool';
 
@@ -230,8 +228,6 @@ export default function AppWithRoutes() {
   const isLearningRoute = location.pathname.startsWith('/learning') || location.pathname.startsWith('/classroom');
   const isPromptRoute = location.pathname.startsWith('/prompts');
   const isHomePage = location.pathname === '/';
-  const isSuccessPage = location.pathname === '/success';
-  const isCancelPage = location.pathname === '/cancel';
 
   const showSidebar = true; // Always show sidebar
 
@@ -251,21 +247,17 @@ export default function AppWithRoutes() {
 
   return (
     <div className="min-h-screen bg-gray-900 overflow-x-hidden">
-      {!isSuccessPage && !isCancelPage && (
-        <NavBar 
-          onLoginClick={handleLoginClick}
-          onSignupClick={handleSignupClick}
-          onUpgradeClick={handleUpgradeClick}
-        />
-      )}
+      <NavBar 
+        onLoginClick={handleLoginClick}
+        onSignupClick={handleSignupClick}
+        onUpgradeClick={handleUpgradeClick}
+      />
       
       <div className="flex">
-        {showSidebar && !isSuccessPage && !isCancelPage && <SideBar />}
-        {!isSuccessPage && !isCancelPage && (
-          <SideBar onUpgradeClick={handleUpgradeClick} onLoginClick={handleLoginClick} />
-        )}
+        {showSidebar && <SideBar />}
+        <SideBar onUpgradeClick={handleUpgradeClick} onLoginClick={handleLoginClick} />
 
-        <div className={`flex-1 ${!isSuccessPage && !isCancelPage ? 'xl:ml-[140px] lg:ml-[280px] pt-16' : ''} min-w-0`}>
+        <div className="flex-1 xl:ml-[140px] lg:ml-[280px] pt-16 min-w-0">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/news" element={<NewsPage />} />
@@ -275,8 +267,6 @@ export default function AppWithRoutes() {
             <Route path="/classroom/:classroomId/module/:moduleId" element={<ModuleDetailPage />} />
             <Route path="/prompts" element={<PromptsPage />} />
             <Route path="/prompts/:sessionId" element={<PromptChatPage />} />
-            <Route path="/success" element={<SuccessPage />} />
-            <Route path="/cancel" element={<CancelPage />} />
           </Routes>
         </div>
       </div>
