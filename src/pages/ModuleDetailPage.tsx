@@ -212,6 +212,28 @@ const ModuleDetailPage: React.FC = () => {
                 </Button>
               </div>
             </div>
+
+            {/* Completion Button */}
+            <div className="mb-8">
+              <Button
+                onClick={handleToggleCompletion}
+                disabled={completionLoading || progressLoading}
+                className={`${
+                  isCompleted 
+                    ? 'bg-gray-600 hover:bg-gray-700 text-white' 
+                    : 'bg-green-600 hover:bg-green-700 text-white'
+                }`}
+              >
+                {completionLoading ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : isCompleted ? (
+                  <Circle className="h-4 w-4 mr-2" />
+                ) : (
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                )}
+                {isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}
+              </Button>
+            </div>
           </div>
 
           {/* Progress Bar */}
@@ -282,36 +304,6 @@ const ModuleDetailPage: React.FC = () => {
                   </CardContent>
                 </Card>
               )}
-
-              {/* Completion Section */}
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardContent className="p-8">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Clock className="h-4 w-4" />
-                      <span>Estimated learning time: 15-30 minutes</span>
-                    </div>
-                    <Button
-                      onClick={handleToggleCompletion}
-                      disabled={completionLoading || progressLoading}
-                      className={`${
-                        isCompleted 
-                          ? 'bg-gray-600 hover:bg-gray-700 text-white' 
-                          : 'bg-green-600 hover:bg-green-700 text-white'
-                      }`}
-                    >
-                      {completionLoading ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : isCompleted ? (
-                        <Circle className="h-4 w-4 mr-2" />
-                      ) : (
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                      )}
-                      {isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
