@@ -213,8 +213,12 @@ const ModuleDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Completion Button */}
-            <div className="mb-8">
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-800 rounded-full h-1 mt-4">
+            {/* Completion Button - positioned above Module Overview */}
+            <div className="flex justify-start">
               <Button
                 onClick={handleToggleCompletion}
                 disabled={completionLoading || progressLoading}
@@ -234,10 +238,7 @@ const ModuleDetailPage: React.FC = () => {
                 {isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}
               </Button>
             </div>
-          </div>
 
-          {/* Progress Bar */}
-          <div className="w-full bg-gray-800 rounded-full h-1 mt-4">
             <div 
               className="h-1 rounded-full transition-all duration-300"
               style={{ 
