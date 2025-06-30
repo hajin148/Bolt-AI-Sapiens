@@ -217,28 +217,6 @@ const ModuleDetailPage: React.FC = () => {
 
           {/* Progress Bar */}
           <div className="w-full bg-gray-800 rounded-full h-1 mt-4">
-            {/* Completion Button - positioned above Module Overview */}
-            <div className="flex justify-start">
-              <Button
-                onClick={handleToggleCompletion}
-                disabled={completionLoading || progressLoading}
-                className={`${
-                  isCompleted 
-                    ? 'bg-gray-600 hover:bg-gray-700 text-white' 
-                    : 'bg-green-600 hover:bg-green-700 text-white'
-                }`}
-              >
-                {completionLoading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : isCompleted ? (
-                  <Circle className="h-4 w-4 mr-2" />
-                ) : (
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                )}
-                {isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}
-              </Button>
-            </div>
-
             <div 
               className="h-1 rounded-full transition-all duration-300"
               style={{ 
@@ -272,6 +250,28 @@ const ModuleDetailPage: React.FC = () => {
 
             {/* Content Sections */}
             <div className="space-y-8">
+              {/* Completion Button - positioned above Module Overview */}
+              <div className="flex justify-start">
+                <Button
+                  onClick={handleToggleCompletion}
+                  disabled={completionLoading || progressLoading}
+                  className={`${
+                    isCompleted 
+                      ? 'bg-gray-600 hover:bg-gray-700 text-white' 
+                      : 'bg-green-600 hover:bg-green-700 text-white'
+                  }`}
+                >
+                  {completionLoading ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : isCompleted ? (
+                    <Circle className="h-4 w-4 mr-2" />
+                  ) : (
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                  )}
+                  {isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}
+                </Button>
+              </div>
+
               {/* Module Overview */}
               <Card className="bg-gray-800/50 border-gray-700">
                 <CardContent className="p-8">
