@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLearningSpace } from '../hooks/useLearningSpace';
 import ClassroomCard from '../components/learning/ClassroomCard';
-import AddClassroomCard from '../components/learning/AddClassroomCard';
 import ClassroomModal from '../components/learning/ClassroomModal';
 import { Button } from '@/components/ui/button';
 import { GraduationCap, Loader2, AlertCircle, Plus, Search } from 'lucide-react';
@@ -172,9 +171,6 @@ const LearningSpacePage: React.FC = () => {
 
             {/* Grid Layout - Following Figma */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {/* Add New Card - First Position */}
-              <AddClassroomCard onClick={handleAddNew} />
-              
               {/* Classroom Cards */}
               {filteredClassrooms.map((classroom) => (
                 <ClassroomCard
