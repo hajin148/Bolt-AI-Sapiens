@@ -22,27 +22,10 @@ const Footer: React.FC = () => {
             </p>
           </div>
           
-          <div className="flex flex-col items-start md:items-end w-full md:w-auto space-y-3">
+          <div className="flex flex-col items-start md:items-end w-full md:w-auto">
             <p className="text-gray-400 text-sm">
               © {currentYear} AI Sapiens. All rights reserved.
             </p>
-            
-            {/* Built with Bolt badge */}
-            <a 
-              href="https://bolt.new" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-xs font-medium rounded-full transition-all duration-200 hover:scale-105 shadow-lg"
-            >
-              <svg 
-                className="w-3 h-3" 
-                viewBox="0 0 24 24" 
-                fill="currentColor"
-              >
-                <path d="M13 3L4 14h7l-1 8 9-11h-7l1-8z"/>
-              </svg>
-              Built with Bolt
-            </a>
           </div>
         </div>
       </div>
