@@ -77,12 +77,6 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
               </div>
             </div>
 
-            {/* Duration badge */}
-            {digest.duration && (
-              <div className="absolute bottom-3 right-3 bg-black bg-opacity-90 text-white text-sm px-3 py-1 rounded-md font-medium">
-                {digest.duration}
-              </div>
-            )}
           </div>
 
           {/* Content */}
