@@ -21,19 +21,22 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
   const handlePurchaseTokens = async () => {
     setPurchasing(true);
     try {
-      // TODO: Integrate with Stripe payment processing here
-      console.log('Processing token purchase...');
+      // Mock successful payment - simulate processing time
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // For now, just add 50 tokens to user's account
+      // Add 50 tokens to user's account (simulating successful payment)
       const newTokenCount = userTokens + 50;
       await updateTokens(newTokenCount);
       
-      // Show success and close modal
-      alert('Successfully purchased 50 tokens!');
+      // Show success message and close modal
+      console.log('Mock payment successful - added 50 tokens');
       onClose();
+      
+      // Optional: Show a success notification
+      // You could add a toast notification here if desired
     } catch (error) {
       console.error('Error purchasing tokens:', error);
-      alert('Failed to purchase tokens. Please try again.');
+      alert('Failed to add tokens. Please try again.');
     } finally {
       setPurchasing(false);
     }
@@ -121,12 +124,12 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
               {purchasing ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Processing...
+                  Processing Payment...
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Coins className="h-5 w-5" />
-                  Purchase 50 Tokens for $9.99
+                  Get 50 Tokens for $9.99
                 </div>
               )}
             </Button>
