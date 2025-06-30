@@ -141,11 +141,12 @@ const ToolSidebar: React.FC<ToolSidebarProps> = ({ tool, isOpen, onClose }) => {
               <div className="mt-4 flex justify-center">
                 <button
                   onClick={handleVisitWebsite}
-                  className="w-[286px] h-[36px] bg-[#7218F9] text-white font-medium hover:bg-[#5a13c7] transition-colors text-center flex items-center justify-center"
+                  className="w-[286px] h-[36px] bg-[#7218F9] text-white font-medium hover:bg-[#5a13c7] transition-colors text-center flex items-center justify-center rounded-md"
                 >
                   Visit Website
                 </button>
               </div>
+
             </div>
 
             {/* Key Features */}
