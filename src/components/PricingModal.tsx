@@ -29,7 +29,10 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
     try {
       const product = products[0]; // AISapiens 50 tokens
       
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`, {
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`;
+      console.log('Making request to:', apiUrl);
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,20 +47,28 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (parseError) {
+          console.error('Failed to parse error response:', parseError);
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         throw new Error(errorData.error || 'Failed to create checkout session');
       }
 
       const { url } = await response.json();
       
       if (url) {
-        window.location.href = url;
+        // For mock implementation, show success message instead of redirecting
+        alert('Mock checkout successful! In production, this would redirect to Stripe payment.');
+        onClose();
       } else {
         throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Error purchasing tokens:', error);
-      alert('Failed to start checkout process. Please try again.');
+      alert(`Failed to start checkout process: ${error.message}. Please try again.`);
     } finally {
       setPurchasing(false);
     }
