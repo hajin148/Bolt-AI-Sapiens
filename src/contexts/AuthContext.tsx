@@ -93,6 +93,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateTokens = async (newTokens: number) => {
     if (!currentUser) return;
 
+    // Prevent negative tokens
+    if (newTokens < 0) {
+      throw new Error('토큰이 부족합니다.');
+    }
     try {
       const { error } = await supabase
         .from('user_tokens')

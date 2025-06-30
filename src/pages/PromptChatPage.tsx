@@ -27,7 +27,7 @@ import { VideoDigest, ContentItem } from '../types/Learning';
 const PromptChatPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser, userTokens, updateTokens } = useAuth();
   const { messages, loading: messagesLoading, addMessage } = usePromptMessages(sessionId || '');
   
   const [session, setSession] = useState<PromptSession | null>(null);
@@ -98,12 +98,20 @@ const PromptChatPage: React.FC = () => {
   const handleSendMessage = async () => {
     if (!inputValue.trim() || sending || !sessionId) return;
 
+    // Check if user has enough tokens
+    if (userTokens < 1) {
+      setError('토큰이 부족합니다. 토큰을 구매해주세요.');
+      return;
+    }
     const userMessage = inputValue.trim();
     setInputValue('');
     setSending(true);
     setError(null);
 
     try {
+      // Deduct 1 token for prompt conversation
+      await updateTokens(userTokens - 1);
+
       // Save user message
       await addMessage({
         session_id: sessionId,
@@ -178,6 +186,13 @@ const PromptChatPage: React.FC = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       setError('Failed to send message. Please try again.');
+      
+      // Refund token on error
+      try {
+        await updateTokens(userTokens);
+      } catch (refundError) {
+        console.error('Error refunding token:', refundError);
+      }
     } finally {
       setSending(false);
     }
@@ -201,10 +216,18 @@ const PromptChatPage: React.FC = () => {
   const handleCreateLearningSpace = async () => {
     if (!sessionId || creatingLearningSpace) return;
 
+    // Check if user has enough tokens
+    if (userTokens < 1) {
+      setError('토큰이 부족합니다. 토큰을 구매해주세요.');
+      return;
+    }
     setCreatingLearningSpace(true);
     setError(null);
     
     try {
+      // Deduct 1 token for learning space creation
+      await updateTokens(userTokens - 1);
+
       // Use entire message history to generate learning space
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini_chat`, {
         method: 'POST',
@@ -278,6 +301,13 @@ const PromptChatPage: React.FC = () => {
     } catch (error) {
       console.error('Error creating learning space:', error);
       setError('Failed to create learning space. Please try again.');
+      
+      // Refund token on error
+      try {
+        await updateTokens(userTokens);
+      } catch (refundError) {
+        console.error('Error refunding token:', refundError);
+      }
     } finally {
       setCreatingLearningSpace(false);
     }
@@ -465,19 +495,28 @@ const PromptChatPage: React.FC = () => {
         )}
         
         <div className="max-w-4xl mx-auto">
+          {/* Token warning */}
+          {userTokens <= 5 && (
+            <div className="mb-4 p-3 bg-yellow-600/20 border border-yellow-500/30 rounded-lg">
+              <p className="text-sm text-yellow-400">
+                토큰이 {userTokens}개 남았습니다. 토큰이 부족하면 AI와 대화할 수 없습니다.
+              </p>
+            </div>
+          )}
+          
           <div className="relative">
             <input
               ref={inputRef}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="What do you need help with?"
-              disabled={sending}
+              placeholder={userTokens > 0 ? "What do you need help with?" : "토큰이 부족합니다. 토큰을 구매해주세요."}
+              disabled={sending || userTokens < 1}
               className="w-full h-14 pl-6 pr-16 bg-[#2A2A2A] border border-[#404040] rounded-[28px] text-white placeholder-gray-400 focus:outline-none focus:border-[#7C3AED] transition-colors text-base"
             />
             <button
               onClick={handleSendMessage}
-              disabled={!inputValue.trim() || sending}
+              disabled={!inputValue.trim() || sending || userTokens < 1}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-r from-[#7C3AED] to-[#A855F7] hover:from-[#6D28D9] hover:to-[#9333EA] disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-purple-500/25"
             >
               {sending ? (

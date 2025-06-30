@@ -794,7 +794,7 @@ const SideBar: React.FC<SideBarProps> = ({ onUpgradeClick, onLoginClick }) => {
             >
               <Wallet className="w-5 h-5 text-yellow-400 flex-shrink-0" />
               <span className="font-['Pretendard-Medium',Helvetica] font-medium text-yellow-300 text-sm text-right tracking-[-0.21px] leading-[22px] truncate">
-                {userTokens.toLocaleString()}pt
+                {userTokens}pt
               </span>
             </div>
           </div>
