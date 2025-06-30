@@ -146,7 +146,6 @@ const ToolSidebar: React.FC<ToolSidebarProps> = ({ tool, isOpen, onClose }) => {
                   Visit Website
                 </button>
               </div>
-
             </div>
 
             {/* Key Features */}
