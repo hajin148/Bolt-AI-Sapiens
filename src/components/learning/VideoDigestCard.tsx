@@ -91,36 +91,6 @@ const VideoDigestCard: React.FC<VideoDigestCardProps> = ({ digest }) => {
                 {digest.summary}
               </p>
             )}
-            
-            <div className="flex items-center justify-between text-sm text-gray-400">
-              <div className="flex items-center gap-3">
-                {digest.duration && (
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    <span>{digest.duration}</span>
-                  </div>
-                )}
-                {digest.youtube_channels?.name && (
-                  <div className="flex items-center gap-1">
-                    <User className="h-4 w-4" />
-                    <span className="truncate max-w-24">{digest.youtube_channels.name}</span>
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex items-center gap-2">
-                {digest.published_at && (
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    <span className="text-xs">{formatDate(digest.published_at)}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ExternalLink className="h-4 w-4" />
-                  <span>Watch</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </CardContent>
