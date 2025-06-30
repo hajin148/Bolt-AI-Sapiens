@@ -121,14 +121,6 @@ const LearningSpacePage: React.FC = () => {
               <h1 className="text-3xl font-bold text-white mb-2">Learning Space</h1>
               <p className="text-gray-400">Manage your virtual classrooms and learning modules</p>
             </div>
-            
-            <Button 
-              onClick={handleAddNew} 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
-            >
-              <Plus className="h-5 w-5" />
-              New Classroom
-            </Button>
           </div>
 
           {/* Search Bar - Following Figma */}
