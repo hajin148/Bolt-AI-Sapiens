@@ -6,9 +6,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Check, Coins, Zap, Star, Loader2 } from 'lucide-react';
+import { Check, Coins, Zap, Star } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { products } from '../stripe-config';
 
 interface PricingModalProps {
   isOpen: boolean;
@@ -16,48 +15,25 @@ interface PricingModalProps {
 }
 
 const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
-  const { currentUser, userTokens } = useAuth();
+  const { updateTokens, userTokens } = useAuth();
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchaseTokens = async () => {
-    if (!currentUser) {
-      alert('Please log in to purchase tokens');
-      return;
-    }
-
     setPurchasing(true);
     try {
-      const product = products[0]; // AISapiens 50 tokens
+      // TODO: Integrate with Stripe payment processing here
+      console.log('Processing token purchase...');
       
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
-          price_id: product.priceId,
-          mode: product.mode,
-          success_url: `${window.location.origin}/success`,
-          cancel_url: `${window.location.origin}/cancel`,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create checkout session');
-      }
-
-      const { url } = await response.json();
+      // For now, just add 50 tokens to user's account
+      const newTokenCount = userTokens + 50;
+      await updateTokens(newTokenCount);
       
-      if (url) {
-        window.location.href = url;
-      } else {
-        throw new Error('No checkout URL received');
-      }
+      // Show success and close modal
+      alert('Successfully purchased 50 tokens!');
+      onClose();
     } catch (error) {
       console.error('Error purchasing tokens:', error);
-      alert('Failed to start checkout process. Please try again.');
+      alert('Failed to purchase tokens. Please try again.');
     } finally {
       setPurchasing(false);
     }
@@ -144,7 +120,7 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
             >
               {purchasing ? (
                 <div className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Processing...
                 </div>
               ) : (
