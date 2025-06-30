@@ -248,14 +248,6 @@ const ClassroomDetailPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
-            <Button 
-              onClick={handleAddModule}
-              className="bg-blue-600 hover:bg-blue-700 px-6 py-3"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Module
-            </Button>
           </div>
 
           {/* Search Bar */}
